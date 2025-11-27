@@ -1,0 +1,98 @@
+<mvc:View controllerName="zpmchecklist.controller.Orderlist"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar">
+    <f:DynamicPage id="orderpage" headerExpanded="true">
+        <f:header>
+            <f:DynamicPageHeader id="dynheader01">
+                <f:content>
+                    <fb:FilterBar id="filterbar01" useToolbar="false" search="onSearch" filterChange="onFilterBarChange">
+                        <fb:filterGroupItems>
+                            <fb:FilterGroupItem id="fb-group1" name="aufnr" 
+                            label="Order" groupName="Group1"
+                            visibleInFilterBar="true">
+                                <fb:control>
+                                    <MultiComboBox id="cmb-order"
+                                        name="aufnr"
+                                        selectionChange="onFilterSelectionChange"
+                                        items="{
+                                            path: 'pmOrderService>/ZC_PM0001_Orderlist',
+                                            templateShareable: true
+                                        }">
+                                        <core:Item id="cmb-order-itm" key="{pmOrderService>aufnr}" text="{pmOrderService>aufnr}"/>
+                                    </MultiComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                        </fb:filterGroupItems>
+                    </fb:FilterBar>
+                </f:content>
+            </f:DynamicPageHeader>
+        </f:header>
+        <f:content>
+            <Table id="ordertable01" inset="false"
+                items="{
+                    path: 'pmOrderService>/ZC_PM0001_Orderlist',
+                    sorter: { path: 'aufnr', descending: false }
+                }"
+                width="auto"
+                mode="SingleSelectLeft"
+                selectionChange="onTableSelectionChange">
+                <headerToolbar>
+                    <OverflowToolbar id="ordoverflow01">
+                        <Title id="orderTitle" text="{i18n>checklistTableHeader}"/>
+                        <ToolbarSpacer id="orspacer01"/>
+                        <Button id="ordCreateBtn" text="Create" press="onCreate" tooltip="Create" visible="{displayModel>/createMode}"/>
+                        <Button id="ordChangeBtn" text="Change" press="onChange" tooltip="Change" visible="{displayModel>/changeMode}"/>
+                        <Button id="ordDisplayBtn" text="Display" press="onDisplay" tooltip="Display" visible="{displayModel>/displayMode}"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column id="ortbl01-col01">
+                        <header>
+                            <Text id="orctxt01" text="Order No."/>
+                        </header>
+                    </Column>
+                    <Column id="ortbl01-col02">
+                        <header>
+                            <Text id="orctxt02" text="Order Type."/>
+                        </header>
+                    </Column>
+                    <Column id="ortbl01-col03">
+                        <header>
+                            <Text id="orctxt03" text="Planner Group."/>
+                        </header>
+                    </Column>
+                    <Column id="ortbl01-col04">
+                        <header>
+                            <Text id="orctxt04" text="Description"/>
+                        </header>
+                    </Column>
+                    <Column id="ortbl01-col05">
+                        <header>
+                            <Text id="orctxt05" text="Checklist No"/>
+                        </header>
+                    </Column>
+                    <Column id="ortbl01-col06">
+                        <header>
+                            <Text id="orctxt06" text="Checklist Status"/>
+                        </header>
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem id="orcli001">
+                        <cells>
+                            <Text id="oritxt001" text="{pmOrderService>aufnr}"/>
+                            <Text id="oritxt002" text="{pmOrderService>auart}"/>
+                            <Text id="oritxt003" text="{pmOrderService>ingpr}"/>
+                            <Text id="oritxt004" text="{pmOrderService>ktext}"/>
+                            <Text id="oritxt005" text="{pmOrderService>chkno}"/>
+                            <Text id="oritxt006" text="{pmOrderService>cstat}"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>

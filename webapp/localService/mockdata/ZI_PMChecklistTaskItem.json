@@ -1,0 +1,50 @@
+[
+    {
+        "cgiid": "1000000379",
+        "cghid": "1000000001",
+        "item_pos": "000010",
+        "category": "00000002",
+        "sub_category": "Visual check Carbody",
+        "cl_action": "Kondisi Kereta",
+        "ref_image": "",
+        "cl_method": "",
+        "val_type": "",
+        "src_help": ""
+    },
+    {
+        "cgiid": "1000000379",
+        "cghid": "1000000001",
+        "item_pos": "000020",
+        "category": "00000009",
+        "sub_category": "Visual check Carbody",
+        "cl_action": "Kondisi cat dan kondisi kekotoran cat",
+        "ref_image": "",
+        "cl_method": "",
+        "val_type": "",
+        "src_help": ""
+    },
+    {
+        "cgiid": "1000000379",
+        "cghid": "1000000001",
+        "item_pos": "000030",
+        "category": "00000016",
+        "sub_category": "Visual check Carbody",
+        "cl_action": "Kondisi kemiringan bodi kereta",
+        "ref_image": "",
+        "cl_method": "",
+        "val_type": "",
+        "src_help": ""
+    },
+    {
+        "cgiid": "1000000379",
+        "cghid": "1000000001",
+        "item_pos": "000040",
+        "category": "00000023",
+        "sub_category": "Visual check Carbody",
+        "cl_action": "Ukur Kemiringan Bodi jika diperlukan",
+        "ref_image": "",
+        "cl_method": "",
+        "val_type": "",
+        "src_help": ""
+    }
+]

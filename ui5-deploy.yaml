@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: zpmchecklist
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        verbose: true
+        ignoreCertErrors: true
+        target:
+          url: https://mrtwd1wd01.hec.jakartamrt.co.id/
+          client: '100'
+        app:
+          name: ZPM_CHECKLIST
+          description: ZPM_Checklist Application
+          package: ZABAP
+          transport: ME1K903426
+        exclude:
+          - /test/

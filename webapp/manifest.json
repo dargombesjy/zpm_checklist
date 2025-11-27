@@ -1,0 +1,149 @@
+{
+  "_version": "1.17.0",
+  "sap.app": {
+    "id": "zpmchecklist",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.19.5",
+      "toolsId": "f2d50b07-2f15-44fd-97a2-c43d95914d1b"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZPM_CHECKLIST001_SRV/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      },
+      "pmOrderService": {
+        "uri": "/sap/opu/odata/sap/ZC_PM0001_ORDERLIST_CDS/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "fullWidth": true,
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.71.78",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "": {
+        "dataSource": "mainService",
+        "preload": false,
+        "settings": {}
+      },
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "zpmchecklist.i18n.i18n"
+        }
+      },
+      "pmOrderService": {
+        "dataSource": "pmOrderService",
+        "preload": true
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "zpmchecklist.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "main",
+          "pattern": ":?query:",
+          "target": [
+            "TargetMain"
+          ]
+        },
+        {
+          "pattern": "detail/{aufnr}/mode:?query",
+          "name": "detail",
+          "target": "detail"
+        },
+        {
+          "pattern": "create/{aufnr}",
+          "name": "create",
+          "target": "create"
+        }
+      ],
+      "targets": {
+        "TargetMain": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Orderlist",
+          "viewName": "Orderlist"
+        },
+        "detail": {
+          "viewType": "XML",
+          "viewId": "Detail",
+          "viewName": "Detail",
+          "viewLevel": 2
+        },
+        "create": {
+          "viewType": "XML",
+          "viewId": "Create",
+          "viewName": "Create",
+          "viewLevel": 2
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "zpmchecklist.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "App"
+    }
+  }
+}

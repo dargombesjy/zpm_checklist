@@ -1,0 +1,22 @@
+<mvc:XMLView id="detailView"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:custom="zpmchecklist.control"
+    xmlns:mvc="sap.ui.core.mvc" controllerName="zpmchecklist.controller.Detail">
+    <Page id="detailPage" title="{i18n>detailViewTitle}" titleLevel="H2">
+        <customHeader>
+            <OverflowToolbar id="otbSubheader">
+                <Button id="backButton-d" icon="sap-icon://nav-back" press="onBack" />
+                <Title id="page-title" text="{i18n>detailViewTitle}" level="H2" />
+                <ToolbarSpacer id="detail-spacer01" />
+                <Button id="editButton" text="Edit" type="Transparent" press="onEdit" />
+                <Button id="saveButton" text="Save" type="Transparent" press="onSave" visible="false" />
+                <Button id="postButton" text="Approve" type="Transparent" press="callPostChecklist" visible="true" />
+            </OverflowToolbar>
+        </customHeader>
+        <content>
+            
+        </content>
+    </Page>
+
+</mvc:XMLView>

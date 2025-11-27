@@ -1,0 +1,23 @@
+<mvc:XMLView id="createView"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:custom="zpmchecklist.control"
+    xmlns:mvc="sap.ui.core.mvc" controllerName="zpmchecklist.controller.Create">
+    <Page id="createPage"
+        title="{i18n>createViewTitle}"
+        titleLevel="H2"
+        class="sapUiContentPadding sapUiNoContentPaddingOnMobile sapUiSmallMargin">
+        <customHeader>
+            <OverflowToolbar id="otbSubheader-c">
+                <Button id="backButton-c" icon="sap-icon://nav-back" press="onBack" />
+                <Title id="page-title-c" text="{i18n>createViewTitle}" level="H2" />
+                <ToolbarSpacer id="detail-spacer01-c" />
+                <Button id="createButton" text="Create" type="Transparent" press="onCreate" visible="{oViewMmodel>/isNew}" />
+                <Button id="cancelButton-c" text="Cancel" type="Transparent" press="onCancel" visible="false" />
+            </OverflowToolbar>
+        </customHeader>
+        <content>
+        </content>
+    </Page>
+
+</mvc:XMLView>

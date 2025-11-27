@@ -1,0 +1,24 @@
+{
+  "generationParameters": {
+    "generationDate": "Fri Nov 14 2025 19:10:09 GMT+0700 (Western Indonesia Time)",
+    "generatorPlatform": "Visual Studio Code",
+    "serviceType": "SAP System (ABAP On-Premise)",
+    "metadataFilename": "",
+    "serviceUrl": "https://mrtwd1wd01.hec.jakartamrt.co.id/sap/opu/odata/sap/ZPM_CHECKLIST001_SRV",
+    "appName": "zpm_checklist",
+    "appTitle": "ZPM_Checklist Application",
+    "appDescription": "ZPM_Checklist Application",
+    "appNamespace": "",
+    "ui5Theme": "sap_fiori_3",
+    "ui5Version": "1.71.78",
+    "enableCodeAssist": false,
+    "enableEslint": false,
+    "enableTypeScript": false,
+    "showMockDataInfo": true,
+    "generatorVersion": "1.19.5",
+    "template": "Basic V2",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}

@@ -1,0 +1,68 @@
+<mvc:View controllerName="zpmchecklist.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}">
+        <content>
+            <Table id="table01" inset="false" items="{
+                    path: 'pmOrderService>/ZC_PM0001_Orderlist',
+                    sorter: { path: 'aufnr', descending: false } }"
+                    width="auto"
+                    mode="SingleSelectLeft"
+                    selectionChange="onSelectionChange">
+                <headerToolbar>
+                    <OverflowToolbar id="overflow01">
+                        <Title id="toolbarTitle01" text="{i18n>checklistTableHeader}"/>
+                        <ToolbarSpacer id="spacer01"/>
+                        <Button id="createBtn" text="Create" press="onCreate" tooltip="Create" visible="{displayModel>/createMode}"/>
+                        <Button id="changeBtn" text="Change" press="onChange" tooltip="Change" visible="{displayModel>/changeMode}"/>
+                        <Button id="displayBtn" text="Display" press="onDisplay" tooltip="Display" visible="{displayModel>/displayMode}"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column id="tbl01-col01">
+                        <header>
+                            <Text id="ctxt01" text="Order No."/>
+                        </header>
+                    </Column>
+                    <Column id="tbl01-col02">
+                        <header>
+                            <Text id="ctxt02" text="Order Type."/>
+                        </header>
+                    </Column>
+                    <Column id="tbl01-col03">
+                        <header>
+                            <Text id="ctxt03" text="Planner Group."/>
+                        </header>
+                    </Column>
+                    <Column id="tbl01-col04">
+                        <header>
+                            <Text id="ctxt04" text="Description"/>
+                        </header>
+                    </Column>
+                    <Column id="tbl01-col05">
+                        <header>
+                            <Text id="ctxt05" text="Checklist No"/>
+                        </header>
+                    </Column>
+                    <Column id="tbl01-col06">
+                        <header>
+                            <Text id="ctxt06" text="Checklist Status"/>
+                        </header>
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem id="cli001">
+                        <cells>
+                            <Text id="itxt001" text="{pmOrderService>aufnr}"/>
+                            <Text id="itxt002" text="{pmOrderService>auart}"/>
+                            <Text id="itxt003" text="{pmOrderService>ingpr}"/>
+                            <Text id="itxt004" text="{pmOrderService>ktext}"/>
+                            <Text id="itxt005" text="{pmOrderService>chkno}"/>
+                            <Text id="itxt006" text="{pmOrderService>cstat}"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>

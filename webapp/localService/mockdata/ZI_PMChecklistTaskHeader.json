@@ -1,0 +1,38 @@
+[
+    {
+        "cghid": "1000000002",
+        "cgname": "Coupler",
+        "cgdesc": "Coupler Inspection",
+        "plnty": "",
+        "plnnr": "",
+        "plnal": "",
+        "crea_date_time": null,
+        "crea_uname": "",
+        "lchg_date_time": null,
+        "lchg_uname": ""
+    },
+    {
+        "cghid": "1000000003",
+        "cgname": "Door System",
+        "cgdesc": "Door System",
+        "plnty": "",
+        "plnnr": "",
+        "plnal": "",
+        "crea_date_time": null,
+        "crea_uname": "",
+        "lchg_date_time": null,
+        "lchg_uname": ""
+    },
+    {
+        "cghid": "1000000001",
+        "cgname": "Carbody",
+        "cgdesc": "Carbody Inspection",
+        "plnty": "A",
+        "plnnr": "CARBODY1",
+        "plnal": "1",
+        "crea_date_time": null,
+        "crea_uname": "",
+        "lchg_date_time": null,
+        "lchg_uname": ""
+    }
+]
