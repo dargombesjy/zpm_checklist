@@ -10,6 +10,7 @@ sap.ui.define([
                 showTitle: { type: "boolean", defaultValue: false }
             },
             aggregations: {
+                headerToolbar: { type: "sap.m.Toolbar", multiple: false },
                 column: { type: "sap.m.HBox", multiple: false },
                 // columns: { type: "zpmchecklist.control.Column02", multiple: true, singularName: "column" },
                 rows: { type: "sap.m.HBox", multiple: true, singularName: "row" }
@@ -20,13 +21,14 @@ sap.ui.define([
             Control.prototype.init.apply(this, arguments);
         },
         renderer: function (oRM, oControl) {
-            oRM.write("<div class='bordered'>");
-            // oRM.writeControlData(oControl);
-            // // oRM.addClass("table-container");
-            // // oRM.writeClasses();
-            // oRM.write(">");
+            oRM.write("<div class='bordered'");
+            oRM.writeControlData(oControl);
+            oRM.writeClasses();
+            oRM.write(">");
 
-            if (oControl.getShowTitle()) {
+            if (oControl.getHeaderToolbar()) {
+                oRM.renderControl(oControl.getHeaderToolbar());
+            } else if (oControl.getShowTitle()) {
                 oRM.write("<div class='header-row bordered sapUiTinyMarginTopBottom'>");
                 oRM.writeEscaped(oControl.getTitle());
                 oRM.write("</div>");

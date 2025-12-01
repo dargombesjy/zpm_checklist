@@ -11,6 +11,7 @@
                 <ToolbarSpacer id="detail-spacer01" />
                 <Button id="editButton" text="Edit" type="Transparent" press="onEdit" />
                 <Button id="saveButton" text="Save" type="Transparent" press="onSave" visible="false" />
+                <Button id="cancelButton" text="Cancel" type="Transparent" press="onCancel" visible="false" />
                 <Button id="postButton" text="Approve" type="Transparent" press="callPostChecklist" visible="true" />
             </OverflowToolbar>
         </customHeader>

@@ -32,6 +32,8 @@ sap.ui.define([
                     });
                 });
                 this._oChecklistHeader = oDataHeader;
+                const oChecklistHeaderModel = models.createJSONModel(oDataHeader);
+                this.getView().setModel(oChecklistHeaderModel, "oChecklistHeaderModel");
 
             } catch (error) {
                 console.error(error);
@@ -76,7 +78,7 @@ sap.ui.define([
 
 
                 oDataItems.sort(function (a, b) {
-                    return a.aplzl - b.aplzl;
+                    return a.vornr - b.vornr;
                 });
 
                 this._buildChangeModel(oDataItems);
@@ -127,11 +129,17 @@ sap.ui.define([
             oPage.addContent(oChecklistContainer);
         },
 
+        onEdit: function () {
+            this.byId("editButton").setVisible(false);
+            this.byId("saveButton").setVisible(true);
+            this.byId("cancelButton").setVisible(true);
+        },
+
         onSave: function () {
             this.byId("saveButton").setVisible(false);
             this.byId("cancelButton").setVisible(false);
             this.byId("editButton").setVisible(true);
-            this._createChecklist();
+            this._changeChecklist();
         },
 
         onCancel: function () {
@@ -141,17 +149,11 @@ sap.ui.define([
         },
 
         _changeChecklist: function () {
-            // Implement checklist creation logic here
-            const oModel = this.getOwnerComponent().getModel();
-            const oNewChecklist = {
-                // chkno: "100000000001",
-                aufnr: "0060000013",
-                chkty: "A",
-                cstat: "N",
-                cvhid: this._oChecklistHeader.cvhid,
-                IsActiveEntity: true
-            };
-            oNewChecklist.to_Item = [];
+            // Implement checklist change logic here
+            const oChecklistModel = this.getView().getModel("oChecklistModel");
+            const oChangedChecklist = oChecklistModel.getData();
+
+            oChangedChecklist.to_Item = [];
 
             let itemNumber = 0;
             let itemLength = 4;
@@ -178,7 +180,7 @@ sap.ui.define([
                 }
             }
 
-            oModel.create("/ZC_PMChecklistHeader", oNewChecklist, {
+            oModel.change("/ZC_PMChecklistHeader", oNewChecklist, {
                 success: function (oData) {
                     sap.m.MessageToast.show("Checklist created successfully!");
                 },
@@ -191,9 +193,11 @@ sap.ui.define([
         _onRouteMatched: function (oEvent) {
             const oArgs = oEvent.getParameter("arguments");
             const oViewData = {
-                list: [{ key: "Y", text: "Yes" }, { key: "N", text: "No" }],
+                list: [{ key: "Y", text: "Y" }, { key: "N", text: "N" }],
                 aufnr: oArgs.aufnr,
-                isNew: false
+                isNew: false,
+                allowEdit: false,
+                viewMode: "display"
             };
             const oJsonModel = models.createJSONModelOne(oViewData);
             this.getView().setModel(oJsonModel, "oViewModel");
@@ -215,11 +219,12 @@ sap.ui.define([
             let oChecklistModel = models.createJSONModel(this._oChecklistData);
             this.getView().setModel(oChecklistModel, "oChecklistModel");
 
-            const aItemCopy = oDataItems.slice();
+            // const aItemCopy = oDataItems.slice();
+            // oData.sort(function (a, b) { return a.vornr - b.vornr });
             let iItemPos = 0;
             for (let taskData of oDataItems) {
                 // start build json model for rows
-                if (taskData.sumnr != '00000000') continue;
+                // if (taskData.sumnr != '00000000') continue;
                 iItemPos += 1;
                 let oRowObject = {
                     aufpl: taskData.aufpl,
@@ -242,24 +247,26 @@ sap.ui.define([
                         });
                         oRowObject.values[cellKey] = oVal == undefined ? "" : oVal.atwrt;
                     } else if (colData.col_type == "V") {
-                        let sFound = false;
-                        for (let subOp of aItemCopy) {
-                            if (subOp.sumnr != taskData.aplzl) continue;
-                            if (subOp.cl_action == colData.col_name) {
-                                sFound = true;
-                                break;
-                            }
-                        }
+                        // let sFound = false;
+                        // for (let subOp of aItemCopy) {
+                        //     if (subOp.sumnr != taskData.aplzl) continue;
+                        //     if (subOp.cl_action == colData.col_name) {
+                        //         sFound = true;
+                        //         break;
+                        //     }
+                        // }
+                        let aVals = taskData.column_list ? taskData.column_list.split(",").map(function (item) { return item.trim() }) : [];
+                        let sFound = aVals.includes(colData.col_name);
 
                         if (taskData.ref_mpoint) {
                             if (!skipForMpoint) {
-                                const aPoint = ["mpoint", "atawe", "upper_limit", "lower_limit"];
-                                for (let index = 0; index < aPoint.length; index++) {
-                                    const el = aPoint[index];
+                                // const aPoint = ["mpoint", "atawe", "lower_limit", "upper_limit"];
+                                for (let index = 0; index < aVals.length; index++) {
+                                    const elPoint = aVals[index];
                                     let oVal = this._oChecklistData.to_Item.results.find(function (el) {
-                                        return el.keyname == cellKey;
+                                        return el.keyname == elPoint;
                                     });
-                                    oRowObject.values[cellKey] = oVal == undefined ? "" : oVal.atwrt;
+                                    oRowObject.values[elPoint] = oVal == undefined ? "" : oVal.atwrt;
                                     skipForMpoint = true;
                                 }
                             }

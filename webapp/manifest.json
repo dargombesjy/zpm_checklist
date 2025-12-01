@@ -25,6 +25,13 @@
           "odataVersion": "2.0"
         }
       },
+      "partnerVH": {
+        "uri": "/sap/opu/odata/sap/ZC_PM0001_PARTNERS_VH_CDS/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0"
+        }
+      },
       "pmOrderService": {
         "uri": "/sap/opu/odata/sap/ZC_PM0001_ORDERLIST_CDS/",
         "type": "OData",
@@ -75,6 +82,10 @@
         "settings": {
           "bundleName": "zpmchecklist.i18n.i18n"
         }
+      },
+      "partnerVH": {
+        "dataSource": "partnerVH",
+        "preload": true
       },
       "pmOrderService": {
         "dataSource": "pmOrderService",

@@ -36,6 +36,8 @@
                     path: 'pmOrderService>/ZC_PM0001_Orderlist',
                     sorter: { path: 'aufnr', descending: false }
                 }"
+                alternateRowColors="true"
+                growing="true"
                 width="auto"
                 mode="SingleSelectLeft"
                 selectionChange="onTableSelectionChange">
