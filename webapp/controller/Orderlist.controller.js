@@ -19,13 +19,16 @@ sap.ui.define([
 
 			const oViewParam = {
 				createMode: false,
-				displayMode: true,
-				changeMode: false,
+				displayMode: false,
+				// changeMode: false,
 				aufnr: "",
 				chkno: ""
 			}
 			const oDisplayModel = models.createJSONModel(oViewParam);
 			this.getView().setModel(oDisplayModel, "displayModel");
+
+			var oRouter = this.getOwnerComponent().getRouter();
+			oRouter.getRoute("main").attachMatched(this._onRouteMatched, this);
 		},
 
 		onExit: function () {
@@ -68,17 +71,18 @@ sap.ui.define([
 				oModel.setProperty("/chkno", oOrder.chkno);
 				if (!oOrder.chkno) {
 					oModel.setProperty("/createMode", true);
-					oModel.setProperty("/changeMode", false);
+					// oModel.setProperty("/changeMode", false);
 					oModel.setProperty("/displayMode", false);
 				} else {
 					oModel.setProperty("/createMode", false);
-					if (oOrder.stat = 'I0002') {
-						oModel.setProperty("/changeMode", true);
-						oModel.setProperty("/displayMode", false);
-					} else {
-						oModel.setProperty("/changeMode", false);
-						oModel.setProperty("/displayMode", true);
-					}
+					oModel.setProperty("/displayMode", true);
+					// if (oOrder.stat = 'I0002') {
+					// 	oModel.setProperty("/changeMode", true);
+					// 	oModel.setProperty("/displayMode", false);
+					// } else {
+					// 	oModel.setProperty("/changeMode", false);
+					// 	oModel.setProperty("/displayMode", true);
+					// }
 				}
 			}
 		},
@@ -155,7 +159,29 @@ sap.ui.define([
 
 		_updateLabelsAndTable: function () {
 			this.oTable.setShowOverlay(true);
-		}
+		},
 
+		_onRouteMatched: function (oEvent) {
+			// You can handle route parameters here if needed
+			// var oArgs = oEvent.getParameter("arguments");
+			// var sAufnr = oArgs.aufnr;
+			// You can use sAufnr to set initial filter values or other logic
+			const oModel = this.getView().getModel("pmOrderService");
+			if (oModel) {
+				if (oModel.getMetadata().getName() === "sap.ui.model.odata.v2.ODataModel") {
+					oModel.refresh(true);
+				}
+			}
+
+			const displayModel = this.getView().getModel("displayModel");
+			displayModel.setProperty("/createMode", false);
+			displayModel.setProperty("/displayMode", false);
+			// displayModel.setProperty("/changeMode", false);
+			displayModel.setProperty("/aufnr", "");
+			displayModel.setProperty("/chkno", "");
+
+			const oTable = this.byId("ordertable01");
+			oTable.removeSelections();
+		}
 	});
 });

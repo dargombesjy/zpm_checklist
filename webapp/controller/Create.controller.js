@@ -6,9 +6,8 @@ sap.ui.define([
 
     return BaseController.extend("zpmchecklist.controller.Create", {
         onInit: function () {
-            this.onFileChange = this.onFileChange.bind(this);
-            this.onAddLeaderPress = this.onAddLeaderPress.bind(this);
-
+            // this.onFileChange = this.onFileChange.bind(this);
+            // this.onAddLeaderPress = this.onAddLeaderPress.bind(this);
             var oRouter = this.getOwnerComponent().getRouter();
             oRouter.getRoute("create").attachMatched(this._onRouteMatched, this);
         },
@@ -121,94 +120,152 @@ sap.ui.define([
             this.byId("editButton").setVisible(true);
         },
 
+        // Implement checklist creation logic here
         _createChecklist: function () {
-            // Implement checklist creation logic here
             const oModel = this.getOwnerComponent().getModel();
             const oView = this.getView();
             const oViewModel = oView.getModel("oViewModel");
+            const oChecklistModel = oView.getModel("oChecklistModel");
+
+            // var oDateFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
+            //     pattern: "YYYYMMDDHHmmss"
+            // });
+            // var sSapTimestamp = oDateFormat.format(oDate);
+            // // sSapTimestamp will be something like "20251203084800"
 
             const oNewChecklist = {
                 aufnr: oViewModel.getProperty("/aufnr"),
                 chkty: "A",
                 cstat: "N",
                 cvhid: this._oChecklistHeader.cvhid,
+                gstri: oChecklistModel.getProperty("gstri"),
+                gltri: oChecklistModel.getProperty("gltri"),
+                // loekz: oChecklistModel.loekz,
                 IsActiveEntity: true
             };
             oNewChecklist.to_Item = [];
             oNewChecklist.to_Partner = [];
+            oNewChecklist.to_Approver = [];
             oNewChecklist.to_Attachment = [];
 
-            let itemNumber = 0;
-            // let itemLength = 4;
+            let itemPos = 0;
             for (let rowModel of this._aRowModels) {
                 const sRowModelName = rowModel.aufpl + "_" + rowModel.aplzl;
                 const oRowModel = this.getView().getModel(sRowModelName);
                 const oRowData = oRowModel.getData();
 
-                itemNumber += 1;
+                itemPos += 1;
+                let itemNumber = 0;
                 for (let val in oRowData.values) {
+                    itemNumber += 1;
                     const oNewItem = {
                         aufpl: oRowData.aufpl,
                         aplzl: oRowData.aplzl,
-                        // itemno: itemNumber,  //.toString().padStart(itemLength, '0'),
+                        itemno: itemNumber.toString().padStart(6, '0'),
+                        // itempos: itemPos.toString().padStart(6, '0'),
                         ref_mpoint: oRowData.ref_mpoint,
                         key_type: oRowData.key_type,
                         val_type: oRowData.val_type,
                         IsActiveEntity: true
                     };
                     oNewItem.keyname = val;
-                    oNewItem.atwrt = oRowData.values[val];
-                    // oNewItem.atawe = oRowData.values[val];
-                    // oNewItem.atflv = oRowData.values[val];
-                    // oNewItem.remark = oRowData.values["remark"];
+                    oNewItem.atwrt = oRowData.values[val].sval;
                     oNewChecklist.to_Item.push(oNewItem);
                 }
             }
 
-            const oChecklistModel = oView.getModel("oChecklistModel");
+            let itemNumber = 0;
             for (let oPartner of oChecklistModel.getProperty("/to_Partner/results")) {
-                if (oPartner.bp_name) {
-                    const oNewPartner = {
-                        aufnr: oPartner.aufnr,
-                        // itemno: oPartner.itemno,
-                        bp_name: oPartner.bp_name,
-                        bp_func: oPartner.bp_func,
-                        // keydate: oPartner.keydate,
-                        // start_time: oPartner.start_time,
-                        // finish_time: oPartner.finish_time,
-                        IsActiveEntity: true
-                    };
-                    oNewChecklist.to_Partner.push(oNewPartner);
-                }
+                itemNumber += 1;
+                // if (oPartner.bp_name) {
+                const oNewPartner = {
+                    aufnr: oPartner.aufnr,
+                    itemno: itemNumber.toString().padStart(6, '0'),
+                    bp_id: oPartner.bp_id,
+                    bp_name: oPartner.bp_name,
+                    bp_func: oPartner.bp_func,
+                    // keydate: oPartner.keydate,
+                    // start_time: oPartner.start_time,
+                    // finish_time: oPartner.finish_time,
+                    IsActiveEntity: true
+                };
+                oNewChecklist.to_Partner.push(oNewPartner);
+                // }
+            }
+            if (itemNumber <= 0) {
+                sap.m.MessageBox.show("Setidaknya harus ada 1 Leader", {
+                    icon: sap.m.MessageBox.Icon.ERROR,
+                    title: "Validation Error",
+                    actions: [sap.m.MessageBox.Action.OK],
+                    // onClose: function () {
+                    //     // that.onBack();
+                    // }
+                });
+                return;
             }
 
+            itemNumber = 0;
+            for (let oApprover of oChecklistModel.getProperty("/to_Approver/results")) {
+                itemNumber += 1;
+                // if (oApprover.bp_name) {
+                const oNewApprover = {
+                    aufnr: oApprover.aufnr,
+                    itemno: itemNumber.toString().padStart(6, '0'),
+                    bp_id: oApprover.bp_id,
+                    bp_name: oApprover.bp_name,
+                    bp_func: oApprover.bp_func,
+                    IsActiveEntity: true
+                };
+                oNewChecklist.to_Approver.push(oNewApprover);
+                // }
+            }
+            if (itemNumber <= 0) {
+                sap.m.MessageBox.show("Approver tidak boleh kosong", {
+                    icon: sap.m.MessageBox.Icon.ERROR,
+                    title: "Validation Error",
+                    actions: [sap.m.MessageBox.Action.OK],
+                    // onClose: function () {
+                    //     // that.onBack();
+                    // }
+                });
+                return;
+            }
+
+            itemNumber = 0;
             for (let oAttachment of oChecklistModel.getProperty("/to_Attachment/results")) {
-                if (oAttachment.att_url) {
-                    const oNewAttachment = {
-                        aufnr: oAttachment.aufnr,
-                        // itemno: oAttachment.itemno,
-                        att_type: oAttachment.att_type,
-                        obj_type: oAttachment.obj_type,
-                        att_url: oAttachment.att_url,
-                        att_bin: oAttachment.att_bin,
-                        IsActiveEntity: true
-                    };
-                    oNewChecklist.to_Attachment.push(oNewAttachment);
-                }
+                itemNumber += 1;
+                // if (oAttachment.att_url) {
+                const oNewAttachment = {
+                    aufnr: oAttachment.aufnr,
+                    itemno: itemNumber.toString().padStart(6, '0'),
+                    att_type: oAttachment.att_type,
+                    obj_type: oAttachment.obj_type,
+                    att_url: oAttachment.att_url,
+                    att_bin: oAttachment.att_bin,
+                    IsActiveEntity: true
+                };
+                oNewChecklist.to_Attachment.push(oNewAttachment);
+                // }
             }
 
             const that = this;
             oModel.create("/ZC_PMChecklistHeader", oNewChecklist, {
                 success: function (oData) {
                     that.getView().getModel("oViewModel").setProperty("/isNew", false);
-                    sap.m.MessageBox.show("Checklist created successfully!");
-                    that.onBack();
+                    sap.m.MessageBox.show("Checklist created successfully!", {
+                        icon: sap.m.MessageBox.Icon.SUCCESS,
+                        title: "Success",
+                        actions: [sap.m.MessageBox.Action.OK],
+                        onClose: function () {
+                            that.onBack();
+                        }
+                    });
+                    // that.onBack();
                 },
                 error: function (oError) {
                     sap.m.MessageBox.error("Error creating checklist.");
                 }
             });
-
         },
 
         _onRouteMatched: function (oEvent) {
@@ -228,59 +285,46 @@ sap.ui.define([
                 chkty: "A",
                 cstat: "N",
                 cvhid: this._oChecklistHeader.cvhid,
+                gstri: "",
+                gltri: "",
+                loekz: "",
                 IsActiveEntity: true,
                 to_Item: [],
                 to_Partner: {
-                    results: [
-                        // {
-                        //     chkid: "",
-                        //     chkno: "",
-                        //     aufnr: oViewData.aufnr,
-                        //     itemno: "1",
-                        //     bp_name: "Fulan bin Fulan",
-                        //     bp_func: "Function 1",
-                        //     bp_position: "leader",
-                        //     keydate: "",
-                        //     start_time: "",
-                        //     finish_time: ""
-                        // }
-                    ],
+                    results: [],
+                },
+                to_Approver: {
+                    results: [],
                 },
                 to_Attachment: {
-                    results: [
-                        {
-                            chkid: "",
-                            chkno: "",
-                            aufnr: oViewData.aufnr,
-                            itemno: "1",
-                            att_type: "",
-                            obj_type: "BUS2007",  //PMAUFK
-                            att_url: "",
-                            att_bin: ""
-                        },
-                        {
-                            chkid: "",
-                            chkno: "",
-                            aufnr: oViewData.aufnr,
-                            itemno: "2",
-                            att_type: "",
-                            obj_type: "BUS2007",  //PMAUFK
-                            att_url: "",
-                            att_bin: ""
-                        },
-                        {
-                            chkid: "",
-                            chkno: "",
-                            aufnr: oViewData.aufnr,
-                            itemno: "2",
-                            att_type: "",
-                            obj_type: "BUS2007",   //PMAUFK
-                            att_url: "",
-                            att_bin: ""
-                        }
-                    ]
+                    results: []
                 }
             }
+
+            for (let i = 0; i < 3; i++) {
+                oChecklistData.to_Attachment.results.push({
+                    chkid: "",
+                    chkno: "",
+                    aufnr: oViewData.aufnr,
+                    itemno: i.toString(),
+                    att_type: "",
+                    obj_type: "BUS2007",   //PMAUFK
+                    att_url: "",
+                    att_bin: ""
+                });
+            }
+
+            for (let i = 0; i < 3; i++) {
+                oChecklistData.to_Approver.results.push({
+                    aufnr: oViewData.aufnr,
+                    itemno: i.toString(),
+                    bp_id: "",
+                    bp_name: "",
+                    bp_func: "",
+                    bp_position: ""
+                });
+            }
+
             const oChecklistModel = models.createJSONModel(oChecklistData);
             this.getView().setModel(oChecklistModel, "oChecklistModel");
 
@@ -294,7 +338,7 @@ sap.ui.define([
             if (oCreatePage) {
                 oCreatePage.destroyContent();
             }
-            oRouter.navTo("main");
+            oRouter.navTo("main", {}, true);
         },
 
         _buildCreateModel: function (oDataItems) {
@@ -303,12 +347,12 @@ sap.ui.define([
             let iItemPos = 0;
             for (let taskData of oDataItems) {
                 // start build json model for rows
-                // if (taskData.sumnr != '00000000') continue;
+                if (taskData.steus == 'INT1') continue;
                 iItemPos += 1;
                 let oRowObject = {
                     aufpl: taskData.aufpl,
                     aplzl: taskData.aplzl,
-                    item_pos: iItemPos,
+                    itempos: iItemPos,
                     sumnr: taskData.sumnr,
                     ref_mpoint: taskData.ref_mpoint,
                     values: {}
@@ -321,17 +365,14 @@ sap.ui.define([
 
                     let cellKey = colData.col_name;
                     if (colData.col_type == 'A') {
-                        oRowObject.values[cellKey] = "";
+                        // oRowObject.values[cellKey] = "";
+                        oRowObject.values[cellKey] = {
+                            sval: "",
+                            chitid: "",
+                            itemno: ""
+                        };
                     } else if (colData.col_type == "V") {
-                        // let sFound = false;
-                        // for (let subOp of aItemCopy) {
-                        //     if (subOp.sumnr != taskData.aplzl) continue;
-                        //     if (subOp.cl_action == colData.col_name) {
-                        //         sFound = true;
-                        //         break;
-                        //     }
-                        // }
-                        let aVals = taskData.column_list ? taskData.column_list.split(",").map(function(item) {return item.trim()}) : [];
+                        let aVals = taskData.column_list ? taskData.column_list.split(",").map(function (item) { return item.trim() }) : [];
                         let sFound = aVals.includes(colData.col_name);
 
                         if (taskData.ref_mpoint) {
@@ -339,13 +380,23 @@ sap.ui.define([
                                 // const aPoint = ["mpoint", "atawe", "upper_limit", "lower_limit"];
                                 for (let index = 0; index < aVals.length; index++) {
                                     const el = aVals[index];
-                                    oRowObject.values[el] = taskData[el] || "";
+                                    // oRowObject.values[el] = taskData[el] || "";
+                                    oRowObject.values[el] = {
+                                        sval: taskData[el] || "",
+                                        chitid: "",
+                                        itemno: ""
+                                    };
                                     skipForMpoint = true;
                                 }
                             }
                         }
                         if (!skipForMpoint && sFound) {
-                            oRowObject.values[cellKey] = "";
+                            // oRowObject.values[cellKey] = "";
+                            oRowObject.values[cellKey] = {
+                                sval: "",
+                                chitid: "",
+                                itemno: ""
+                            };
                         }
                     }
                 }

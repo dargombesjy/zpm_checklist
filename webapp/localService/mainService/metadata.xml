@@ -1,30 +1,113 @@
-<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="1.0"
-    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+This XML file does not appear to have any style information associated with it. The document tree is shown below.
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
     xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
-    xmlns:sap="http://www.sap.com/Protocols/SAPData">
-    <edmx:Reference Uri="https://mrtwd1wd01.hec.jakartamrt.co.id:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='')/$value"
-        xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+    <edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Uri="http://mrtme1ap01.hec.jakartamrt.co.id:8011/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='')/$value">
         <edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="SAP__CodeList"/>
     </edmx:Reference>
-    <edmx:Reference Uri="https://mrtwd1wd01.hec.jakartamrt.co.id:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value"
-        xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Uri="http://mrtme1ap01.hec.jakartamrt.co.id:8011/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value">
         <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
         <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="SAP__common"/>
     </edmx:Reference>
-    <edmx:Reference Uri="https://mrtwd1wd01.hec.jakartamrt.co.id:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CORE',Version='0001',SAP__Origin='')/$value"
-        xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Uri="http://mrtme1ap01.hec.jakartamrt.co.id:8011/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CORE',Version='0001',SAP__Origin='')/$value">
         <edmx:Include Namespace="Org.OData.Core.V1" Alias="SAP__core"/>
     </edmx:Reference>
-    <edmx:Reference Uri="https://mrtwd1wd01.hec.jakartamrt.co.id:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PDF',Version='0001',SAP__Origin='')/$value"
-        xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Uri="http://mrtme1ap01.hec.jakartamrt.co.id:8011/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PDF',Version='0001',SAP__Origin='')/$value">
         <edmx:Include Namespace="com.sap.vocabularies.PDF.v1" Alias="SAP__PDF"/>
     </edmx:Reference>
     <edmx:DataServices m:DataServiceVersion="2.0">
-        <Schema Namespace="ZPM_CHECKLIST001_SRV" xml:lang="en" sap:schema-version="1"
-            xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
-            <Annotation Term="Core.SchemaVersion" String="1.0.0"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+        <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZPM_CHECKLIST001_SRV" xml:lang="en" sap:schema-version="1">
+            <Annotation xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>
+            <EntityType Name="ViewHeader" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="aufnr"/>
+                    <PropertyRef Name="ingpr"/>
+                </Key>
+                <Property Name="arbpl" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Work Center" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ilart" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="MaintActivType" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="innam" Type="Edm.String" Nullable="false" MaxLength="18" sap:unicode="false" sap:label="PM PlGrp name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="aufnr" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="Order" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ktext" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="cvhid" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Text 10" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="tplnr" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Functional loc." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="eqktx" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ingpr" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Planner Group" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="cvname" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="gstri" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Actual start" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="cvtitle" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="gltri" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Actual finish" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="equnr" Type="Edm.String" Nullable="false" MaxLength="18" sap:unicode="false" sap:label="Equipment" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Tplma" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Functional Loc." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Cktext" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="cvdesc" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="gstrp" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Bas. start date" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="IsApprover" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="IS_APPROVER" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="gltrp" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Basic fin. date" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="pltxt" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="toColumn" Relationship="ZPM_CHECKLIST001_SRV.headerToColumn" FromRole="FromRole_headerToColumn" ToRole="ToRole_headerToColumn"/>
+            </EntityType>
+            <EntityType Name="ViewColumn" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ingpr"/>
+                    <PropertyRef Name="indx"/>
+                </Key>
+                <Property Name="ingpr" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Planner Group" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="col_shrink" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="COL_SHRINK" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="indx" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="Int." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="col_pos" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="Int." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="col_name" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="col_label" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="col_type" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="COL_TYPE" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="col_span" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="Int." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="col_basis" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="COL_BASIS" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="col_grow" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="COL_GROW" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="has_subcol" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="HAS_SUBCOL" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="is_subcol" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="IS_SUBCOL" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="is_hidden" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="IS_HIDDEN" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="ViewItem" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="aufnr"/>
+                    <PropertyRef Name="aufpl"/>
+                    <PropertyRef Name="aplzl"/>
+                </Key>
+                <Property Name="aufnr" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="Order" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="vornr" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Activity" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="aufpl" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Plan no.f.oper." sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="steus" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Control Key" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="aplzl" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Counter" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="itemno" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Item" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="sumnr" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Sup. Op. node" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="column_list" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ingpr" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Planner Group" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="category" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="sub_category" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="cl_action" Type="Edm.String" Nullable="false" MaxLength="1024" sap:unicode="false" sap:label="Text 1024" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ref_image" Type="Edm.String" Nullable="false" MaxLength="1024" sap:unicode="false" sap:label="Text 1024" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="cl_method" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Text" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ref_mpoint" Type="Edm.String" Nullable="false" MaxLength="7" sap:unicode="false" sap:label="Std Text Key" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="atawe" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Int. meas. unit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
+                <Property Name="lower_limit" Type="Edm.String" Nullable="false" MaxLength="22" sap:unicode="false" sap:label="LoMRLimit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="upper_limit" Type="Edm.String" Nullable="false" MaxLength="22" sap:unicode="false" sap:label="UpMRLimit" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ValType" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="VAL_TYPE" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SrcHelp" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="SRC_HELP" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="Attachment" m:HasStream="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="document_id"/>
+                    <PropertyRef Name="button"/>
+                </Key>
+                <Property Name="object_id" Type="Edm.String" Nullable="false" MaxLength="70" sap:unicode="false" sap:label="Instance ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="object_type" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Object Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="object_cat" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Object Category" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="document_id" Type="Edm.String" Nullable="false" MaxLength="36" sap:unicode="false" sap:label="Document Id" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="file_name" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="File Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="mime_type" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="MIME type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="creator" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="Created" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="creator_name" Type="Edm.String" Nullable="false" MaxLength="60" sap:unicode="false" sap:label="Created By" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="created_on" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Time Stamp" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="button" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Character Field Length = 10" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
             <EntityType Name="I_DraftAdministrativeDataType" sap:label="Draft Administrative Data" sap:content-version="1">
                 <Key>
                     <PropertyRef Name="DraftUUID"/>
@@ -47,12 +130,73 @@
                 <Property Name="LastChangedByUserDescription" Type="Edm.String" MaxLength="80" sap:label="Draft Last Changed By (Description)"/>
                 <Property Name="InProcessByUserDescription" Type="Edm.String" MaxLength="80" sap:label="Draft In Process By (Description)"/>
             </EntityType>
+            <EntityType Name="ZC_PMChecklistApproverType" sap:label="Consumption Checklist Approver" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="chapid"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="Preparation_ac" Type="Edm.Boolean" sap:label="Dyn. Action Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Validation_ac" Type="Edm.Boolean" sap:label="Dyn. Action Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="chapid" Type="Edm.Guid" Nullable="false" sap:label="Node Key" sap:quickinfo="EPM: Generic Node Key"/>
+                <Property Name="chkid" Type="Edm.Guid" sap:label="Node Key" sap:quickinfo="EPM: Generic Node Key"/>
+                <Property Name="chkno" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase"/>
+                <Property Name="aufnr" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="Order" sap:quickinfo="Order Number"/>
+                <Property Name="itemno" Type="Edm.String" MaxLength="6" sap:display-format="NonNegative" sap:label="Item" sap:quickinfo="Sales Document Item"/>
+                <Property Name="bp_id" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
+                <Property Name="bp_name" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 70 case insensitive"/>
+                <Property Name="bp_func" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 70 case insensitive"/>
+                <Property Name="bp_position" Type="Edm.String" MaxLength="20" sap:label="Text 20" sap:quickinfo="Data element char 20 case insensitive"/>
+                <Property Name="crea_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
+                <Property Name="crea_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
+                <Property Name="lchg_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
+                <Property Name="lchg_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
+                <Property Name="ActiveUUID" Type="Edm.Guid" sap:label="Key"/>
+                <Property Name="DraftEntityCreationDateTime" Type="Edm.DateTimeOffset" Precision="7" sap:label="Draft Created On"/>
+                <Property Name="DraftEntityLastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7" sap:label="Draft Last Changed On"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" sap:display-format="UpperCase" sap:label="Has active" sap:sortable="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" sap:display-format="UpperCase" sap:label="Has Draft" sap:sortable="false"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" sap:display-format="UpperCase" sap:label="Is active" sap:sortable="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Relationship="ZPM_CHECKLIST001_SRV.assoc_1CFDAF19188F6D9B3ADD9634A351BD51" FromRole="FromRole_assoc_1CFDAF19188F6D9B3ADD9634A351BD51" ToRole="ToRole_assoc_1CFDAF19188F6D9B3ADD9634A351BD51"/>
+                <NavigationProperty Name="SiblingEntity" Relationship="ZPM_CHECKLIST001_SRV.assoc_4CD2429392A1C066A0B9571C3BF1CD67" FromRole="FromRole_assoc_4CD2429392A1C066A0B9571C3BF1CD67" ToRole="ToRole_assoc_4CD2429392A1C066A0B9571C3BF1CD67"/>
+            </EntityType>
+            <EntityType Name="ZC_PMChecklistAttachment_TPType" sap:label="Consumption View Checklist Attachment" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="chatid"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="Preparation_ac" Type="Edm.Boolean" sap:label="Dyn. Action Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Validation_ac" Type="Edm.Boolean" sap:label="Dyn. Action Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="chatid" Type="Edm.Guid" Nullable="false" sap:label="Node Key" sap:quickinfo="EPM: Generic Node Key"/>
+                <Property Name="chkid" Type="Edm.Guid" sap:label="Node Key" sap:quickinfo="EPM: Generic Node Key"/>
+                <Property Name="chitid" Type="Edm.Guid" sap:label="Node Key" sap:quickinfo="EPM: Generic Node Key"/>
+                <Property Name="chkno" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase"/>
+                <Property Name="aufnr" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="Order" sap:quickinfo="Order Number"/>
+                <Property Name="itemno" Type="Edm.String" MaxLength="6" sap:display-format="NonNegative" sap:label="Item" sap:quickinfo="Sales Document Item"/>
+                <Property Name="att_type" Type="Edm.String" MaxLength="10" sap:label="Text 10" sap:quickinfo="Data element char 10 case insensitive"/>
+                <Property Name="obj_type" Type="Edm.String" MaxLength="20" sap:label="Text 20" sap:quickinfo="Data element char 20 case insensitive"/>
+                <Property Name="att_name" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 70 case insensitive"/>
+                <Property Name="att_url" Type="Edm.String" sap:label="String" sap:quickinfo="Custom data element of type string"/>
+                <Property Name="att_bin" Type="Edm.Binary" sap:label="XSTRING" sap:quickinfo="Data Element XSTRING"/>
+                <Property Name="crea_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
+                <Property Name="crea_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
+                <Property Name="lchg_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
+                <Property Name="lchg_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
+                <Property Name="ActiveUUID" Type="Edm.Guid" sap:label="Key"/>
+                <Property Name="DraftEntityCreationDateTime" Type="Edm.DateTimeOffset" Precision="7" sap:label="Draft Created On"/>
+                <Property Name="DraftEntityLastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7" sap:label="Draft Last Changed On"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" sap:display-format="UpperCase" sap:label="Has active" sap:sortable="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" sap:display-format="UpperCase" sap:label="Has Draft" sap:sortable="false"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" sap:display-format="UpperCase" sap:label="Is active" sap:sortable="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Relationship="ZPM_CHECKLIST001_SRV.assoc_B2E2E2539C55BF48115FF0E96E515218" FromRole="FromRole_assoc_B2E2E2539C55BF48115FF0E96E515218" ToRole="ToRole_assoc_B2E2E2539C55BF48115FF0E96E515218"/>
+                <NavigationProperty Name="SiblingEntity" Relationship="ZPM_CHECKLIST001_SRV.assoc_10D80990E5A915219125E18CCAE1C367" FromRole="FromRole_assoc_10D80990E5A915219125E18CCAE1C367" ToRole="ToRole_assoc_10D80990E5A915219125E18CCAE1C367"/>
+            </EntityType>
             <EntityType Name="ZC_PMChecklistHeaderType" sap:label="Consm. View PM Checklist Header data" sap:content-version="1">
                 <Key>
                     <PropertyRef Name="chkid"/>
                     <PropertyRef Name="IsActiveEntity"/>
                 </Key>
                 <Property Name="Activation_ac" Type="Edm.Boolean" sap:label="Dyn. Action Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Approve_post_ac" Type="Edm.Boolean" sap:label="Dyn. Action Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="Edit_ac" Type="Edm.Boolean" sap:label="Dyn. Action Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="Preparation_ac" Type="Edm.Boolean" sap:label="Dyn. Action Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="Validation_ac" Type="Edm.Boolean" sap:label="Dyn. Action Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
@@ -61,7 +205,11 @@
                 <Property Name="aufnr" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="Order" sap:quickinfo="Order Number"/>
                 <Property Name="chkty" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase"/>
                 <Property Name="cstat" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"/>
-                <Property Name="cvhid" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
+                <Property Name="cvhid" Type="Edm.String" MaxLength="10" sap:label="Text 10" sap:quickinfo="Data element char 10 case insensitive"/>
+                <Property Name="gstri" Type="Edm.DateTimeOffset" Precision="0" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Short Form (YYYYMMDDhhmmss)"/>
+                <Property Name="gltri" Type="Edm.DateTimeOffset" Precision="0" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Short Form (YYYYMMDDhhmmss)"/>
+                <Property Name="confirmed" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase"/>
+                <Property Name="loekz" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase" sap:label="Deletion Indicator" sap:quickinfo="Deletion Indicator in Purchasing Document"/>
                 <Property Name="crea_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
                 <Property Name="crea_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
                 <Property Name="lchg_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
@@ -74,8 +222,10 @@
                 <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" sap:display-format="UpperCase" sap:label="Is active" sap:sortable="false"/>
                 <NavigationProperty Name="DraftAdministrativeData" Relationship="ZPM_CHECKLIST001_SRV.assoc_D1D500E87FBFF55B841875E11AA9AE6A" FromRole="FromRole_assoc_D1D500E87FBFF55B841875E11AA9AE6A" ToRole="ToRole_assoc_D1D500E87FBFF55B841875E11AA9AE6A"/>
                 <NavigationProperty Name="SiblingEntity" Relationship="ZPM_CHECKLIST001_SRV.assoc_454B592D6B529EE49C9EB0C21FB4BF35" FromRole="FromRole_assoc_454B592D6B529EE49C9EB0C21FB4BF35" ToRole="ToRole_assoc_454B592D6B529EE49C9EB0C21FB4BF35"/>
+                <NavigationProperty Name="to_Approver" Relationship="ZPM_CHECKLIST001_SRV.assoc_83E630612A81A42BA9525ABE28127B33" FromRole="FromRole_assoc_83E630612A81A42BA9525ABE28127B33" ToRole="ToRole_assoc_83E630612A81A42BA9525ABE28127B33"/>
+                <NavigationProperty Name="to_Attachment" Relationship="ZPM_CHECKLIST001_SRV.assoc_2AE60C7FD70436B67CC0D5C16719FB39" FromRole="FromRole_assoc_2AE60C7FD70436B67CC0D5C16719FB39" ToRole="ToRole_assoc_2AE60C7FD70436B67CC0D5C16719FB39"/>
                 <NavigationProperty Name="to_Item" Relationship="ZPM_CHECKLIST001_SRV.assoc_B178D9D6E4E127CA2BD46BEEDB5FDA69" FromRole="FromRole_assoc_B178D9D6E4E127CA2BD46BEEDB5FDA69" ToRole="ToRole_assoc_B178D9D6E4E127CA2BD46BEEDB5FDA69"/>
-                <NavigationProperty Name="to_ViewItem" Relationship="ZPM_CHECKLIST001_SRV.assoc_D70B2CAF9D4B205420A4C927FB85F72B" FromRole="FromRole_assoc_D70B2CAF9D4B205420A4C927FB85F72B" ToRole="ToRole_assoc_D70B2CAF9D4B205420A4C927FB85F72B"/>
+                <NavigationProperty Name="to_Partner" Relationship="ZPM_CHECKLIST001_SRV.assoc_5296CB245B9264EBF2B8D6AD94196699" FromRole="FromRole_assoc_5296CB245B9264EBF2B8D6AD94196699" ToRole="ToRole_assoc_5296CB245B9264EBF2B8D6AD94196699"/>
             </EntityType>
             <EntityType Name="ZC_PMChecklistItemType" sap:label="Consm. View PM Checklist Item data" sap:content-version="1">
                 <Key>
@@ -86,15 +236,16 @@
                 <Property Name="Validation_ac" Type="Edm.Boolean" sap:label="Dyn. Action Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="chitid" Type="Edm.Guid" Nullable="false" sap:label="Node Key" sap:quickinfo="EPM: Generic Node Key"/>
                 <Property Name="chkid" Type="Edm.Guid" sap:label="Node Key" sap:quickinfo="EPM: Generic Node Key"/>
+                <Property Name="aufpl" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="Opertn task list no." sap:quickinfo="Routing number of operations in the order"/>
+                <Property Name="aplzl" Type="Edm.String" MaxLength="8" sap:display-format="NonNegative" sap:label="Counter" sap:quickinfo="General counter for order"/>
                 <Property Name="itemno" Type="Edm.String" MaxLength="6" sap:display-format="NonNegative" sap:label="Item" sap:quickinfo="Sales Document Item"/>
-                <Property Name="cgiid" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
-                <Property Name="key_type" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase"/>
-                <Property Name="val_type" Type="Edm.String" MaxLength="20" sap:display-format="UpperCase"/>
-                <Property Name="keyname" Type="Edm.String" MaxLength="40" sap:display-format="UpperCase"/>
-                <Property Name="atwrt" Type="Edm.String" MaxLength="70" sap:label="Characteristic Value"/>
-                <Property Name="atflv" Type="Edm.Double" sap:label="Value from" sap:quickinfo="Internal floating point from"/>
-                <Property Name="atawe" Type="Edm.String" MaxLength="3" sap:label="Int. meas. unit" sap:quickinfo="Unit of Measurement" sap:semantics="unit-of-measure"/>
-                <Property Name="remark" Type="Edm.String" MaxLength="255" sap:display-format="UpperCase"/>
+                <Property Name="ref_mpoint" Type="Edm.String" MaxLength="7" sap:display-format="UpperCase" sap:label="Standard text key"/>
+                <Property Name="key_type" Type="Edm.String" MaxLength="10" sap:label="Text 10" sap:quickinfo="Data element char 10 case insensitive"/>
+                <Property Name="val_type" Type="Edm.String" MaxLength="20" sap:label="Text 20" sap:quickinfo="Data element char 20 case insensitive"/>
+                <Property Name="keyname" Type="Edm.String" MaxLength="40" sap:label="Text 40" sap:quickinfo="Data element char 40 case insensitive"/>
+                <Property Name="atwrt" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 255 case insensitive"/>
+                <Property Name="posted" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase"/>
+                <Property Name="remark" Type="Edm.String" MaxLength="1024" sap:label="Text 1024" sap:quickinfo="Data element char 1024 case insensitive"/>
                 <Property Name="ActiveUUID" Type="Edm.Guid" sap:label="Key"/>
                 <Property Name="DraftEntityCreationDateTime" Type="Edm.DateTimeOffset" Precision="7" sap:label="Draft Created On"/>
                 <Property Name="DraftEntityLastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7" sap:label="Draft Last Changed On"/>
@@ -104,82 +255,34 @@
                 <NavigationProperty Name="DraftAdministrativeData" Relationship="ZPM_CHECKLIST001_SRV.assoc_78096CC4034A8D6866C460427CD0507B" FromRole="FromRole_assoc_78096CC4034A8D6866C460427CD0507B" ToRole="ToRole_assoc_78096CC4034A8D6866C460427CD0507B"/>
                 <NavigationProperty Name="SiblingEntity" Relationship="ZPM_CHECKLIST001_SRV.assoc_7E28D9A925C9B2270A99D2C56EC49D0D" FromRole="FromRole_assoc_7E28D9A925C9B2270A99D2C56EC49D0D" ToRole="ToRole_assoc_7E28D9A925C9B2270A99D2C56EC49D0D"/>
             </EntityType>
-            <EntityType Name="ZI_PMChecklistTaskColumnType" sap:label="Base View PM Checklist Columns List" sap:content-version="1">
+            <EntityType Name="ZC_PMChecklistPartner_TPType" sap:label="Consumption View Checklist Partner" sap:content-version="1">
                 <Key>
-                    <PropertyRef Name="cgcid"/>
+                    <PropertyRef Name="chbpid"/>
+                    <PropertyRef Name="IsActiveEntity"/>
                 </Key>
-                <Property Name="cgcid" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
-                <Property Name="cghid" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
-                <Property Name="col_pos" Type="Edm.Byte" sap:label="Int." sap:quickinfo="Dummy for B20 int1 (Local Everywhere)"/>
-                <Property Name="col_name" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 70 case insensitive"/>
-                <Property Name="col_label" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 70 case insensitive"/>
-                <Property Name="col_type" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase"/>
-                <Property Name="col_span" Type="Edm.Byte" sap:label="Int." sap:quickinfo="Dummy for B20 int1 (Local Everywhere)"/>
-                <Property Name="has_subcol" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase"/>
-                <Property Name="is_subcol" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase"/>
-                <Property Name="crea_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
-                <Property Name="crea_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
-                <Property Name="lchg_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
-                <Property Name="lchg_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
-            </EntityType>
-            <EntityType Name="ZI_PMChecklistTaskHeaderType" sap:label="Base View PM Checklist Task Header" sap:content-version="1">
-                <Key>
-                    <PropertyRef Name="cghid"/>
-                </Key>
-                <Property Name="cghid" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
-                <Property Name="cgname" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 70 case insensitive"/>
-                <Property Name="cgdesc" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 255 case insensitive"/>
-                <Property Name="plnty" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase" sap:label="Task List Type"/>
-                <Property Name="plnnr" Type="Edm.String" MaxLength="8" sap:display-format="UpperCase" sap:label="Group" sap:quickinfo="Key for Task List Group"/>
-                <Property Name="plnal" Type="Edm.String" MaxLength="2" sap:display-format="UpperCase" sap:label="Group Counter"/>
-                <Property Name="crea_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
-                <Property Name="crea_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
-                <Property Name="lchg_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
-                <Property Name="lchg_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
-            </EntityType>
-            <EntityType Name="ZI_PMChecklistTaskItemType" sap:label="Base View PM Checklist Task Item" sap:content-version="1">
-                <Key>
-                    <PropertyRef Name="cgiid"/>
-                </Key>
-                <Property Name="cgiid" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
-                <Property Name="cghid" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
-                <Property Name="item_pos" Type="Edm.String" MaxLength="6" sap:display-format="NonNegative" sap:label="Item" sap:quickinfo="Sales Document Item"/>
-                <Property Name="category" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 255 case insensitive"/>
-                <Property Name="sub_category" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 255 case insensitive"/>
-                <Property Name="cl_action" Type="Edm.String" MaxLength="1024" sap:label="Text 1024" sap:quickinfo="Data element char 1024 case insensitive"/>
-                <Property Name="ref_image" Type="Edm.String" MaxLength="1024" sap:label="Text 1024" sap:quickinfo="Data element char 1024 case insensitive"/>
-                <Property Name="cl_method" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 255 case insensitive"/>
-                <Property Name="val_type" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase"/>
-                <Property Name="src_help" Type="Edm.String" MaxLength="20" sap:display-format="UpperCase"/>
-            </EntityType>
-            <EntityType Name="ZI_PMChecklistViewHeaderType" sap:label="Base View PM Checklist Display Header" sap:content-version="1">
-                <Key>
-                    <PropertyRef Name="cvhid"/>
-                </Key>
-                <Property Name="cvhid" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
-                <Property Name="cvname" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 70 case insensitive"/>
-                <Property Name="cvdesc" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 255 case insensitive"/>
-                <Property Name="crea_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
-                <Property Name="crea_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
-                <Property Name="lchg_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
-                <Property Name="lchg_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
-            </EntityType>
-            <EntityType Name="ZI_PMChecklistViewItemType" sap:label="Base View PM Checklist Display Items" sap:content-version="1">
-                <Key>
-                    <PropertyRef Name="cviid"/>
-                </Key>
-                <Property Name="cviid" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
-                <Property Name="cvhid" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
+                <Property Name="Preparation_ac" Type="Edm.Boolean" sap:label="Dyn. Action Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Validation_ac" Type="Edm.Boolean" sap:label="Dyn. Action Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="chbpid" Type="Edm.Guid" Nullable="false" sap:label="Node Key" sap:quickinfo="EPM: Generic Node Key"/>
+                <Property Name="chkid" Type="Edm.Guid" sap:label="Node Key" sap:quickinfo="EPM: Generic Node Key"/>
+                <Property Name="chkno" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase"/>
+                <Property Name="aufnr" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="Order" sap:quickinfo="Order Number"/>
                 <Property Name="itemno" Type="Edm.String" MaxLength="6" sap:display-format="NonNegative" sap:label="Item" sap:quickinfo="Sales Document Item"/>
-                <Property Name="cghid" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
+                <Property Name="bp_id" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="Field length 10" sap:quickinfo="Numeric Character Field, Length 10"/>
+                <Property Name="bp_name" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 70 case insensitive"/>
+                <Property Name="bp_func" Type="Edm.String" MaxLength="255" sap:label="Text" sap:quickinfo="Data element char 70 case insensitive"/>
+                <Property Name="bp_position" Type="Edm.String" MaxLength="20" sap:label="Text 20" sap:quickinfo="Data element char 20 case insensitive"/>
                 <Property Name="crea_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
                 <Property Name="crea_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
                 <Property Name="lchg_date_time" Type="Edm.DateTimeOffset" Precision="7" sap:label="Time Stamp" sap:quickinfo="UTC Time Stamp in Long Form (YYYYMMDDhhmmssmmmuuun)"/>
                 <Property Name="lchg_uname" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User Name"/>
-                <NavigationProperty Name="to_TaskColumns" Relationship="ZPM_CHECKLIST001_SRV.assoc_4EE914DAB67A95F00036BB8FFE8889E8" FromRole="FromRole_assoc_4EE914DAB67A95F00036BB8FFE8889E8" ToRole="ToRole_assoc_4EE914DAB67A95F00036BB8FFE8889E8"/>
-                <NavigationProperty Name="to_TaskHeader" Relationship="ZPM_CHECKLIST001_SRV.assoc_CA1EEB856C1F422AA19CEF84E525BC53" FromRole="FromRole_assoc_CA1EEB856C1F422AA19CEF84E525BC53" ToRole="ToRole_assoc_CA1EEB856C1F422AA19CEF84E525BC53"/>
-                <NavigationProperty Name="to_TaskItems" Relationship="ZPM_CHECKLIST001_SRV.assoc_A7B621F1F6D70AE604A444041AF6CF73" FromRole="FromRole_assoc_A7B621F1F6D70AE604A444041AF6CF73" ToRole="ToRole_assoc_A7B621F1F6D70AE604A444041AF6CF73"/>
-                <NavigationProperty Name="to_ViewHeader" Relationship="ZPM_CHECKLIST001_SRV.assoc_D6E875AE0AD3DA8C65D0ED2E1B617B53" FromRole="FromRole_assoc_D6E875AE0AD3DA8C65D0ED2E1B617B53" ToRole="ToRole_assoc_D6E875AE0AD3DA8C65D0ED2E1B617B53"/>
+                <Property Name="ActiveUUID" Type="Edm.Guid" sap:label="Key"/>
+                <Property Name="DraftEntityCreationDateTime" Type="Edm.DateTimeOffset" Precision="7" sap:label="Draft Created On"/>
+                <Property Name="DraftEntityLastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7" sap:label="Draft Last Changed On"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" sap:display-format="UpperCase" sap:label="Has active" sap:sortable="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" sap:display-format="UpperCase" sap:label="Has Draft" sap:sortable="false"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" sap:display-format="UpperCase" sap:label="Is active" sap:sortable="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Relationship="ZPM_CHECKLIST001_SRV.assoc_D0B8F9623F14D7DD88E69AAC764DCCCC" FromRole="FromRole_assoc_D0B8F9623F14D7DD88E69AAC764DCCCC" ToRole="ToRole_assoc_D0B8F9623F14D7DD88E69AAC764DCCCC"/>
+                <NavigationProperty Name="SiblingEntity" Relationship="ZPM_CHECKLIST001_SRV.assoc_39339D27A21442CFC08162414086B9F4" FromRole="FromRole_assoc_39339D27A21442CFC08162414086B9F4" ToRole="ToRole_assoc_39339D27A21442CFC08162414086B9F4"/>
             </EntityType>
             <EntityType Name="SAP__Currency" sap:content-version="1">
                 <Key>
@@ -277,11 +380,22 @@
             <ComplexType Name="ValidationFunctionResult">
                 <Property Name="IsValid" Type="Edm.Boolean" sap:label="Is valid"/>
             </ComplexType>
+            <ComplexType Name="DummyFunctionImportResult">
+                <Property Name="IsInvalid" Type="Edm.Boolean" sap:label="TRUE"/>
+            </ComplexType>
             <ComplexType Name="SAP__FitToPage">
                 <Property Name="ErrorRecoveryBehavior" Type="Edm.String" Nullable="false" MaxLength="8" sap:label="Error behavior" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="IsEnabled" Type="Edm.Boolean" Nullable="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="MinimumFontSize" Type="Edm.Int32" Nullable="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
             </ComplexType>
+            <Association Name="assoc_D0B8F9623F14D7DD88E69AAC764DCCCC" sap:content-version="1">
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistPartner_TPType" Multiplicity="1" Role="FromRole_assoc_D0B8F9623F14D7DD88E69AAC764DCCCC"/>
+                <End Type="ZPM_CHECKLIST001_SRV.I_DraftAdministrativeDataType" Multiplicity="0..1" Role="ToRole_assoc_D0B8F9623F14D7DD88E69AAC764DCCCC"/>
+            </Association>
+            <Association Name="assoc_39339D27A21442CFC08162414086B9F4" sap:content-version="1">
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistPartner_TPType" Multiplicity="1" Role="FromRole_assoc_39339D27A21442CFC08162414086B9F4"/>
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistPartner_TPType" Multiplicity="0..1" Role="ToRole_assoc_39339D27A21442CFC08162414086B9F4"/>
+            </Association>
             <Association Name="assoc_78096CC4034A8D6866C460427CD0507B" sap:content-version="1">
                 <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistItemType" Multiplicity="1" Role="FromRole_assoc_78096CC4034A8D6866C460427CD0507B"/>
                 <End Type="ZPM_CHECKLIST001_SRV.I_DraftAdministrativeDataType" Multiplicity="0..1" Role="ToRole_assoc_78096CC4034A8D6866C460427CD0507B"/>
@@ -289,6 +403,18 @@
             <Association Name="assoc_7E28D9A925C9B2270A99D2C56EC49D0D" sap:content-version="1">
                 <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistItemType" Multiplicity="1" Role="FromRole_assoc_7E28D9A925C9B2270A99D2C56EC49D0D"/>
                 <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistItemType" Multiplicity="0..1" Role="ToRole_assoc_7E28D9A925C9B2270A99D2C56EC49D0D"/>
+            </Association>
+            <Association Name="headerToColumn" sap:content-version="1">
+                <End Type="ZPM_CHECKLIST001_SRV.ViewHeader" Multiplicity="1" Role="FromRole_headerToColumn"/>
+                <End Type="ZPM_CHECKLIST001_SRV.ViewColumn" Multiplicity="*" Role="ToRole_headerToColumn"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_headerToColumn">
+                        <PropertyRef Name="ingpr"/>
+                    </Principal>
+                    <Dependent Role="ToRole_headerToColumn">
+                        <PropertyRef Name="ingpr"/>
+                    </Dependent>
+                </ReferentialConstraint>
             </Association>
             <Association Name="to_format" sap:content-version="1">
                 <End Type="ZPM_CHECKLIST001_SRV.SAP__DocumentDescription" Multiplicity="1" Role="FromRole_to_format"/>
@@ -350,39 +476,53 @@
                     </Dependent>
                 </ReferentialConstraint>
             </Association>
+            <Association Name="assoc_D1D500E87FBFF55B841875E11AA9AE6A" sap:content-version="1">
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" Multiplicity="1" Role="FromRole_assoc_D1D500E87FBFF55B841875E11AA9AE6A"/>
+                <End Type="ZPM_CHECKLIST001_SRV.I_DraftAdministrativeDataType" Multiplicity="0..1" Role="ToRole_assoc_D1D500E87FBFF55B841875E11AA9AE6A"/>
+            </Association>
             <Association Name="assoc_454B592D6B529EE49C9EB0C21FB4BF35" sap:content-version="1">
                 <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" Multiplicity="1" Role="FromRole_assoc_454B592D6B529EE49C9EB0C21FB4BF35"/>
                 <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" Multiplicity="0..1" Role="ToRole_assoc_454B592D6B529EE49C9EB0C21FB4BF35"/>
+            </Association>
+            <Association Name="assoc_83E630612A81A42BA9525ABE28127B33" sap:content-version="1">
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" Multiplicity="1" Role="FromRole_assoc_83E630612A81A42BA9525ABE28127B33"/>
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistApproverType" Multiplicity="*" Role="ToRole_assoc_83E630612A81A42BA9525ABE28127B33"/>
+            </Association>
+            <Association Name="assoc_2AE60C7FD70436B67CC0D5C16719FB39" sap:content-version="1">
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" Multiplicity="1" Role="FromRole_assoc_2AE60C7FD70436B67CC0D5C16719FB39"/>
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistAttachment_TPType" Multiplicity="*" Role="ToRole_assoc_2AE60C7FD70436B67CC0D5C16719FB39"/>
             </Association>
             <Association Name="assoc_B178D9D6E4E127CA2BD46BEEDB5FDA69" sap:content-version="1">
                 <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" Multiplicity="1" Role="FromRole_assoc_B178D9D6E4E127CA2BD46BEEDB5FDA69"/>
                 <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistItemType" Multiplicity="*" Role="ToRole_assoc_B178D9D6E4E127CA2BD46BEEDB5FDA69"/>
             </Association>
-            <Association Name="assoc_D70B2CAF9D4B205420A4C927FB85F72B" sap:content-version="1">
-                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" Multiplicity="1" Role="FromRole_assoc_D70B2CAF9D4B205420A4C927FB85F72B"/>
-                <End Type="ZPM_CHECKLIST001_SRV.ZI_PMChecklistViewItemType" Multiplicity="*" Role="ToRole_assoc_D70B2CAF9D4B205420A4C927FB85F72B"/>
+            <Association Name="assoc_5296CB245B9264EBF2B8D6AD94196699" sap:content-version="1">
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" Multiplicity="1" Role="FromRole_assoc_5296CB245B9264EBF2B8D6AD94196699"/>
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistPartner_TPType" Multiplicity="*" Role="ToRole_assoc_5296CB245B9264EBF2B8D6AD94196699"/>
             </Association>
-            <Association Name="assoc_D1D500E87FBFF55B841875E11AA9AE6A" sap:content-version="1">
-                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" Multiplicity="1" Role="FromRole_assoc_D1D500E87FBFF55B841875E11AA9AE6A"/>
-                <End Type="ZPM_CHECKLIST001_SRV.I_DraftAdministrativeDataType" Multiplicity="0..1" Role="ToRole_assoc_D1D500E87FBFF55B841875E11AA9AE6A"/>
+            <Association Name="assoc_1CFDAF19188F6D9B3ADD9634A351BD51" sap:content-version="1">
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistApproverType" Multiplicity="1" Role="FromRole_assoc_1CFDAF19188F6D9B3ADD9634A351BD51"/>
+                <End Type="ZPM_CHECKLIST001_SRV.I_DraftAdministrativeDataType" Multiplicity="0..1" Role="ToRole_assoc_1CFDAF19188F6D9B3ADD9634A351BD51"/>
             </Association>
-            <Association Name="assoc_4EE914DAB67A95F00036BB8FFE8889E8" sap:content-version="1">
-                <End Type="ZPM_CHECKLIST001_SRV.ZI_PMChecklistViewItemType" Multiplicity="1" Role="FromRole_assoc_4EE914DAB67A95F00036BB8FFE8889E8"/>
-                <End Type="ZPM_CHECKLIST001_SRV.ZI_PMChecklistTaskColumnType" Multiplicity="*" Role="ToRole_assoc_4EE914DAB67A95F00036BB8FFE8889E8"/>
+            <Association Name="assoc_4CD2429392A1C066A0B9571C3BF1CD67" sap:content-version="1">
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistApproverType" Multiplicity="1" Role="FromRole_assoc_4CD2429392A1C066A0B9571C3BF1CD67"/>
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistApproverType" Multiplicity="0..1" Role="ToRole_assoc_4CD2429392A1C066A0B9571C3BF1CD67"/>
             </Association>
-            <Association Name="assoc_CA1EEB856C1F422AA19CEF84E525BC53" sap:content-version="1">
-                <End Type="ZPM_CHECKLIST001_SRV.ZI_PMChecklistViewItemType" Multiplicity="1" Role="FromRole_assoc_CA1EEB856C1F422AA19CEF84E525BC53"/>
-                <End Type="ZPM_CHECKLIST001_SRV.ZI_PMChecklistTaskHeaderType" Multiplicity="1" Role="ToRole_assoc_CA1EEB856C1F422AA19CEF84E525BC53"/>
+            <Association Name="assoc_B2E2E2539C55BF48115FF0E96E515218" sap:content-version="1">
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistAttachment_TPType" Multiplicity="1" Role="FromRole_assoc_B2E2E2539C55BF48115FF0E96E515218"/>
+                <End Type="ZPM_CHECKLIST001_SRV.I_DraftAdministrativeDataType" Multiplicity="0..1" Role="ToRole_assoc_B2E2E2539C55BF48115FF0E96E515218"/>
             </Association>
-            <Association Name="assoc_A7B621F1F6D70AE604A444041AF6CF73" sap:content-version="1">
-                <End Type="ZPM_CHECKLIST001_SRV.ZI_PMChecklistViewItemType" Multiplicity="1" Role="FromRole_assoc_A7B621F1F6D70AE604A444041AF6CF73"/>
-                <End Type="ZPM_CHECKLIST001_SRV.ZI_PMChecklistTaskItemType" Multiplicity="*" Role="ToRole_assoc_A7B621F1F6D70AE604A444041AF6CF73"/>
-            </Association>
-            <Association Name="assoc_D6E875AE0AD3DA8C65D0ED2E1B617B53" sap:content-version="1">
-                <End Type="ZPM_CHECKLIST001_SRV.ZI_PMChecklistViewItemType" Multiplicity="1" Role="FromRole_assoc_D6E875AE0AD3DA8C65D0ED2E1B617B53"/>
-                <End Type="ZPM_CHECKLIST001_SRV.ZI_PMChecklistViewHeaderType" Multiplicity="1" Role="ToRole_assoc_D6E875AE0AD3DA8C65D0ED2E1B617B53"/>
+            <Association Name="assoc_10D80990E5A915219125E18CCAE1C367" sap:content-version="1">
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistAttachment_TPType" Multiplicity="1" Role="FromRole_assoc_10D80990E5A915219125E18CCAE1C367"/>
+                <End Type="ZPM_CHECKLIST001_SRV.ZC_PMChecklistAttachment_TPType" Multiplicity="0..1" Role="ToRole_assoc_10D80990E5A915219125E18CCAE1C367"/>
             </Association>
             <EntityContainer Name="ZPM_CHECKLIST001_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="I_DraftAdministrativeData" EntityType="ZPM_CHECKLIST001_SRV.I_DraftAdministrativeDataType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="ZC_PMChecklistApprover" EntityType="ZPM_CHECKLIST001_SRV.ZC_PMChecklistApproverType" sap:content-version="1"/>
+                <EntitySet Name="ZC_PMChecklistAttachment_TP" EntityType="ZPM_CHECKLIST001_SRV.ZC_PMChecklistAttachment_TPType" sap:content-version="1"/>
+                <EntitySet Name="ZC_PMChecklistHeader" EntityType="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="ZC_PMChecklistItem" EntityType="ZPM_CHECKLIST001_SRV.ZC_PMChecklistItemType" sap:content-version="1"/>
+                <EntitySet Name="ZC_PMChecklistPartner_TP" EntityType="ZPM_CHECKLIST001_SRV.ZC_PMChecklistPartner_TPType" sap:content-version="1"/>
                 <EntitySet Name="SAP__Currencies" EntityType="ZPM_CHECKLIST001_SRV.SAP__Currency" sap:content-version="1"/>
                 <EntitySet Name="SAP__UnitsOfMeasure" EntityType="ZPM_CHECKLIST001_SRV.SAP__UnitOfMeasure" sap:content-version="1"/>
                 <EntitySet Name="SAP__MyDocumentDescriptions" EntityType="ZPM_CHECKLIST001_SRV.SAP__DocumentDescription" sap:content-version="1"/>
@@ -392,65 +532,81 @@
                 <EntitySet Name="SAP__CoverPageSet" EntityType="ZPM_CHECKLIST001_SRV.SAP__CoverPage" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
                 <EntitySet Name="SAP__SignatureSet" EntityType="ZPM_CHECKLIST001_SRV.SAP__Signature" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
                 <EntitySet Name="SAP__ValueHelpSet" EntityType="ZPM_CHECKLIST001_SRV.SAP__ValueHelp" sap:content-version="1"/>
-                <EntitySet Name="I_DraftAdministrativeData" EntityType="ZPM_CHECKLIST001_SRV.I_DraftAdministrativeDataType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
-                <EntitySet Name="ZC_PMChecklistHeader" EntityType="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" sap:searchable="true" sap:content-version="1"/>
-                <EntitySet Name="ZC_PMChecklistItem" EntityType="ZPM_CHECKLIST001_SRV.ZC_PMChecklistItemType" sap:content-version="1"/>
-                <EntitySet Name="ZI_PMChecklistTaskColumn" EntityType="ZPM_CHECKLIST001_SRV.ZI_PMChecklistTaskColumnType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
-                <EntitySet Name="ZI_PMChecklistTaskHeader" EntityType="ZPM_CHECKLIST001_SRV.ZI_PMChecklistTaskHeaderType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
-                <EntitySet Name="ZI_PMChecklistTaskItem" EntityType="ZPM_CHECKLIST001_SRV.ZI_PMChecklistTaskItemType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
-                <EntitySet Name="ZI_PMChecklistViewHeader" EntityType="ZPM_CHECKLIST001_SRV.ZI_PMChecklistViewHeaderType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
-                <EntitySet Name="ZI_PMChecklistViewItem" EntityType="ZPM_CHECKLIST001_SRV.ZI_PMChecklistViewItemType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
-                <AssociationSet Name="assoc_D70B2CAF9D4B205420A4C927FB85F72B" Association="ZPM_CHECKLIST001_SRV.assoc_D70B2CAF9D4B205420A4C927FB85F72B" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
-                    <End EntitySet="ZC_PMChecklistHeader" Role="FromRole_assoc_D70B2CAF9D4B205420A4C927FB85F72B"/>
-                    <End EntitySet="ZI_PMChecklistViewItem" Role="ToRole_assoc_D70B2CAF9D4B205420A4C927FB85F72B"/>
-                </AssociationSet>
+                <EntitySet Name="ViewHeaderSet" EntityType="ZPM_CHECKLIST001_SRV.ViewHeader" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="ViewColumnSet" EntityType="ZPM_CHECKLIST001_SRV.ViewColumn" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="ViewItemSet" EntityType="ZPM_CHECKLIST001_SRV.ViewItem" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="AttachmentSet" EntityType="ZPM_CHECKLIST001_SRV.Attachment" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
                 <AssociationSet Name="assoc_D1D500E87FBFF55B841875E11AA9AE6A" Association="ZPM_CHECKLIST001_SRV.assoc_D1D500E87FBFF55B841875E11AA9AE6A" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
                     <End EntitySet="ZC_PMChecklistHeader" Role="FromRole_assoc_D1D500E87FBFF55B841875E11AA9AE6A"/>
                     <End EntitySet="I_DraftAdministrativeData" Role="ToRole_assoc_D1D500E87FBFF55B841875E11AA9AE6A"/>
                 </AssociationSet>
-                <AssociationSet Name="assoc_CA1EEB856C1F422AA19CEF84E525BC53" Association="ZPM_CHECKLIST001_SRV.assoc_CA1EEB856C1F422AA19CEF84E525BC53" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
-                    <End EntitySet="ZI_PMChecklistViewItem" Role="FromRole_assoc_CA1EEB856C1F422AA19CEF84E525BC53"/>
-                    <End EntitySet="ZI_PMChecklistTaskHeader" Role="ToRole_assoc_CA1EEB856C1F422AA19CEF84E525BC53"/>
+                <AssociationSet Name="assoc_1CFDAF19188F6D9B3ADD9634A351BD51" Association="ZPM_CHECKLIST001_SRV.assoc_1CFDAF19188F6D9B3ADD9634A351BD51" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZC_PMChecklistApprover" Role="FromRole_assoc_1CFDAF19188F6D9B3ADD9634A351BD51"/>
+                    <End EntitySet="I_DraftAdministrativeData" Role="ToRole_assoc_1CFDAF19188F6D9B3ADD9634A351BD51"/>
                 </AssociationSet>
                 <AssociationSet Name="to_formatSet" Association="ZPM_CHECKLIST001_SRV.to_format" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
                     <End EntitySet="SAP__MyDocumentDescriptions" Role="FromRole_to_format"/>
                     <End EntitySet="SAP__FormatSet" Role="ToRole_to_format"/>
                 </AssociationSet>
+                <AssociationSet Name="assoc_B2E2E2539C55BF48115FF0E96E515218" Association="ZPM_CHECKLIST001_SRV.assoc_B2E2E2539C55BF48115FF0E96E515218" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZC_PMChecklistAttachment_TP" Role="FromRole_assoc_B2E2E2539C55BF48115FF0E96E515218"/>
+                    <End EntitySet="I_DraftAdministrativeData" Role="ToRole_assoc_B2E2E2539C55BF48115FF0E96E515218"/>
+                </AssociationSet>
                 <AssociationSet Name="to_pdfstandardSet" Association="ZPM_CHECKLIST001_SRV.to_pdfstandard" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
                     <End EntitySet="SAP__MyDocumentDescriptions" Role="FromRole_to_pdfstandard"/>
                     <End EntitySet="SAP__PDFStandardSet" Role="ToRole_to_pdfstandard"/>
+                </AssociationSet>
+                <AssociationSet Name="headerToColumnSet" Association="ZPM_CHECKLIST001_SRV.headerToColumn" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ViewHeaderSet" Role="FromRole_headerToColumn"/>
+                    <End EntitySet="ViewColumnSet" Role="ToRole_headerToColumn"/>
                 </AssociationSet>
                 <AssociationSet Name="assoc_78096CC4034A8D6866C460427CD0507B" Association="ZPM_CHECKLIST001_SRV.assoc_78096CC4034A8D6866C460427CD0507B" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
                     <End EntitySet="ZC_PMChecklistItem" Role="FromRole_assoc_78096CC4034A8D6866C460427CD0507B"/>
                     <End EntitySet="I_DraftAdministrativeData" Role="ToRole_assoc_78096CC4034A8D6866C460427CD0507B"/>
                 </AssociationSet>
-                <AssociationSet Name="assoc_4EE914DAB67A95F00036BB8FFE8889E8" Association="ZPM_CHECKLIST001_SRV.assoc_4EE914DAB67A95F00036BB8FFE8889E8" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
-                    <End EntitySet="ZI_PMChecklistViewItem" Role="FromRole_assoc_4EE914DAB67A95F00036BB8FFE8889E8"/>
-                    <End EntitySet="ZI_PMChecklistTaskColumn" Role="ToRole_assoc_4EE914DAB67A95F00036BB8FFE8889E8"/>
-                </AssociationSet>
-                <AssociationSet Name="assoc_A7B621F1F6D70AE604A444041AF6CF73" Association="ZPM_CHECKLIST001_SRV.assoc_A7B621F1F6D70AE604A444041AF6CF73" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
-                    <End EntitySet="ZI_PMChecklistViewItem" Role="FromRole_assoc_A7B621F1F6D70AE604A444041AF6CF73"/>
-                    <End EntitySet="ZI_PMChecklistTaskItem" Role="ToRole_assoc_A7B621F1F6D70AE604A444041AF6CF73"/>
-                </AssociationSet>
                 <AssociationSet Name="to_tablecolumnsSet" Association="ZPM_CHECKLIST001_SRV.to_tablecolumns" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
                     <End EntitySet="SAP__MyDocumentDescriptions" Role="FromRole_to_tablecolumns"/>
                     <End EntitySet="SAP__TableColumnsSet" Role="ToRole_to_tablecolumns"/>
+                </AssociationSet>
+                <AssociationSet Name="assoc_D0B8F9623F14D7DD88E69AAC764DCCCC" Association="ZPM_CHECKLIST001_SRV.assoc_D0B8F9623F14D7DD88E69AAC764DCCCC" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZC_PMChecklistPartner_TP" Role="FromRole_assoc_D0B8F9623F14D7DD88E69AAC764DCCCC"/>
+                    <End EntitySet="I_DraftAdministrativeData" Role="ToRole_assoc_D0B8F9623F14D7DD88E69AAC764DCCCC"/>
                 </AssociationSet>
                 <AssociationSet Name="to_signatureSet" Association="ZPM_CHECKLIST001_SRV.to_signature" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
                     <End EntitySet="SAP__MyDocumentDescriptions" Role="FromRole_to_signature"/>
                     <End EntitySet="SAP__SignatureSet" Role="ToRole_to_signature"/>
                 </AssociationSet>
+                <AssociationSet Name="assoc_39339D27A21442CFC08162414086B9F4" Association="ZPM_CHECKLIST001_SRV.assoc_39339D27A21442CFC08162414086B9F4" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZC_PMChecklistPartner_TP" Role="FromRole_assoc_39339D27A21442CFC08162414086B9F4"/>
+                    <End EntitySet="ZC_PMChecklistPartner_TP" Role="ToRole_assoc_39339D27A21442CFC08162414086B9F4"/>
+                </AssociationSet>
+                <AssociationSet Name="assoc_5296CB245B9264EBF2B8D6AD94196699" Association="ZPM_CHECKLIST001_SRV.assoc_5296CB245B9264EBF2B8D6AD94196699" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZC_PMChecklistHeader" Role="FromRole_assoc_5296CB245B9264EBF2B8D6AD94196699"/>
+                    <End EntitySet="ZC_PMChecklistPartner_TP" Role="ToRole_assoc_5296CB245B9264EBF2B8D6AD94196699"/>
+                </AssociationSet>
+                <AssociationSet Name="assoc_4CD2429392A1C066A0B9571C3BF1CD67" Association="ZPM_CHECKLIST001_SRV.assoc_4CD2429392A1C066A0B9571C3BF1CD67" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZC_PMChecklistApprover" Role="FromRole_assoc_4CD2429392A1C066A0B9571C3BF1CD67"/>
+                    <End EntitySet="ZC_PMChecklistApprover" Role="ToRole_assoc_4CD2429392A1C066A0B9571C3BF1CD67"/>
+                </AssociationSet>
+                <AssociationSet Name="assoc_2AE60C7FD70436B67CC0D5C16719FB39" Association="ZPM_CHECKLIST001_SRV.assoc_2AE60C7FD70436B67CC0D5C16719FB39" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZC_PMChecklistHeader" Role="FromRole_assoc_2AE60C7FD70436B67CC0D5C16719FB39"/>
+                    <End EntitySet="ZC_PMChecklistAttachment_TP" Role="ToRole_assoc_2AE60C7FD70436B67CC0D5C16719FB39"/>
+                </AssociationSet>
                 <AssociationSet Name="to_coverpageSet" Association="ZPM_CHECKLIST001_SRV.to_coverpage" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
                     <End EntitySet="SAP__MyDocumentDescriptions" Role="FromRole_to_coverpage"/>
                     <End EntitySet="SAP__CoverPageSet" Role="ToRole_to_coverpage"/>
                 </AssociationSet>
+                <AssociationSet Name="assoc_10D80990E5A915219125E18CCAE1C367" Association="ZPM_CHECKLIST001_SRV.assoc_10D80990E5A915219125E18CCAE1C367" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZC_PMChecklistAttachment_TP" Role="FromRole_assoc_10D80990E5A915219125E18CCAE1C367"/>
+                    <End EntitySet="ZC_PMChecklistAttachment_TP" Role="ToRole_assoc_10D80990E5A915219125E18CCAE1C367"/>
+                </AssociationSet>
+                <AssociationSet Name="assoc_83E630612A81A42BA9525ABE28127B33" Association="ZPM_CHECKLIST001_SRV.assoc_83E630612A81A42BA9525ABE28127B33" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ZC_PMChecklistHeader" Role="FromRole_assoc_83E630612A81A42BA9525ABE28127B33"/>
+                    <End EntitySet="ZC_PMChecklistApprover" Role="ToRole_assoc_83E630612A81A42BA9525ABE28127B33"/>
+                </AssociationSet>
                 <AssociationSet Name="assoc_7E28D9A925C9B2270A99D2C56EC49D0D" Association="ZPM_CHECKLIST001_SRV.assoc_7E28D9A925C9B2270A99D2C56EC49D0D" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
                     <End EntitySet="ZC_PMChecklistItem" Role="FromRole_assoc_7E28D9A925C9B2270A99D2C56EC49D0D"/>
                     <End EntitySet="ZC_PMChecklistItem" Role="ToRole_assoc_7E28D9A925C9B2270A99D2C56EC49D0D"/>
-                </AssociationSet>
-                <AssociationSet Name="assoc_D6E875AE0AD3DA8C65D0ED2E1B617B53" Association="ZPM_CHECKLIST001_SRV.assoc_D6E875AE0AD3DA8C65D0ED2E1B617B53" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
-                    <End EntitySet="ZI_PMChecklistViewItem" Role="FromRole_assoc_D6E875AE0AD3DA8C65D0ED2E1B617B53"/>
-                    <End EntitySet="ZI_PMChecklistViewHeader" Role="ToRole_assoc_D6E875AE0AD3DA8C65D0ED2E1B617B53"/>
                 </AssociationSet>
                 <AssociationSet Name="assoc_B178D9D6E4E127CA2BD46BEEDB5FDA69" Association="ZPM_CHECKLIST001_SRV.assoc_B178D9D6E4E127CA2BD46BEEDB5FDA69" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
                     <End EntitySet="ZC_PMChecklistHeader" Role="FromRole_assoc_B178D9D6E4E127CA2BD46BEEDB5FDA69"/>
@@ -460,7 +616,31 @@
                     <End EntitySet="ZC_PMChecklistHeader" Role="FromRole_assoc_454B592D6B529EE49C9EB0C21FB4BF35"/>
                     <End EntitySet="ZC_PMChecklistHeader" Role="ToRole_assoc_454B592D6B529EE49C9EB0C21FB4BF35"/>
                 </AssociationSet>
+                <FunctionImport Name="ZC_PMChecklistApproverPreparation" ReturnType="ZPM_CHECKLIST001_SRV.ZC_PMChecklistApproverType" EntitySet="ZC_PMChecklistApprover" m:HttpMethod="POST" sap:action-for="ZPM_CHECKLIST001_SRV.ZC_PMChecklistApproverType" sap:applicable-path="Preparation_ac">
+                    <Parameter Name="chapid" Type="Edm.Guid" Mode="In" sap:label="Node Key"/>
+                    <Parameter Name="IsActiveEntity" Type="Edm.Boolean" Mode="In" sap:label="Is active"/>
+                    <Parameter Name="SideEffectsQualifier" Type="Edm.String" Mode="In" Nullable="true" sap:label="SideEffectsQualifier"/>
+                </FunctionImport>
+                <FunctionImport Name="ZC_PMChecklistApproverValidation" ReturnType="ZPM_CHECKLIST001_SRV.ValidationFunctionResult" m:HttpMethod="GET" sap:action-for="ZPM_CHECKLIST001_SRV.ZC_PMChecklistApproverType" sap:applicable-path="Validation_ac">
+                    <Parameter Name="chapid" Type="Edm.Guid" Mode="In" sap:label="Node Key"/>
+                    <Parameter Name="IsActiveEntity" Type="Edm.Boolean" Mode="In" sap:label="Is active"/>
+                    <Parameter Name="SideEffectsQualifier" Type="Edm.String" Mode="In" Nullable="true" sap:label="SideEffectsQualifier"/>
+                </FunctionImport>
+                <FunctionImport Name="ZC_PMChecklistAttachment_TPPreparation" ReturnType="ZPM_CHECKLIST001_SRV.ZC_PMChecklistAttachment_TPType" EntitySet="ZC_PMChecklistAttachment_TP" m:HttpMethod="POST" sap:action-for="ZPM_CHECKLIST001_SRV.ZC_PMChecklistAttachment_TPType" sap:applicable-path="Preparation_ac">
+                    <Parameter Name="chatid" Type="Edm.Guid" Mode="In" sap:label="Node Key"/>
+                    <Parameter Name="IsActiveEntity" Type="Edm.Boolean" Mode="In" sap:label="Is active"/>
+                    <Parameter Name="SideEffectsQualifier" Type="Edm.String" Mode="In" Nullable="true" sap:label="SideEffectsQualifier"/>
+                </FunctionImport>
+                <FunctionImport Name="ZC_PMChecklistAttachment_TPValidation" ReturnType="ZPM_CHECKLIST001_SRV.ValidationFunctionResult" m:HttpMethod="GET" sap:action-for="ZPM_CHECKLIST001_SRV.ZC_PMChecklistAttachment_TPType" sap:applicable-path="Validation_ac">
+                    <Parameter Name="chatid" Type="Edm.Guid" Mode="In" sap:label="Node Key"/>
+                    <Parameter Name="IsActiveEntity" Type="Edm.Boolean" Mode="In" sap:label="Is active"/>
+                    <Parameter Name="SideEffectsQualifier" Type="Edm.String" Mode="In" Nullable="true" sap:label="SideEffectsQualifier"/>
+                </FunctionImport>
                 <FunctionImport Name="ZC_PMChecklistHeaderActivation" ReturnType="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" EntitySet="ZC_PMChecklistHeader" m:HttpMethod="POST" sap:action-for="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" sap:applicable-path="Activation_ac">
+                    <Parameter Name="chkid" Type="Edm.Guid" Mode="In" sap:label="Node Key"/>
+                    <Parameter Name="IsActiveEntity" Type="Edm.Boolean" Mode="In" sap:label="Is active"/>
+                </FunctionImport>
+                <FunctionImport Name="ZC_PMChecklistHeaderApprove_post" ReturnType="ZPM_CHECKLIST001_SRV.DummyFunctionImportResult" m:HttpMethod="POST" sap:action-for="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType" sap:applicable-path="Approve_post_ac">
                     <Parameter Name="chkid" Type="Edm.Guid" Mode="In" sap:label="Node Key"/>
                     <Parameter Name="IsActiveEntity" Type="Edm.Boolean" Mode="In" sap:label="Is active"/>
                 </FunctionImport>
@@ -489,9 +669,18 @@
                     <Parameter Name="IsActiveEntity" Type="Edm.Boolean" Mode="In" sap:label="Is active"/>
                     <Parameter Name="SideEffectsQualifier" Type="Edm.String" Mode="In" Nullable="true" sap:label="SideEffectsQualifier"/>
                 </FunctionImport>
+                <FunctionImport Name="ZC_PMChecklistPartner_TPPreparation" ReturnType="ZPM_CHECKLIST001_SRV.ZC_PMChecklistPartner_TPType" EntitySet="ZC_PMChecklistPartner_TP" m:HttpMethod="POST" sap:action-for="ZPM_CHECKLIST001_SRV.ZC_PMChecklistPartner_TPType" sap:applicable-path="Preparation_ac">
+                    <Parameter Name="chbpid" Type="Edm.Guid" Mode="In" sap:label="Node Key"/>
+                    <Parameter Name="IsActiveEntity" Type="Edm.Boolean" Mode="In" sap:label="Is active"/>
+                    <Parameter Name="SideEffectsQualifier" Type="Edm.String" Mode="In" Nullable="true" sap:label="SideEffectsQualifier"/>
+                </FunctionImport>
+                <FunctionImport Name="ZC_PMChecklistPartner_TPValidation" ReturnType="ZPM_CHECKLIST001_SRV.ValidationFunctionResult" m:HttpMethod="GET" sap:action-for="ZPM_CHECKLIST001_SRV.ZC_PMChecklistPartner_TPType" sap:applicable-path="Validation_ac">
+                    <Parameter Name="chbpid" Type="Edm.Guid" Mode="In" sap:label="Node Key"/>
+                    <Parameter Name="IsActiveEntity" Type="Edm.Boolean" Mode="In" sap:label="Is active"/>
+                    <Parameter Name="SideEffectsQualifier" Type="Edm.String" Mode="In" Nullable="true" sap:label="SideEffectsQualifier"/>
+                </FunctionImport>
             </EntityContainer>
-            <Annotations Target="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistHeader"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistHeader">
                 <Annotation Term="Common.DraftRoot">
                     <Record>
                         <PropertyValue Property="ActivationAction" String="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistHeaderActivation"/>
@@ -501,8 +690,33 @@
                     </Record>
                 </Annotation>
             </Annotations>
-            <Annotations Target="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistItem"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistApprover">
+                <Annotation Term="Common.DraftNode">
+                    <Record>
+                        <PropertyValue Property="PreparationAction" String="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistApproverPreparation"/>
+                        <PropertyValue Property="ValidationFunction" String="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistApproverValidation"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.DraftActivationVia">
+                    <Collection>
+                        <String>ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistHeader</String>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistAttachment_TP">
+                <Annotation Term="Common.DraftNode">
+                    <Record>
+                        <PropertyValue Property="PreparationAction" String="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistAttachment_TPPreparation"/>
+                        <PropertyValue Property="ValidationFunction" String="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistAttachment_TPValidation"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.DraftActivationVia">
+                    <Collection>
+                        <String>ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistHeader</String>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistItem">
                 <Annotation Term="Common.DraftNode">
                     <Record>
                         <PropertyValue Property="PreparationAction" String="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistItemPreparation"/>
@@ -515,24 +729,60 @@
                     </Collection>
                 </Annotation>
             </Annotations>
-            <Annotations Target="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistPartner_TP">
+                <Annotation Term="Common.DraftNode">
+                    <Record>
+                        <PropertyValue Property="PreparationAction" String="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistPartner_TPPreparation"/>
+                        <PropertyValue Property="ValidationFunction" String="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistPartner_TPValidation"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.DraftActivationVia">
+                    <Collection>
+                        <String>ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities/ZC_PMChecklistHeader</String>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.ZC_PMChecklistApproverType">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>itemno</PropertyPath>
+                        <PropertyPath>aufnr</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.ZC_PMChecklistAttachment_TPType">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>itemno</PropertyPath>
+                        <PropertyPath>aufnr</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.ZC_PMChecklistHeaderType">
                 <Annotation Term="Common.SemanticKey">
                     <Collection>
                         <PropertyPath>chkno</PropertyPath>
                     </Collection>
                 </Annotation>
             </Annotations>
-            <Annotations Target="ZPM_CHECKLIST001_SRV.ZC_PMChecklistItemType"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.ZC_PMChecklistItemType">
                 <Annotation Term="Common.SemanticKey">
                     <Collection>
                         <PropertyPath>itemno</PropertyPath>
+                        <PropertyPath>aplzl</PropertyPath>
+                        <PropertyPath>aufpl</PropertyPath>
                     </Collection>
                 </Annotation>
             </Annotations>
-            <Annotations Target="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.ZC_PMChecklistPartner_TPType">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>itemno</PropertyPath>
+                        <PropertyPath>aufnr</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.ZPM_CHECKLIST001_SRV_Entities">
                 <Annotation Term="SAP__CodeList.CurrencyCodes">
                     <Record>
                         <PropertyValue Property="Url" String="./$metadata"/>
@@ -561,21 +811,18 @@
                     </Record>
                 </Annotation>
             </Annotations>
-            <Annotations Target="ZPM_CHECKLIST001_SRV.SAP__Currency/CurrencyCode"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.SAP__Currency/CurrencyCode">
                 <Annotation Term="SAP__common.Text" Path="Text"/>
                 <Annotation Term="SAP__common.UnitSpecificScale" Path="DecimalPlaces"/>
                 <Annotation Term="SAP__CodeList.StandardCode" Path="ISOCode"/>
             </Annotations>
-            <Annotations Target="ZPM_CHECKLIST001_SRV.SAP__UnitOfMeasure/UnitCode"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.SAP__UnitOfMeasure/UnitCode">
                 <Annotation Term="SAP__common.Text" Path="Text"/>
                 <Annotation Term="SAP__common.UnitSpecificScale" Path="DecimalPlaces"/>
                 <Annotation Term="SAP__CodeList.StandardCode" Path="ISOCode"/>
                 <Annotation Term="SAP__CodeList.ExternalCode" Path="ExternalCode"/>
             </Annotations>
-            <Annotations Target="ZPM_CHECKLIST001_SRV.SAP__UnitOfMeasure"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.SAP__UnitOfMeasure">
                 <Annotation Term="SAP__core.AlternateKeys">
                     <Collection>
                         <Record>
@@ -591,16 +838,13 @@
                     </Collection>
                 </Annotation>
             </Annotations>
-            <Annotations Target="ZPM_CHECKLIST001_SRV.SAP__DocumentDescription/CreatedBy"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.SAP__DocumentDescription/CreatedBy">
                 <Annotation Term="SAP__core.Computed"/>
             </Annotations>
-            <Annotations Target="ZPM_CHECKLIST001_SRV.SAP__DocumentDescription/CreatedAt"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.SAP__DocumentDescription/CreatedAt">
                 <Annotation Term="SAP__core.Computed"/>
             </Annotations>
-            <Annotations Target="ZPM_CHECKLIST001_SRV.SAP__Format/Orientation"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.SAP__Format/Orientation">
                 <Annotation Term="SAP__common.ValueListReferences">
                     <Record>
                         <PropertyValue Property="Url" String="./$metadata"/>
@@ -609,8 +853,7 @@
                 </Annotation>
                 <Annotation Term="SAP__common.ValueListWithFixedValues"/>
             </Annotations>
-            <Annotations Target="ZPM_CHECKLIST001_SRV.SAP__TableColumns/HorizontalAlignment"
-                xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="ZPM_CHECKLIST001_SRV.SAP__TableColumns/HorizontalAlignment">
                 <Annotation Term="SAP__common.ValueListReferences">
                     <Record>
                         <PropertyValue Property="Url" String="./$metadata"/>
@@ -619,10 +862,8 @@
                 </Annotation>
                 <Annotation Term="SAP__common.ValueListWithFixedValues"/>
             </Annotations>
-            <atom:link rel="self" href="https://mrtwd1wd01.hec.jakartamrt.co.id:443/sap/opu/odata/sap/ZPM_CHECKLIST001_SRV/$metadata"
-                xmlns:atom="http://www.w3.org/2005/Atom"/>
-            <atom:link rel="latest-version" href="https://mrtwd1wd01.hec.jakartamrt.co.id:443/sap/opu/odata/sap/ZPM_CHECKLIST001_SRV/$metadata"
-                xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="http://mrtme1ap01.hec.jakartamrt.co.id:8011/sap/opu/odata/sap/ZPM_CHECKLIST001_SRV/$metadata"/>
+            <atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="http://mrtme1ap01.hec.jakartamrt.co.id:8011/sap/opu/odata/sap/ZPM_CHECKLIST001_SRV/$metadata"/>
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>

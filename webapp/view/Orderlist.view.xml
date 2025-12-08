@@ -46,7 +46,7 @@
                         <Title id="orderTitle" text="{i18n>checklistTableHeader}"/>
                         <ToolbarSpacer id="orspacer01"/>
                         <Button id="ordCreateBtn" text="Create" press="onCreate" tooltip="Create" visible="{displayModel>/createMode}"/>
-                        <Button id="ordChangeBtn" text="Change" press="onChange" tooltip="Change" visible="{displayModel>/changeMode}"/>
+                        <!-- <Button id="ordChangeBtn" text="Change" press="onChange" tooltip="Change" visible="{displayModel>/changeMode}"/> -->
                         <Button id="ordDisplayBtn" text="Display" press="onDisplay" tooltip="Display" visible="{displayModel>/displayMode}"/>
                     </OverflowToolbar>
                 </headerToolbar>
@@ -56,6 +56,11 @@
                             <Text id="orctxt01" text="Order No."/>
                         </header>
                     </Column>
+                    <Column id="ortbl01-col07">
+                        <header>
+                            <Text id="orctxt07" text="Basic Start"/>
+                        </header>
+                    </Column>
                     <Column id="ortbl01-col02">
                         <header>
                             <Text id="orctxt02" text="Order Type."/>
@@ -63,7 +68,7 @@
                     </Column>
                     <Column id="ortbl01-col03">
                         <header>
-                            <Text id="orctxt03" text="Planner Group."/>
+                            <Text id="orctxt03" text="Planer Group."/>
                         </header>
                     </Column>
                     <Column id="ortbl01-col04">
@@ -86,6 +91,7 @@
                     <ColumnListItem id="orcli001">
                         <cells>
                             <Text id="oritxt001" text="{pmOrderService>aufnr}"/>
+                            <Text id="oritxt007" text="{pmOrderService>gstrp}"/>
                             <Text id="oritxt002" text="{pmOrderService>auart}"/>
                             <Text id="oritxt003" text="{pmOrderService>ingpr}"/>
                             <Text id="oritxt004" text="{pmOrderService>ktext}"/>
