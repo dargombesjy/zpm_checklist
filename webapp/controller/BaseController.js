@@ -1,11 +1,11 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "zpmchecklist/control/Table02",
-    "zpmchecklist/model/formatter"
+    "zpmchecklist/model/validator"
     // "zpmchecklist/control/Column02",
     // "zpmchecklist/control/Row02",
     // "zpmchecklist/model/models"
-], function (Controller, Table02, formatter) {  //, Column02, Row02, models) {
+], function (Controller, Table02, validator) {  //, Column02, Row02, models) {
     "use strict";
 
     return Controller.extend("zpmchecklist.controller.BaseController", {
@@ -31,10 +31,7 @@ sap.ui.define([
                 justifyContent: "Start",
                 items: []
             });
-            const oColValueBox = new sap.m.HBox("colspan-container",{
-                // alignContent: "Start",
-                // justifyContent: "Start",
-                // items: [],
+            const oColValueBox = new sap.m.HBox("colspan-container", {
                 layoutData: [new sap.m.FlexItemData({ baseSize: "40%", growFactor: 1, shrinkFactor: 1 })]
             });
 
@@ -78,11 +75,10 @@ sap.ui.define([
                     });
                     oColumn.addItem(colLabel);
                 }
-
-
             }
             oTable.setColumn(oColumn);   // end set column
 
+            const oNewRowModel = this.getView().getModel("oNewRowModel");
             for (let taskData of oData) {
                 // start build json model for rows
                 const oRow = new sap.m.HBox({
@@ -91,19 +87,21 @@ sap.ui.define([
                     items: []
                 });
 
-                const sRowModelName = taskData.aufpl + "_" + taskData.aplzl;
 
+                const sRowModelName = taskData.aufpl + "_" + taskData.aplzl;
                 const oRowModel = this.getView().getModel(sRowModelName);
                 if (oRowModel != undefined) {
-                    const oRowData = oRowModel.getData();
                     oRow.setModel(oRowModel);
                     oRow.bindElement({ path: "/" });
                 }
-                // const oTestData = oRowModel.getData();  //testing purpose
+                // let sPath = "oNewRowModel>/" + sRowModelName;
+                // oRow.bindElement({
+                //     path: sPath,
+                //     // model: "oNewRowModel"
+                // });
+
+                // container for item values
                 const oValueBox = new sap.m.HBox({
-                    // alignContent: "Start",
-                    // justifyContent: "Start",
-                    // items: [],
                     layoutData: [new sap.m.FlexItemData({ baseSize: "40%", growFactor: 1, shrinkFactor: 1 })]
                 });
 
@@ -115,26 +113,34 @@ sap.ui.define([
                     let flexShrink = parseFloat(colData.col_shrink === "" ? 0 : colData.col_shrink);
                     let colBasis = colData.col_basis || "auto";
                     let cellKey = colData.col_name;
+
                     if (colData.col_type == "L") {
                         oCell = new sap.m.Text({
                             text: taskData[colData.col_name],
                             layoutData: [new sap.m.FlexItemData({ baseSize: colBasis, growFactor: flexGrow, shrinkFactor: flexShrink })]
                         });
-
+                        if (taskData.steus == "INT1") {
+                            oCell.addStyleClass("group-header");
+                        }
                         if (taskData.ref_image) {
-                            const oCellwithImage = new sap.m.VBox();
+                            const oCellwithImage = new sap.m.VBox({
+                                layoutData: [new sap.m.FlexItemData({ baseSize: colBasis, growFactor: flexGrow, shrinkFactor: flexShrink })]
+                            });
                             oCellwithImage.addItem(oCell);
 
                             const oImage = new sap.m.Image({
-                                src: "{" + taskData.ref_image + "}",
-                                width: "30px",
+                                src: "{/ref_image}",
+                                alt: "Reference Image",
+                                height: "30px",
                                 densityAware: false,
                                 decorative: false,
                                 // layoutData: [new sap.m.FlexItemData({ alignSelf: "Center" })]
                                 detailBox: new sap.m.LightBox({
-                                    imageSrc: "{" + taskData.ref_image + "}",
-                                    title: "Image Detail",
-                                    description: "Detailed view of the image."
+                                    imageContent: [new sap.m.LightBoxItem({
+                                        imageSrc: "{/ref_image}",
+                                        title: "Referensi gambar",
+                                        // description: "Detailed view of the image."
+                                    })]
                                 })
                             });
                             oCellwithImage.addItem(oImage);
@@ -144,7 +150,6 @@ sap.ui.define([
                         }
                     } else if (colData.col_type == 'A') {
                         if (taskData.steus == "INT") {
-                            // if (this.getView().getModel("oViewModel").getProperty("/allowEdit")) {
                             oCell = new sap.m.TextArea({
                                 value: "{/values/" + cellKey + "/sval}",
                                 placeholder: "Entry value..",
@@ -173,12 +178,23 @@ sap.ui.define([
                                             value: "{/values/" + el + "/sval}", type: "Number", required: true,
                                             placeholder: "Measure", enabled: { path: "oViewModel>/allowEdit" }
                                         });
+                                    } else if (el == "lower_limit" && taskData.lower_limit.length > 0) {
+                                        oCell = new sap.m.Text({
+                                            text: "Min: {/values/" + el + "/sval}" + taskData.atawe, textAlign: "Center",
+                                            layoutData: [new sap.m.FlexItemData({ alignSelf: "Center" })]
+                                        });
+                                    } else if (el == "upper_limit" && taskData.upper_limit.length > 0) {
+                                        oCell = new sap.m.Text({
+                                            text: "Max: {/values/" + el + "/sval}" + taskData.atawe, textAlign: "Center",
+                                            layoutData: [new sap.m.FlexItemData({ alignSelf: "Center" })]
+                                        });
                                     } else {
                                         oCell = new sap.m.Text({
                                             text: "{/values/" + el + "/sval}", textAlign: "Center",
                                             layoutData: [new sap.m.FlexItemData({ alignSelf: "Center" })]
                                         });
                                     }
+
                                     oCell.setLayoutData(new sap.m.FlexItemData({ baseSize: "25%", growFactor: 1 }));
                                     oValueBox.addItem(oCell);
                                     skipForMpoint = true;
@@ -187,7 +203,35 @@ sap.ui.define([
                         }
 
                         if (!skipForMpoint) {
-                            if (taskData.steus == "INT1" || sFound) {
+                            if (taskData.steus == "INT1") {
+                                if (this.getView().getModel("oViewModel").getProperty("/allowEdit")) {
+                                    oCell = new sap.m.ComboBox({
+                                        width: colBasis,
+                                        enabled: { path: "oViewModel>/allowEdit" },
+                                        // selectedKey: "{/values/" + cellKey + "/sval}",
+                                        selectionChange: this._onGroupCategorySelect.bind(this),
+                                        layoutData: [new sap.m.FlexItemData({ baseSize: colBasis, growFactor: flexGrow })],
+                                        customData: [
+                                            new sap.ui.core.CustomData({ key: "category", value: taskData.category }),
+                                            new sap.ui.core.CustomData({ key: "colname", value: cellKey })
+                                        ]
+                                    });
+                                    let oItemTemplate = new sap.ui.core.Item({
+                                        key: "{oViewModel>key}",
+                                        text: "{oViewModel>text}"
+                                    })
+                                    oCell.bindAggregation("items", {
+                                        path: "oViewModel>/list",
+                                        template: oItemTemplate
+                                    });
+                                    oCell.addStyleClass("group-header");
+                                } else {
+                                    oCell = new sap.m.Text({
+                                        text: "",
+                                        layoutData: [new sap.m.FlexItemData({ baseSize: colBasis, growFactor: flexGrow, shrinkFactor: flexShrink })]
+                                    });
+                                }
+                            } else if (sFound) {
                                 oCell = new sap.m.ComboBox({
                                     width: colBasis,
                                     enabled: { path: "oViewModel>/allowEdit" },
@@ -239,7 +283,8 @@ sap.ui.define([
                             new sap.m.HBox({
                                 width: "50%",
                                 items: [
-                                    new sap.m.Text({ text: "Order",
+                                    new sap.m.Text({
+                                        text: "Order",
                                         layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 1 })]
                                     }),
                                     new sap.m.Text({
@@ -254,7 +299,8 @@ sap.ui.define([
                                     new sap.m.Text({
                                         text: "Functional Location", layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 1 })]
                                     }),
-                                    new sap.m.Text({ text: "{oChecklistHeaderModel>/Tplma} {oChecklistHeaderModel>/pltxt}",
+                                    new sap.m.Text({
+                                        text: "{oChecklistHeaderModel>/Tplma} {oChecklistHeaderModel>/pltxt}",
                                         layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 2 })]
                                     })
                                 ]
@@ -275,19 +321,23 @@ sap.ui.define([
                                     new sap.m.HBox({
                                         width: "50%",
                                         items: [
-                                            new sap.m.Text({ text: "Planner Group", layoutData:
-                                                [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 1 })]
+                                            new sap.m.Text({
+                                                text: "Planner Group", layoutData:
+                                                    [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 1 })]
                                             }),
-                                            new sap.m.Text({ text: "{oChecklistHeaderModel>/ingpr} {oChecklistHeaderModel>/innam}",
+                                            new sap.m.Text({
+                                                text: "{oChecklistHeaderModel>/ingpr} {oChecklistHeaderModel>/innam}",
                                                 layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 2 })]
                                             })]
                                     }),
                                     new sap.m.HBox({
                                         width: "50%",
                                         items: [
-                                            new sap.m.Text({ text: "Actual Start",
-                                                layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 0 })] }),
-                                            new sap.m.DateTimePicker({
+                                            new sap.m.Text({
+                                                text: "Actual Start",
+                                                layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 0 })]
+                                            }),
+                                            new sap.m.DateTimePicker("pick-gstri", {
                                                 value: {
                                                     path: "oChecklistModel>/gstri",
                                                     type: "sap.ui.model.type.DateTime"
@@ -300,6 +350,7 @@ sap.ui.define([
                                                     // }
                                                 },
                                                 // displayFormat: "medium",
+                                                change: this._onActualDateChange.bind(this),
                                                 enabled: { path: "oViewModel>/allowEdit" },
                                                 width: "100%",
                                                 layoutData: [new sap.m.FlexItemData({ baseSize: "60%", growFactor: 0 })]
@@ -313,17 +364,23 @@ sap.ui.define([
                                     new sap.m.HBox({
                                         width: "50%",
                                         items: [
-                                            new sap.m.Text({ text: "Work Center",
-                                                layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 1 })] }),
-                                            new sap.m.Text({ text: "{oChecklistHeaderModel>/arbpl} {oChecklistHeaderModel>/Cktext}",
-                                                layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 2 })] })]
+                                            new sap.m.Text({
+                                                text: "Work Center",
+                                                layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 1 })]
+                                            }),
+                                            new sap.m.Text({
+                                                text: "{oChecklistHeaderModel>/arbpl} {oChecklistHeaderModel>/Cktext}",
+                                                layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 2 })]
+                                            })]
                                     }),
                                     new sap.m.HBox({
                                         width: "50%",
                                         items: [
-                                            new sap.m.Text({text: "Actual Finish.", 
-                                                layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 0 })] }),
-                                            new sap.m.DateTimePicker({
+                                            new sap.m.Text({
+                                                text: "Actual Finish.",
+                                                layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 0 })]
+                                            }),
+                                            new sap.m.DateTimePicker("pick-gltri", {
                                                 value: {
                                                     path: "oChecklistModel>/gltri",
                                                     type: "sap.ui.model.type.DateTime",
@@ -336,6 +393,7 @@ sap.ui.define([
                                                     // }
                                                 },
                                                 // displayFormat: "short",
+                                                change: this._onActualDateChange.bind(this),
                                                 enabled: { path: "oViewModel>/allowEdit" },
                                                 width: "100%",
                                                 layoutData: [new sap.m.FlexItemData({ baseSize: "60%", growFactor: 0 })]
@@ -351,7 +409,7 @@ sap.ui.define([
             // oHeader.setModel(this.getView().getModel("oChecklistHeaderModel"));
             // oHeader.bindElement({ path: "/" });
 
-            const oLeaders = new Table02("tableLeaders", {
+            const oLeaders = new Table02("table-leaders", {
                 title: "Inspector (Leader)",
                 showTitle: true,
                 headerToolbar: new sap.m.Toolbar({
@@ -372,21 +430,22 @@ sap.ui.define([
                         items: [
                             new sap.m.Text({
                                 text: "Name",
-                                layoutData: [new sap.m.FlexItemData({ baseSize: "40%", growFactor: 0 })]
+                                layoutData: [new sap.m.FlexItemData({ baseSize: "50%", growFactor: 0 })]
                             }),
                             new sap.m.Text({
                                 text: "Title",
-                                layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 0 })]
+                                layoutData: [new sap.m.FlexItemData({ baseSize: "40%", growFactor: 0 })]
                             }),
                             new sap.m.Text({
-                                text: "Signature",
-                                layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 0 })]
+                                text: "",
+                                layoutData: [new sap.m.FlexItemData({ baseSize: "10%", growFactor: 0 })]
                             })
                         ]
                     })
                 ],
                 rows: {
                     path: "oChecklistModel>/to_Partner/results",
+                    filters: [new sap.ui.model.Filter("loekz", sap.ui.model.FilterOperator.NE, "X")],
                     template: new sap.m.HBox({
                         alignContent: "Start",
                         justifyContent: "SpaceAround",
@@ -402,18 +461,23 @@ sap.ui.define([
                                     }),
                                     templateShareable: false
                                 },
-                                selectedKey: "{oChecklistModel>bp_name}",
+                                selectedKey: "{oChecklistModel>bp_id}",
                                 selectionChange: this.onLeaderChange.bind(this),
-                                layoutData: [new sap.m.FlexItemData({ baseSize: "40%", growFactor: 0 })]
+                                layoutData: [new sap.m.FlexItemData({ baseSize: "50%", growFactor: 0 })]
                             }),
                             new sap.m.Text({
                                 text: "{oChecklistModel>bp_func}", textAlign: "Center",
-                                layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 0 })]
+                                layoutData: [new sap.m.FlexItemData({ baseSize: "40%", growFactor: 0 })]
                             }),
-                            new sap.m.Text({
-                                text: "",
-                                layoutData: [new sap.m.FlexItemData({ baseSize: "30%", growFactor: 0 })]
+                            new sap.m.Button({
+                                icon: "sap-icon://delete",
+                                visible: { path: "oViewModel>/allowEdit" },
+                                press: this.onDelLeaderPress.bind(this)
                             })
+                            // new sap.m.Text({
+                            //     text: "",
+                            //     layoutData: [new sap.m.FlexItemData({ baseSize: "10%", growFactor: 0 })]
+                            // })
                         ]
                     }),
                     templateShareable: false
@@ -625,15 +689,6 @@ sap.ui.define([
                 filters: [new sap.ui.model.Filter("bp_id", sap.ui.model.FilterOperator.EQ, sSelectedKey)],
                 success: function (oData) {
                     const oSelectedPartner = oData.results.find(partner => partner.bp_id === sSelectedKey);
-                    // Update the selected approver's details
-                    // for (let i = 0; i < aApprovers.length; i++) {
-                    //     if (aApprovers[i].bp_name === sSelectedKey) {
-                    //         aApprovers[i].bp_id = oSelectedPartner.bp_id;
-                    //         aApprovers[i].bp_func = oSelectedPartner.bp_func;
-                    //         // aApprovers[i].bp_position = oSelectedPartner.bp_position;
-                    //         break;
-                    //     }
-                    // }
 
                     let iIndex = 0;
                     if (sComboBoxId.endsWith("approver1-cmb")) {
@@ -642,19 +697,6 @@ sap.ui.define([
                         iIndex = 1;
                     } else if (sComboBoxId.endsWith("approver3-cmb")) {
                         iIndex = 2;
-                    }
-                    if (iIndex >= aApprovers.length) {
-                        // If the index is out of bounds, add a new approver entry
-                        aApprovers.push({
-                            chkid: "",
-                            chkno: "",
-                            aufnr: "",
-                            itemno: iIndex + 1,
-                            bp_id: "",
-                            bp_name: "",
-                            bp_func: "",
-                            bp_position: "approver"
-                        });
                     }
                     aApprovers[iIndex].bp_id = oSelectedPartner.bp_id;
                     aApprovers[iIndex].bp_name = oSelectedPartner.bp_name;
@@ -672,6 +714,12 @@ sap.ui.define([
             const sSelectedKey = oEvent.getParameter("selectedItem").getKey();
             const oChecklistModel = this.getView().getModel("oChecklistModel");
             const aLeaders = oChecklistModel.getProperty("/to_Partner/results");
+            let aExist = aLeaders.filter(function (el) {
+                return el.bp_name.length > 0 && el.bp_id == sSelectedKey;
+            });
+            if (aExist.length > 0) {
+                sap.m.MessageBox.error("Nama Leader sudah dipakai");
+            }
             const oPartnerVHModel = this.getView().getModel("partnerVH");
             // const aPartners = oPartnerVHModel.getProperty("/ZC_PM0001_Partners_VH");
             oPartnerVHModel.read("/ZC_PM0001_Partners_VH", {
@@ -680,8 +728,9 @@ sap.ui.define([
                     const oSelectedPartner = oData.results.find(partner => partner.bp_id === sSelectedKey);
                     // Update the selected leader's details
                     for (let i = 0; i < aLeaders.length; i++) {
-                        if (aLeaders[i].bp_name === sSelectedKey) {
+                        if (aLeaders[i].bp_id === sSelectedKey) {
                             aLeaders[i].bp_id = oSelectedPartner.bp_id;
+                            aLeaders[i].bp_name = oSelectedPartner.bp_name;
                             aLeaders[i].bp_func = oSelectedPartner.bp_func;
                             // aLeaders[i].bp_position = oSelectedPartner.bp_position;
                             break;
@@ -695,28 +744,77 @@ sap.ui.define([
             });
         },
 
-        onAddLeaderPress: function () {
+        onAddLeaderPress: function (oEvent) {
             const oChecklistModel = this.getView().getModel("oChecklistModel");
             const aLeaders = oChecklistModel.getProperty("/to_Partner/results");
-            if (aLeaders.length >= 9) {
-                sap.m.MessageToast.show("Maximum of 9 inspectors allowed.");
+            let sFound = "";
+            for (let i = 0; i < aLeaders.length; i++) {
+                let oLead = aLeaders[i]
+                if (oLead.loekz == "X") {
+                    aLeaders[i].loekz = "";
+                    oChecklistModel.setProperty("/to_Partner/results", aLeaders);
+                    sFound = "X";
+                    break;
+                }
+            }
+            if (sFound != "X") {
+                sap.m.MessageToast.show("Jumlah inspector sudah maksimum.");
                 return;
             }
-            const oLeader = {
-                chkid: "",
-                chkno: "",
-                aufnr: "",
-                itemno: aLeaders.length + 1,
-                bp_id: "",
-                bp_name: "",
-                bp_func: "",
-                bp_position: "leader",
-                keydate: "",
-                start_time: "",
-                finish_time: ""
+            // const oView = this.getView();
+            const oTblLeader = sap.ui.getCore().byId("table-leaders");
+            const oBind = oTblLeader.getBinding("rows");
+            if (oBind) {
+                oBind.refresh(true);
             }
-            aLeaders.push(oLeader);
-            oChecklistModel.setProperty("/to_Partner/results", aLeaders);
+        },
+
+        onDelLeaderPress: function (oEvent) {
+            const oParent = oEvent.getSource().getParent();
+            const oChecklistModel = this.getView().getModel("oChecklistModel");
+            const oContext = oParent.getBindingContext("oChecklistModel");
+            const sPath = oContext.getPath();
+            if (sPath) {
+                let oObject = oChecklistModel.getProperty(sPath);
+                oObject.bp_id = "";
+                oObject.bp_name = "";
+                oObject.loekz = "X";
+                oChecklistModel.setProperty(sPath, oObject)
+                const oTblLeader = sap.ui.getCore().byId("table-leaders");
+                const oBind = oTblLeader.getBinding("rows");
+                if (oBind) {
+                    oBind.refresh(true);
+                }
+            }
+        },
+
+        _onGroupCategorySelect: function (oEvent) {
+            let oSelectedKey = oEvent.getParameter("selectedItem").getKey();
+            let oCmbBox = oEvent.getSource();
+            let sCategory = oCmbBox.data("category");
+            let sColname = oCmbBox.data("colname");
+
+            let aGroup = this._aRowModels.filter(function (el) {
+                return el.category == sCategory;
+            })
+
+            if (aGroup.length > 0) {
+                for (let rowModel of aGroup) {
+                    const sRowModelName = rowModel.aufpl + "_" + rowModel.aplzl;
+                    const oRowModel = this.getView().getModel(sRowModelName);
+                    let sPropName = "/values/" + sColname + "/sval";
+                    oRowModel.setProperty(sPropName, oSelectedKey);
+                }
+            }
+        },
+
+        _onActualDateChange: function (oEvent) {
+            let oSource = oEvent.getSource();
+            let sDateString = oSource.getValue();
+
+            if (validator.dateIsFuture(sDateString)) {
+                sap.m.MessageBox.error("Tanggal Actual tidak boleh di masa datang");
+            }
         }
     });
 });

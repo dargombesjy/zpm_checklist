@@ -1,7 +1,9 @@
 sap.ui.define([
+    "sap/ui/core/BusyIndicator",
     "zpmchecklist/controller/BaseController",
-    "zpmchecklist/model/models"
-], function (BaseController, models) {
+    "zpmchecklist/model/models",
+    "zpmchecklist/model/validator"
+], function (BusyIndicator, BaseController, models, validator) {
     "use strict";
 
     return BaseController.extend("zpmchecklist.controller.Create", {
@@ -12,6 +14,85 @@ sap.ui.define([
             oRouter.getRoute("create").attachMatched(this._onRouteMatched, this);
         },
 
+        _onRouteMatched: function (oEvent) {
+            const oArgs = oEvent.getParameter("arguments");
+            const oViewData = {
+                list: [{ key: "Y", text: "Y" }, { key: "N", text: "N" }],
+                aufnr: oArgs.aufnr,
+                isNew: true,
+                allowEdit: true,
+                viewMode: "create"
+            };
+            const oJsonModel = models.createJSONModelOne(oViewData);
+            this.getView().setModel(oJsonModel, "oViewModel");
+
+            const oChecklistData = {
+                aufnr: oViewData.aufnr,
+                chkty: "A",
+                cstat: "N",
+                cvhid: this._oChecklistHeader.cvhid,
+                gstri: null,
+                gltri: null,
+                loekz: "",
+                IsActiveEntity: true,
+                to_Item: [],
+                to_Partner: {
+                    results: [],
+                },
+                to_Approver: {
+                    results: [],
+                },
+                to_Attachment: {
+                    results: []
+                }
+            }
+
+            for (let i = 0; i < 9; i++) {
+                let itemno = i + 1;
+                oChecklistData.to_Partner.results.push({
+                    chkid: "",
+                    chkno: "",
+                    aufnr: "",
+                    itemno: itemno,
+                    bp_id: "",
+                    bp_name: "",
+                    bp_func: "",
+                    bp_position: "leader",
+                    loekz: "X"
+                });
+            }
+
+            for (let i = 0; i < 3; i++) {
+                oChecklistData.to_Attachment.results.push({
+                    chkid: "",
+                    chkno: "",
+                    aufnr: oViewData.aufnr,
+                    itemno: i.toString(),
+                    att_type: "",
+                    obj_type: "BUS2007",   //PMAUFK
+                    att_url: "",
+                    att_bin: ""
+                });
+            }
+
+            for (let i = 0; i < 3; i++) {
+                let itemno = i + 1;
+                oChecklistData.to_Approver.results.push({
+                    aufnr: oViewData.aufnr,
+                    itemno: itemno.toString(),
+                    bp_id: "",
+                    bp_name: "",
+                    bp_func: "",
+                    bp_position: ""
+                });
+            }
+
+            const oChecklistModel = models.createJSONModel(oChecklistData);
+            this.getView().setModel(oChecklistModel, "oChecklistModel");
+
+            this._buildContent();
+        },
+
         _buildContent: async function () {
             // const oComponent = this.getOwnerComponent();
             const oView = this.getView();
@@ -19,52 +100,74 @@ sap.ui.define([
             const oViewModel = oView.getModel("oViewModel");
             const sAufnr = oViewModel.getProperty("/aufnr");
 
-            try {
-                const oDataHeader = await new Promise(function (resolve, reject) {
-                    oModel.read("/ViewHeaderSet(ingpr='',aufnr='" + sAufnr + "')", {
-                        urlParameters: {
-                            "$expand": "toColumn"
-                        },
-                        success: function (oData) {
-                            resolve(oData);
-                        },
-                        error: function (oError) {
-                            reject(oError);
-                        }
-                    });
+            const that = this;
+            // try {
+            const oDataHeader = await new Promise(function (resolve, reject) {
+                oModel.read("/ViewHeaderSet(ingpr='',aufnr='" + sAufnr + "')", {
+                    urlParameters: {
+                        "$expand": "toColumn"
+                    },
+                    success: function (oData) {
+                        resolve(oData);
+                    },
+                    error: function (oError) {
+                        var sErrorMessage = JSON.parse(oError.responseText).error.message.value;
+                        sap.m.MessageBox.show(sErrorMessage, {
+                            icon: sap.m.MessageBox.Icon.ERROR,
+                            title: "Validation Error",
+                            actions: [sap.m.MessageBox.Action.OK],
+                            onClose: function () {
+                                that.onBack();
+                            }
+                        });
+                        // reject(oError);
+                    }
                 });
-                this._oChecklistHeader = oDataHeader;
-                const oChecklistHeaderModel = models.createJSONModel(oDataHeader);
-                this.getView().setModel(oChecklistHeaderModel, "oChecklistHeaderModel");
+            });
 
-            } catch (error) {
-                console.error(error);
-            }
+            this._oChecklistHeader = oDataHeader;
+            const oChecklistHeaderModel = models.createJSONModel(oDataHeader);
+            this.getView().setModel(oChecklistHeaderModel, "oChecklistHeaderModel");
 
-            try {
-                const oDataItems = await new Promise(function (resolve, reject) {
-                    oModel.read("/ViewItemSet", {
-                        filters: [
-                            new sap.ui.model.Filter("aufnr", sap.ui.model.FilterOperator.EQ, sAufnr)
-                        ],
-                        success: function (oData) {
-                            resolve(oData.results);
-                        },
-                        error: function (oError) {
-                            reject(oError);
-                        }
-                    });
+            // } catch (oError) {
+            //     var sErrorMessage = JSON.parse(oError.responseText).error.message.value;
+            //     sap.m.MessageBox.show(sErrorMessage, {
+            //         icon: sap.m.MessageBox.Icon.ERROR,
+            //         title: "Validation Error",
+            //         actions: [sap.m.MessageBox.Action.OK],
+            //         onClose: function () {
+            //             this.onBack();
+            //         }
+            //     });
+            // }
+
+            BusyIndicator.show(10);
+            // try {
+            const oDataItems = await new Promise(function (resolve, reject) {
+                oModel.read("/ViewItemSet", {
+                    filters: [
+                        new sap.ui.model.Filter("aufnr", sap.ui.model.FilterOperator.EQ, sAufnr)
+                    ],
+                    success: function (oData) {
+                        resolve(oData.results);
+                        BusyIndicator.hide();
+                    },
+                    error: function (oError) {
+                        reject(oError);
+                        BusyIndicator.hide();
+                    }
                 });
+            });
 
-                oDataItems.sort(function (a, b) {
-                    return a.vornr - b.vornr;
-                });
+            oDataItems.sort(function (a, b) {
+                return a.vornr - b.vornr;
+            });
+            // } catch (error) {
+            //     console.error(error);
+            // }
 
-                this._buildCreateModel(oDataItems);
-                this._setupPage(oDataItems);
-            } catch (error) {
-                console.error(error);
-            }
+            this._buildCreateModel(oDataItems);
+            this._setupPage(oDataItems);
         },
 
         _setupPage: function (oData) {
@@ -127,19 +230,43 @@ sap.ui.define([
             const oViewModel = oView.getModel("oViewModel");
             const oChecklistModel = oView.getModel("oChecklistModel");
 
-            // var oDateFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
-            //     pattern: "YYYYMMDDHHmmss"
-            // });
-            // var sSapTimestamp = oDateFormat.format(oDate);
-            // // sSapTimestamp will be something like "20251203084800"
+            let sGstri = oChecklistModel.getProperty("/gstri");
+            let sGltri = oChecklistModel.getProperty("/gltri");
+            if (validator.dateIsFuture(sGstri)) {
+                sap.m.MessageBox.error("Actual Start tidak boleh di masa datang");
+                return;
+            }
+            if (validator.dateIsFuture(sGltri)) {
+                sap.m.MessageBox.error("Actual Finish tidak boleh di masa datang");
+                return;
+            }
+            if (validator.startDateIsLater(sGstri, sGltri)) {
+                sap.m.MessageBox.error("Actual Start tidak boleh setelah Actual Finish");
+                return;
+            }
+
+            let firstApprover = oChecklistModel.getProperty("/to_Approver/results/0/bp_name");
+            if (!firstApprover.length > 0) {
+                sap.m.MessageBox.error("Harus ada Checked By");
+                return;
+            }
+
+            let defPartner = oChecklistModel.getProperty("/to_Partner/results").filter(function(el) {
+                return el.loekz == "";
+            });
+
+            if (defPartner.length == 0) {
+                sap.m.MessageBox.error("Setidaknya harus ada 1 Leader");
+                return;
+            }
 
             const oNewChecklist = {
                 aufnr: oViewModel.getProperty("/aufnr"),
                 chkty: "A",
                 cstat: "N",
                 cvhid: this._oChecklistHeader.cvhid,
-                gstri: oChecklistModel.getProperty("gstri"),
-                gltri: oChecklistModel.getProperty("gltri"),
+                gstri: sGstri,
+                gltri: sGltri,
                 // loekz: oChecklistModel.loekz,
                 IsActiveEntity: true
             };
@@ -157,6 +284,10 @@ sap.ui.define([
                 itemPos += 1;
                 let itemNumber = 0;
                 for (let val in oRowData.values) {
+                    if (val != "remark" && val.sval == "") {
+                        sap.m.MessageBox.error("Ada field yang belum terisi");
+                        return;
+                    }
                     itemNumber += 1;
                     const oNewItem = {
                         aufpl: oRowData.aufpl,
@@ -184,25 +315,23 @@ sap.ui.define([
                     bp_id: oPartner.bp_id,
                     bp_name: oPartner.bp_name,
                     bp_func: oPartner.bp_func,
-                    // keydate: oPartner.keydate,
-                    // start_time: oPartner.start_time,
-                    // finish_time: oPartner.finish_time,
+                    loekz: oPartner.loekz, 
                     IsActiveEntity: true
                 };
                 oNewChecklist.to_Partner.push(oNewPartner);
                 // }
             }
-            if (itemNumber <= 0) {
-                sap.m.MessageBox.show("Setidaknya harus ada 1 Leader", {
-                    icon: sap.m.MessageBox.Icon.ERROR,
-                    title: "Validation Error",
-                    actions: [sap.m.MessageBox.Action.OK],
-                    // onClose: function () {
-                    //     // that.onBack();
-                    // }
-                });
-                return;
-            }
+            // if (itemNumber <= 0) {
+            //     sap.m.MessageBox.show("Setidaknya harus ada 1 Leader", {
+            //         icon: sap.m.MessageBox.Icon.ERROR,
+            //         title: "Validation Error",
+            //         actions: [sap.m.MessageBox.Action.OK],
+            //         // onClose: function () {
+            //         //     // that.onBack();
+            //         // }
+            //     });
+            //     return;
+            // }
 
             itemNumber = 0;
             for (let oApprover of oChecklistModel.getProperty("/to_Approver/results")) {
@@ -260,75 +389,11 @@ sap.ui.define([
                             that.onBack();
                         }
                     });
-                    // that.onBack();
                 },
                 error: function (oError) {
                     sap.m.MessageBox.error("Error creating checklist.");
                 }
             });
-        },
-
-        _onRouteMatched: function (oEvent) {
-            const oArgs = oEvent.getParameter("arguments");
-            const oViewData = {
-                list: [{ key: "Y", text: "Y" }, { key: "N", text: "N" }],
-                aufnr: oArgs.aufnr,
-                isNew: true,
-                allowEdit: true,
-                viewMode: "create"
-            };
-            const oJsonModel = models.createJSONModelOne(oViewData);
-            this.getView().setModel(oJsonModel, "oViewModel");
-
-            const oChecklistData = {
-                aufnr: oViewData.aufnr,
-                chkty: "A",
-                cstat: "N",
-                cvhid: this._oChecklistHeader.cvhid,
-                gstri: "",
-                gltri: "",
-                loekz: "",
-                IsActiveEntity: true,
-                to_Item: [],
-                to_Partner: {
-                    results: [],
-                },
-                to_Approver: {
-                    results: [],
-                },
-                to_Attachment: {
-                    results: []
-                }
-            }
-
-            for (let i = 0; i < 3; i++) {
-                oChecklistData.to_Attachment.results.push({
-                    chkid: "",
-                    chkno: "",
-                    aufnr: oViewData.aufnr,
-                    itemno: i.toString(),
-                    att_type: "",
-                    obj_type: "BUS2007",   //PMAUFK
-                    att_url: "",
-                    att_bin: ""
-                });
-            }
-
-            for (let i = 0; i < 3; i++) {
-                oChecklistData.to_Approver.results.push({
-                    aufnr: oViewData.aufnr,
-                    itemno: i.toString(),
-                    bp_id: "",
-                    bp_name: "",
-                    bp_func: "",
-                    bp_position: ""
-                });
-            }
-
-            const oChecklistModel = models.createJSONModel(oChecklistData);
-            this.getView().setModel(oChecklistModel, "oChecklistModel");
-
-            this._buildContent();
         },
 
         onBack: function (oEvent) {
@@ -342,19 +407,20 @@ sap.ui.define([
         },
 
         _buildCreateModel: function (oDataItems) {
-            // const aItemCopy = oDataItems.slice();
-            // oData.sort(function (a, b) { return a.vornr - b.vornr });
             let iItemPos = 0;
+            let aRowModel = {};
             for (let taskData of oDataItems) {
                 // start build json model for rows
                 if (taskData.steus == 'INT1') continue;
                 iItemPos += 1;
                 let oRowObject = {
+                    category: taskData.category,
                     aufpl: taskData.aufpl,
                     aplzl: taskData.aplzl,
                     itempos: iItemPos,
                     sumnr: taskData.sumnr,
                     ref_mpoint: taskData.ref_mpoint,
+                    ref_image: taskData.ref_image,
                     values: {}
                 };
 
@@ -400,16 +466,19 @@ sap.ui.define([
                         }
                     }
                 }
-
                 const oRowJsonModel = models.createJSONModel(oRowObject);
                 let sModelName = taskData.aufpl + "_" + taskData.aplzl;
                 this.getView().setModel(oRowJsonModel, sModelName);
                 this._aRowModels.push({
                     aufpl: taskData.aufpl,
                     aplzl: taskData.aplzl,
-                    name: sModelName
+                    name: sModelName,
+                    category: taskData.category
                 });
+                aRowModel[sModelName] = oRowObject;
             };
+            const oNewRowModel = models.createJSONModel(aRowModel);
+            this.getView().setModel(oNewRowModel, "oNewRowModel");
         }
     });
 });

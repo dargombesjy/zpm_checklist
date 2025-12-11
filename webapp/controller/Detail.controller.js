@@ -1,8 +1,9 @@
 sap.ui.define([
     "sap/ui/core/BusyIndicator",
     "zpmchecklist/controller/BaseController",
-    "zpmchecklist/model/models"
-], function (BusyIndicator, BaseController, models) {
+    "zpmchecklist/model/models",
+    "zpmchecklist/model/validator"
+], function (BusyIndicator, BaseController, models, validator) {
     "use strict";
 
     return BaseController.extend("zpmchecklist.controller.Detail", {
@@ -17,12 +18,10 @@ sap.ui.define([
             const oViewData = {
                 list: [{ key: "Y", text: "Y" }, { key: "N", text: "N" }],
                 aufnr: oArgs.aufnr,
-                isNew: false,
+                isApproved: true,
                 allowEdit: false,
-                allowPost: true,
-                viewMode: "display",
-                gstri: "",
-                gltri: ""
+                allowPost: false,
+                viewMode: "display"
             };
             const oJsonModel = models.createJSONModel(oViewData);
             this.getView().setModel(oJsonModel, "oViewModel");
@@ -37,89 +36,96 @@ sap.ui.define([
             const oViewModel = oView.getModel("oViewModel");
             const sAufnr = oViewModel.getProperty("/aufnr");
 
-            try {
-                const oDataHeader = await new Promise(function (resolve, reject) {
-                    oModel.read("/ViewHeaderSet(ingpr='',aufnr='" + sAufnr + "')", {
-                        urlParameters: {
-                            "$expand": "toColumn"
-                        },
-                        success: function (oData) {
-                            resolve(oData);
-                        },
-                        error: function (oError) {
-                            reject(oError);
-                        }
-                    });
+            // try {
+            const oDataHeader = await new Promise(function (resolve, reject) {
+                oModel.read("/ViewHeaderSet(ingpr='',aufnr='" + sAufnr + "')", {
+                    urlParameters: {
+                        "$expand": "toColumn"
+                    },
+                    success: function (oData) {
+                        resolve(oData);
+                    },
+                    error: function (oError) {
+                        reject(oError);
+                    }
                 });
-                this._oChecklistHeader = oDataHeader;
-                const oChecklistHeaderModel = models.createJSONModel(oDataHeader);
-                this.getView().setModel(oChecklistHeaderModel, "oChecklistHeaderModel");
-
-            } catch (error) {
-                console.error(error);
-            }
-
-            try {
-                const oDataChecklist = await new Promise(function (resolve, reject) {
-                    BusyIndicator.show(10);
-                    oModel.read("/ZC_PMChecklistHeader", {
-                        filters: [
-                            new sap.ui.model.Filter("aufnr", sap.ui.model.FilterOperator.EQ, sAufnr),
-                            new sap.ui.model.Filter("IsActiveEntity", sap.ui.model.FilterOperator.EQ, "true")
-                        ],
-                        urlParameters: {
-                            "$expand": "to_Item,to_Partner,to_Approver,to_Attachment"
-                        },
-                        success: function (oData) {
-                            resolve(oData.results);
-                            BusyIndicator.hide();
-                        },
-                        error: function (oError) {
-                            BusyIndicator.hide();
-                            reject(oError);
-
-                        }
-                    });
-                });
-                this._oChecklistData = oDataChecklist[0];
-                if (this._oChecklistData.cstat == "A") {
-                    oViewModel.setProperty("/allowEdit", false);
-                    oViewModel.setProperty("/allowPost", false);
+            });
+            this._oChecklistHeader = oDataHeader;
+            if (oDataHeader.cstat == "N") {
+                oViewModel.setProperty("/isApproved", false);
+                if (oDataHeader.is_approver == "X") {
+                    oViewModel.setProperty("/allowPost", true);
                 }
-                this._oChecklistData.to_Item.results.sort(function (a, b) {
-                    return a.aplzl - b.aplzl;
-                });
-                let oChecklistModel = models.createJSONModel(this._oChecklistData);
-                this.getView().setModel(oChecklistModel, "oChecklistModel");
-            } catch (error) {
-                console.error(error);
             }
 
-            try {
-                const oDataItems = await new Promise(function (resolve, reject) {
-                    oModel.read("/ViewItemSet", {
-                        filters: [
-                            new sap.ui.model.Filter("aufnr", sap.ui.model.FilterOperator.EQ, sAufnr)
-                        ],
-                        success: function (oData) {
-                            resolve(oData.results);
-                        },
-                        error: function (oError) {
-                            reject(oError);
-                        }
-                    });
+            const oChecklistHeaderModel = models.createJSONModel(oDataHeader);
+            this.getView().setModel(oChecklistHeaderModel, "oChecklistHeaderModel");
+
+            // } catch (error) {
+            //     console.error(error);
+            // }
+
+            // try {
+            const oDataChecklist = await new Promise(function (resolve, reject) {
+                BusyIndicator.show(10);
+                oModel.read("/ZC_PMChecklistHeader", {
+                    filters: [
+                        new sap.ui.model.Filter("aufnr", sap.ui.model.FilterOperator.EQ, sAufnr),
+                        new sap.ui.model.Filter("IsActiveEntity", sap.ui.model.FilterOperator.EQ, "true")
+                    ],
+                    urlParameters: {
+                        "$expand": "to_Item,to_Partner,to_Approver,to_Attachment"
+                    },
+                    success: function (oData) {
+                        resolve(oData.results);
+                        BusyIndicator.hide();
+                    },
+                    error: function (oError) {
+                        BusyIndicator.hide();
+                        reject(oError);
+
+                    }
                 });
-
-
-                oDataItems.sort(function (a, b) {
-                    return a.vornr - b.vornr;
-                });
-
-                this._buildChangeModel(oDataItems);
-                this._setupPage(oDataItems);
-            } catch (error) {
-                console.error(error);
+            });
+            this._oChecklistData = oDataChecklist[0];
+            if (this._oChecklistData.cstat == "A") {
+                oViewModel.setProperty("/allowEdit", false);
+                oViewModel.setProperty("/allowPost", false);
             }
+            this._oChecklistData.to_Item.results.sort(function (a, b) {
+                return a.aplzl - b.aplzl;
+            });
+            let oChecklistModel = models.createJSONModel(this._oChecklistData);
+            this.getView().setModel(oChecklistModel, "oChecklistModel");
+            // } catch (error) {
+            //     console.error(error);
+            // }
+
+            // try {
+            const oDataItems = await new Promise(function (resolve, reject) {
+                oModel.read("/ViewItemSet", {
+                    filters: [
+                        new sap.ui.model.Filter("aufnr", sap.ui.model.FilterOperator.EQ, sAufnr)
+                    ],
+                    success: function (oData) {
+                        resolve(oData.results);
+                    },
+                    error: function (oError) {
+                        reject(oError);
+                    }
+                });
+            });
+
+
+            oDataItems.sort(function (a, b) {
+                return a.vornr - b.vornr;
+            });
+
+            this._buildChangeModel(oDataItems);
+            this._setupPage(oDataItems);
+            // } catch (error) {
+            //     console.error(error);
+            // }
         },
 
         _setupPage: function (oData) {
@@ -214,6 +220,7 @@ sap.ui.define([
 
         _buildChangeModel: async function (oDataItems) {
 
+            let aRowModel = {};
             for (let taskData of oDataItems) {
                 // start build json model for rows
                 if (taskData.steus == "INT1") continue;
@@ -223,10 +230,12 @@ sap.ui.define([
 
                 let oRowObject = {
                     IsActiveEntity: aItemVals[0].IsActiveEntity == undefined ? "" : aItemVals[0].IsActiveEntity,
+                    category: taskData.category,
                     aufpl: taskData.aufpl,
                     aplzl: taskData.aplzl,
                     sumnr: taskData.sumnr,
                     ref_mpoint: taskData.ref_mpoint,
+                    ref_image: taskData.ref_image,
                     values: {}
                 };
 
@@ -245,9 +254,6 @@ sap.ui.define([
                             chitid: oVal.chitid,
                             itemno: oVal.itemno
                         };
-                        // oRowObject.values[cellKey] = oVal == undefined ? "" : oVal.atwrt;
-                        // oRowObject.values.chitid = oVal.chitid;
-                        // oRowObject.values.itemno = oVal.itemno;
                     } else if (colData.col_type == "V") {
                         let aVals = taskData.column_list ? taskData.column_list.split(",").map(function (item) { return item.trim() }) : [];
                         let sFound = aVals.includes(colData.col_name);
@@ -294,21 +300,37 @@ sap.ui.define([
                 this._aRowModels.push({
                     aufpl: taskData.aufpl,
                     aplzl: taskData.aplzl,
-                    name: sModelName
+                    name: sModelName,
+                    category: taskData.category
                 });
+                aRowModel[sModelName] = oRowObject;
             };
+
+            const oNewRowModel = models.createJSONModel(aRowModel);
+            this.getView().setModel(oNewRowModel, "oNewRowModel");
         },
 
         // function change Checklist
         _changeChecklist: function () {
-            const oTest = this.getView().getModel("oViewModel").getData();
-
             var oTmpModel = this.getView().getModel();  //ZPM_CHECKLIST001_SRV
             oTmpModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
             oTmpModel.setUseBatch(true);
             oTmpModel.setDeferredGroups(["updateChecklist"]);
 
             const oChecklistModel = this.getView().getModel("oChecklistModel").getData();  // JSON model
+            if (validator.dateIsFuture(oChecklistModel.gstri)) {
+                sap.m.MessageBox.error("Actual Start tidak boleh di masa datang");
+                return;
+            }
+            if (validator.dateIsFuture(oChecklistModel.gltri)) {
+                sap.m.MessageBox.error("Actual Finish tidak boleh di masa datang");
+                return;
+            }
+            if (validator.startDateIsLater(oChecklistModel.gstri, oChecklistModel.gltri)) {
+                sap.m.MessageBox.error("Actual Start tidak boleh setelah Actual Finish");
+                return;
+            }
+
             const sHeader = "/ZC_PMChecklistHeader";
             const oKey = {
                 "chkid": oChecklistModel.chkid,
@@ -322,171 +344,170 @@ sap.ui.define([
                 cstat: oChecklistModel.cstat,
                 gstri: oChecklistModel.gstri,
                 gltri: oChecklistModel.gltri,
-                // loekz: oChecklistModel.loekz,
                 IsActiveEntity: true
             };
 
             oTmpModel.update(sHeaderPath, oChangedChecklist, {
                 groupId: "updateChecklist",
-                chageSetId: "changeset" + iCount,
-                success: function (oData, resp) {
-                    // console.log(resp);
-                },
-                error: function (error) {
-                    console.error(error);
-                }
+                chageSetId: "changeset" + iCount
+                // success: function (oData, resp) {
+                //     // console.log(resp);
+                // },
+                // error: function (error) {
+                //     console.error(error);
+                // }
             });
 
-            // for (let rowModel of this._aRowModels) {
-            //     const sRowModelName = rowModel.aufpl + "_" + rowModel.aplzl;
-            //     const oRowModel = this.getView().getModel(sRowModelName);
-            //     const oRowData = oRowModel.getData();
+            for (let rowModel of this._aRowModels) {
+                const sRowModelName = rowModel.aufpl + "_" + rowModel.aplzl;
+                const oRowModel = this.getView().getModel(sRowModelName);
+                const oRowData = oRowModel.getData();
 
-            //     for (let row in oRowData.values) {
-            //         let oChangedItem = {
-            //             aufpl: oRowData.aufpl,
-            //             aplzl: oRowData.aplzl,
-            //             // chkid: oRowData.chkid,
-            //             chitid: oRowData.values[row].chitid,
-            //             itemno: oRowData.values[row].itemno,
-            //             ref_mpoint: oRowData.ref_mpoint,
-            //             key_type: oRowData.key_type,
-            //             val_type: oRowData.val_type,
-            //             keyname: row,
-            //             atwrt: oRowData.values[row].sval
-            //         };
-            //         const sCollection = "/ZC_PMChecklistItem";
-            //         const oKey1 = {
-            //             "chitid": oChangedItem.chitid,
-            //             "IsActiveEntity": oRowData.IsActiveEntity
-            //         };
-            //         const sItemPath = oTmpModel.createKey(sCollection, oKey1);
+                for (let row in oRowData.values) {
+                    let oChangedItem = {
+                        aufpl: oRowData.aufpl,
+                        aplzl: oRowData.aplzl,
+                        // chkid: oRowData.chkid,
+                        chitid: oRowData.values[row].chitid,
+                        itemno: oRowData.values[row].itemno,
+                        ref_mpoint: oRowData.ref_mpoint,
+                        key_type: oRowData.key_type,
+                        val_type: oRowData.val_type,
+                        keyname: row,
+                        atwrt: oRowData.values[row].sval
+                    };
+                    const sCollection = "/ZC_PMChecklistItem";
+                    const oKey1 = {
+                        "chitid": oChangedItem.chitid,
+                        "IsActiveEntity": oRowData.IsActiveEntity
+                    };
+                    const sItemPath = oTmpModel.createKey(sCollection, oKey1);
 
-            //         iCount += 1;
-            //         oTmpModel.update(sItemPath, oChangedItem, {
-            //             groupId: "updateChecklist",
-            //             changeSetId: "changeset" + iCount,
-            //             success: function (oData, resp) {
-            //                 // console.log(resp);
-            //             },
-            //             error: function (error) {
-            //                 console.error(error);
-            //             }
-            //         });
-            //     }
-            // }
+                    iCount += 1;
+                    oTmpModel.update(sItemPath, oChangedItem, {
+                        groupId: "updateChecklist",
+                        changeSetId: "changeset" + iCount
+                        // success: function (oData, resp) {
+                        //     // console.log(resp);
+                        // },
+                        // error: function (error) {
+                        //     console.error(error);
+                        // }
+                    });
+                }
+            }
 
-            // for (let oPartner of oChecklistModel.to_Partner.results) {
-            //     if (oPartner.bp_name) {
-            //         let itemNumber = 0;
-            //         const oChangedPartner = {
-            //             aufnr: oPartner.aufnr,
-            //             itemno: oPartner.itemno,
-            //             bp_id: oPartner.bp_id,
-            //             bp_name: oPartner.bp_name,
-            //             bp_func: oPartner.bp_func,
-            //             IsActiveEntity: true
-            //         };
+            for (let oPartner of oChecklistModel.to_Partner.results) {
+                if (oPartner.bp_name) {
+                    let itemNumber = 0;
+                    const oChangedPartner = {
+                        aufnr: oPartner.aufnr,
+                        itemno: oPartner.itemno,
+                        bp_id: oPartner.bp_id,
+                        bp_name: oPartner.bp_name,
+                        bp_func: oPartner.bp_func,
+                        IsActiveEntity: true
+                    };
 
-            //         const sCollection = "/ZC_PMChecklistPartner_TP";
-            //         iCount += 1;
-            //         if (oPartner.chbpid == undefined) {
-            //             // itemNumber += 1;
-            //             // oChangedPartner.itemno = itemNumber.toString().padStart(6, '0');
-            //             // oTmpModel.create(sCollection, oChangedPartner, {
-            //             //     groupId: "updateChecklist",
-            //             //     changeSetId: "changeset" + iCount,
-            //             //     success: function (oData, resp) {
-            //             //         console.log(resp);
-            //             //     },
-            //             //     error: function (error) {
-            //             //         console.error(error);
-            //             //     }
-            //             // });
-            //         } else {
-            //             const oKey1 = {
-            //                 "chbpid": oPartner.chbpid,
-            //                 "IsActiveEntity": true
-            //             };
-            //             const sPartnerPath = oTmpModel.createKey(sCollection, oKey1);
-            //             oTmpModel.update(sPartnerPath, oChangedPartner, {
-            //                 groupId: "updateChecklist",
-            //                 changeSetId: "changeset" + iCount,
-            //                 success: function (oData, resp) {
-            //                     // console.log(resp);
-            //                 },
-            //                 error: function (error) {
-            //                     console.error(error);
-            //                 }
-            //             });
-            //         }
-            //     }
-            // }
+                    const sCollection = "/ZC_PMChecklistPartner_TP";
+                    iCount += 1;
+                    if (oPartner.chbpid == undefined) {
+                        // itemNumber += 1;
+                        // oChangedPartner.itemno = itemNumber.toString().padStart(6, '0');
+                        // oTmpModel.create(sCollection, oChangedPartner, {
+                        //     groupId: "updateChecklist",
+                        //     changeSetId: "changeset" + iCount,
+                        //     success: function (oData, resp) {
+                        //         console.log(resp);
+                        //     },
+                        //     error: function (error) {
+                        //         console.error(error);
+                        //     }
+                        // });
+                    } else {
+                        const oKey1 = {
+                            "chbpid": oPartner.chbpid,
+                            "IsActiveEntity": true
+                        };
+                        const sPartnerPath = oTmpModel.createKey(sCollection, oKey1);
+                        oTmpModel.update(sPartnerPath, oChangedPartner, {
+                            groupId: "updateChecklist",
+                            changeSetId: "changeset" + iCount
+                            // success: function (oData, resp) {
+                            //     // console.log(resp);
+                            // },
+                            // error: function (error) {
+                            //     console.error(error);
+                            // }
+                        });
+                    }
+                }
+            }
 
-            // for (let oApprover of oChecklistModel.to_Approver.results) {
-            //     if (oApprover.bp_name) {
-            //         const oChangedApprover = {
-            //             aufnr: oApprover.aufnr,
-            //             // itemno: oApprover.itemno,
-            //             bp_id: oApprover.bp_id,
-            //             bp_name: oApprover.bp_name,
-            //             bp_func: oApprover.bp_func,
-            //             IsActiveEntity: true
-            //         };
+            for (let oApprover of oChecklistModel.to_Approver.results) {
+                if (oApprover.bp_name) {
+                    const oChangedApprover = {
+                        aufnr: oApprover.aufnr,
+                        // itemno: oApprover.itemno,
+                        bp_id: oApprover.bp_id,
+                        bp_name: oApprover.bp_name,
+                        bp_func: oApprover.bp_func,
+                        IsActiveEntity: true
+                    };
 
-            //         const sCollection = "/ZC_PMChecklistApprover";
-            //         iCount += 1;
-            //         const oKey1 = {
-            //             "chapid": oApprover.chapid,
-            //             "IsActiveEntity": true
-            //         };
-            //         const sApproverPath = oTmpModel.createKey(sCollection, oKey1);
+                    const sCollection = "/ZC_PMChecklistApprover";
+                    iCount += 1;
+                    const oKey1 = {
+                        "chapid": oApprover.chapid,
+                        "IsActiveEntity": true
+                    };
+                    const sApproverPath = oTmpModel.createKey(sCollection, oKey1);
 
-            //         oTmpModel.update(sApproverPath, oChangedApprover, {
-            //             groupId: "updateChecklist",
-            //             changeSetId: "changeset" + iCount,
-            //             success: function (oData, resp) {
-            //                 // console.log(resp);
-            //             },
-            //             error: function (error) {
-            //                 console.error(error);
-            //             }
-            //         });
-            //     }
-            // }
+                    oTmpModel.update(sApproverPath, oChangedApprover, {
+                        groupId: "updateChecklist",
+                        changeSetId: "changeset" + iCount
+                        // success: function (oData, resp) {
+                        //     // console.log(resp);
+                        // },
+                        // error: function (error) {
+                        //     console.error(error);
+                        // }
+                    });
+                }
+            }
 
-            // for (let oAttachment of oChecklistModel.to_Attachment.results) {
-            //     if (oAttachment.att_url) {
-            //         const oChangedAttachment = {
-            //             aufnr: oAttachment.aufnr,
-            //             // itemno: oAttachment.itemno,
-            //             att_type: oAttachment.att_type,
-            //             obj_type: oAttachment.obj_type,
-            //             att_url: oAttachment.att_url,
-            //             att_bin: oAttachment.att_bin,
-            //             IsActiveEntity: true
-            //         };
+            for (let oAttachment of oChecklistModel.to_Attachment.results) {
+                if (oAttachment.att_url) {
+                    const oChangedAttachment = {
+                        aufnr: oAttachment.aufnr,
+                        // itemno: oAttachment.itemno,
+                        att_type: oAttachment.att_type,
+                        obj_type: oAttachment.obj_type,
+                        att_url: oAttachment.att_url,
+                        att_bin: oAttachment.att_bin,
+                        IsActiveEntity: true
+                    };
 
-            //         const sCollection = "/ZC_PMChecklistAttachment_TP";
-            //         iCount += 1;
-            //         const oKey1 = {
-            //             "chatid": oAttachment.chatid,
-            //             "IsActiveEntity": true
-            //         };
-            //         const sAttachmentPath = oTmpModel.createKey(sCollection, oKey1);
+                    const sCollection = "/ZC_PMChecklistAttachment_TP";
+                    iCount += 1;
+                    const oKey1 = {
+                        "chatid": oAttachment.chatid,
+                        "IsActiveEntity": true
+                    };
+                    const sAttachmentPath = oTmpModel.createKey(sCollection, oKey1);
 
-            //         oTmpModel.update(sAttachmentPath, oChangedAttachment, {
-            //             groupId: "updateChecklist",
-            //             changeSetId: "changeset" + iCount,
-            //             success: function (oData, resp) {
-            //                 // console.log(resp);
-            //             },
-            //             error: function (error) {
-            //                 console.error(error);
-            //             }
-            //         });
-            //     }
-            // }
+                    oTmpModel.update(sAttachmentPath, oChangedAttachment, {
+                        groupId: "updateChecklist",
+                        changeSetId: "changeset" + iCount
+                        // success: function (oData, resp) {
+                        //     // console.log(resp);
+                        // },
+                        // error: function (error) {
+                        //     console.error(error);
+                        // }
+                    });
+                }
+            }
 
             BusyIndicator.show(10);
             oTmpModel.submitChanges({
@@ -535,33 +556,43 @@ sap.ui.define([
                 IsActiveEntity: true
             };
 
+            let that = this;
             BusyIndicator.show();
-            let sResult;
-            try {
-                let oAttach = await new Promise(function (resolve, reject) {
-                    oModel.update(sAttachmentPath, oChangedAttachment, {
-                        // groupId: "updateChecklist",
-                        // changeSetId: "changeset" + iCount,
-                        success: function (oData) {
-                            resolve(oData)
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            reject(error);
-                        }
-                    });
-                })
-                sResult = "S";
+            // let sResult;
+            // try {
+            let oAttach = await new Promise(function (resolve, reject) {
+                oModel.update(sAttachmentPath, oChangedAttachment, {
+                    // groupId: "updateChecklist",
+                    // changeSetId: "changeset" + iCount,
+                    success: function (oData) {
+                        resolve(oData)
+                    },
+                    error: function (oError) {
+                        BusyIndicator.hide()
+                        var sErrorMessage = JSON.parse(oError.responseText).error.message.value;
+                        sap.m.MessageBox.show(sErrorMessage, {
+                            icon: sap.m.MessageBox.Icon.ERROR,
+                            title: "Generate PDF failed",
+                            actions: [sap.m.MessageBox.Action.OK],
+                            onClose: function () {
+                                that.onBack();
+                            }
+                        });
+                    }
+                });
+            })
+            // sResult = "S";
 
-            } catch (error) {
-                console.error(error);
-            }
+            // } catch (error) {
+            // console.error(error);
+            // }
 
-            if (sResult != "S") {
-                BusyIndicator.hide();
-                sap.m.MessageBox.error("Generate PDF failed.");
-                return;
-            }
+            // if (sResult != "S") {
+            //     BusyIndicator.hide();
+            //     sap.m.MessageBox.error("Generate PDF failed.");
+            //     return;
+            // }
+
             oModel.callFunction("/ZC_PMChecklistHeaderApprove_post", {
                 method: "POST",
                 urlParameters: {
@@ -570,7 +601,14 @@ sap.ui.define([
                 },
                 success: function (oData) {
                     BusyIndicator.hide();
-                    sap.m.MessageToast.show("Checklist posted successfully.");
+                    sap.m.MessageBox.show("Checklist posted successfully!", {
+                        icon: sap.m.MessageBox.Icon.SUCCESS,
+                        title: "Success",
+                        actions: [sap.m.MessageBox.Action.OK],
+                        onClose: function () {
+                            that.onBack();
+                        }
+                    });
                 },
                 error: function (oError) {
                     BusyIndicator.hide();
@@ -581,13 +619,18 @@ sap.ui.define([
         },
 
         _createPdf: async function () {
+            let oViewModel = this.getView().getModel("oViewModel");
+            let sAufnr = oViewModel.getProperty("/aufnr");
+            let oNow = new Date();
+            let oMonth = oNow.getMonth() + 1;
+            let sFilename = sAufnr + "_" + oNow.getFullYear() + oMonth + oNow.getDate() + "_checksheet.pdf";
             const oOptions = {
                 margin: [0.3, 0, 0.5, 0],
-                filename: 'checklist.pdf',
+                filename: sFilename,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'p' }
-                // pagebreak: { avoid: 'tr' }
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'p' },
+                pagebreak: { mode: ["avoid-all", "css"] } //{ avoid: 'img' }
             };
 
             const oElement = sap.ui.getCore().byId("checklistContainer");
@@ -595,9 +638,6 @@ sap.ui.define([
             // html2pdf().set(oOptions).from(printElement).save();
             // return html2pdf().set(oOptions).from(printElement).output("datauristring");
             return html2pdf().set(oOptions).from(printElement).outputPdf();
-            // .then(function(pdf) {
-            //     console.log(pdf);
-            // });
         }
     });
 });

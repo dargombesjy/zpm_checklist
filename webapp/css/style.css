@@ -24,6 +24,12 @@
   background-color: #f5f5f5;
   font-weight: bold;
 }
+
+.group-header {
+  font-weight: bold;
+  background-color: (--sapBrandColor);
+}
+
 .row-sub-container {
   display: flex;
   flex-flow: column;

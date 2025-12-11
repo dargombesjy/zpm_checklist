@@ -8,11 +8,12 @@
         <f:header>
             <f:DynamicPageHeader id="dynheader01">
                 <f:content>
-                    <fb:FilterBar id="filterbar01" useToolbar="false" search="onSearch" filterChange="onFilterBarChange">
+                    <fb:FilterBar id="filterbar01" useToolbar="false" search="onSearch"
+                        filterChange="onFilterBarChange" showClearOnFB="false">
                         <fb:filterGroupItems>
-                            <fb:FilterGroupItem id="fb-group1" name="aufnr" 
-                            label="Order" groupName="Group1"
-                            visibleInFilterBar="true">
+                            <fb:FilterGroupItem id="fb-group-1" name="aufnr" 
+                                label="Order" groupName="Group1"
+                                visibleInFilterBar="true">
                                 <fb:control>
                                     <MultiComboBox id="cmb-order"
                                         name="aufnr"
@@ -25,6 +26,67 @@
                                     </MultiComboBox>
                                 </fb:control>
                             </fb:FilterGroupItem>
+
+                            <fb:FilterGroupItem id="fb-group-2" name="gstrp" 
+                                label="Bsc.Start" groupName="Group1"
+                                visibleInFilterBar="true">
+                                <fb:control>
+                                    <DateRangeSelection
+                                        id="date-range0"
+                                        displayFormat="dd/MM/yyyy"
+                                        showFooter="true"
+                                        change="handleDateChange"/>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+
+                            <fb:FilterGroupItem id="fb-group-3" name="gewrk" 
+                                label="Work Center" groupName="Group1"
+                                visibleInFilterBar="true">
+                                <fb:control>
+                                    <MultiComboBox id="cmb-gewrk"
+                                        name="aufnr"
+                                        selectionChange="onFilterSelectionChange"
+                                        items="{
+                                            path: '/WorkCenterVHSet',
+                                            templateShareable: false
+                                        }">
+                                        <core:Item id="cmb-gewrk-itm" key="{arbpl}" text="{ktext}"/>
+                                    </MultiComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+
+                            <fb:FilterGroupItem id="fb-group-4" name="ingpr" 
+                                label="Planner Group" groupName="Group1"
+                                visibleInFilterBar="true">
+                                <fb:control>
+                                    <MultiComboBox id="cmb-ingpr"
+                                        name="aufnr"
+                                        selectionChange="onFilterSelectionChange"
+                                        items="{
+                                            path: '/PlannerGroupVHSet',
+                                            templateShareable: true
+                                        }">
+                                        <core:Item id="cmb-ingpr-itm" key="{ingrp}" text="{innam}"/>
+                                    </MultiComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+
+                            <fb:FilterGroupItem id="fb-group-5" name="cstat" 
+                                label="Status" groupName="Group1"
+                                visibleInFilterBar="true">
+                                <fb:control>
+                                    <MultiComboBox id="cmb-cstat"
+                                        name="cstat"
+                                        selectionChange="onFilterSelectionChange"
+                                        items="{
+                                            path: 'statusModel>/cstat',
+                                            templateShareable: true
+                                        }">
+                                        <core:Item id="cmb-cstat-itm" key="{statusModel>key}" text="{statusModel>text}"/>
+                                    </MultiComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                    
                         </fb:filterGroupItems>
                     </fb:FilterBar>
                 </f:content>
@@ -34,13 +96,16 @@
             <Table id="ordertable01" inset="false"
                 items="{
                     path: 'pmOrderService>/ZC_PM0001_Orderlist',
-                    sorter: { path: 'aufnr', descending: false }
+                    sorter: { path: 'gstrp', descending: true }
                 }"
                 alternateRowColors="true"
                 growing="true"
+                growingScrollToLoad="true"
+                growingThreshold="10"
                 width="auto"
                 mode="SingleSelectLeft"
-                selectionChange="onTableSelectionChange">
+                selectionChange="onTableSelectionChange"
+                sticky="HeaderToolbar,ColumnHeaders">
                 <headerToolbar>
                     <OverflowToolbar id="ordoverflow01">
                         <Title id="orderTitle" text="{i18n>checklistTableHeader}"/>
@@ -56,6 +121,11 @@
                             <Text id="orctxt01" text="Order No."/>
                         </header>
                     </Column>
+                    <Column id="ortbl01-col04">
+                        <header>
+                            <Text id="orctxt04" text="Description"/>
+                        </header>
+                    </Column>
                     <Column id="ortbl01-col07">
                         <header>
                             <Text id="orctxt07" text="Basic Start"/>
@@ -63,17 +133,12 @@
                     </Column>
                     <Column id="ortbl01-col02">
                         <header>
-                            <Text id="orctxt02" text="Order Type."/>
+                            <Text id="orctxt02" text="Work Center."/>
                         </header>
                     </Column>
                     <Column id="ortbl01-col03">
                         <header>
-                            <Text id="orctxt03" text="Planer Group."/>
-                        </header>
-                    </Column>
-                    <Column id="ortbl01-col04">
-                        <header>
-                            <Text id="orctxt04" text="Description"/>
+                            <Text id="orctxt03" text="Planner Group."/>
                         </header>
                     </Column>
                     <Column id="ortbl01-col05">
@@ -91,12 +156,21 @@
                     <ColumnListItem id="orcli001">
                         <cells>
                             <Text id="oritxt001" text="{pmOrderService>aufnr}"/>
-                            <Text id="oritxt007" text="{pmOrderService>gstrp}"/>
-                            <Text id="oritxt002" text="{pmOrderService>auart}"/>
-                            <Text id="oritxt003" text="{pmOrderService>ingpr}"/>
                             <Text id="oritxt004" text="{pmOrderService>ktext}"/>
+                            <Text id="oritxt007" text="{
+                                path: 'pmOrderService>gstrp',
+                                type: 'sap.ui.model.type.Date',
+                                formatOptions: {
+                                    pattern: 'dd/MM/yyyy'
+                                }
+                            }"/>
+                            <Text id="oritxt002" text="{pmOrderService>cktext}"/>
+                            <Text id="oritxt003" text="{pmOrderService>innam}"/>
                             <Text id="oritxt005" text="{pmOrderService>chkno}"/>
-                            <Text id="oritxt006" text="{pmOrderService>cstat}"/>
+                            <Text id="oritxt006" text="{
+                                path: 'pmOrderService>cstat',
+                                formatter: '.formatter.formatStatus'
+                            }"/>
                         </cells>
                     </ColumnListItem>
                 </items>

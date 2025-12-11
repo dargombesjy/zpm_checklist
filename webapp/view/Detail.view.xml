@@ -9,7 +9,7 @@
                 <Button id="backButton-d" icon="sap-icon://nav-back" press="onBack" />
                 <Title id="page-title" text="{i18n>detailViewTitle}" level="H2" />
                 <ToolbarSpacer id="detail-spacer01" />
-                <Button id="editButton" text="Edit" type="Transparent" press="onEdit" visible="true" />
+                <Button id="editButton" text="Edit" type="Transparent" press="onEdit" visible="{= !${oViewModel>/isApproved} }" />
                 <Button id="saveButton" text="Save" type="Transparent" press="onSave" visible="{oViewModel>/allowEdit}" />
                 <Button id="cancelButton" text="Cancel" type="Transparent" press="onCancel" visible="false" />
                 <Button id="postButton" text="Approve" type="Transparent" press="callPostChecklist" visible="{oViewModel>/allowPost}" />
