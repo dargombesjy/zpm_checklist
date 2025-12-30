@@ -12,10 +12,9 @@ sap.ui.define([
             aggregations: {
                 headerToolbar: { type: "sap.m.Toolbar", multiple: false },
                 column: { type: "sap.m.HBox", multiple: false },
-                // columns: { type: "zpmchecklist.control.Column02", multiple: true, singularName: "column" },
                 rows: { type: "sap.m.HBox", multiple: true, singularName: "row" }
-                // rows: { type: "sap.m.HBox", multiple: true, singularName: "row" }
-            }
+            },
+            defaultAggregation: "rows"
         },
         init: function () {
             Control.prototype.init.apply(this, arguments);

@@ -47,7 +47,7 @@ sap.ui.define([
                 }
             }
 
-            for (let i = 0; i < 9; i++) {
+            for (let i = 0; i < 20; i++) {
                 let itemno = i + 1;
                 oChecklistData.to_Partner.results.push({
                     chkid: "",
@@ -129,20 +129,7 @@ sap.ui.define([
             const oChecklistHeaderModel = models.createJSONModel(oDataHeader);
             this.getView().setModel(oChecklistHeaderModel, "oChecklistHeaderModel");
 
-            // } catch (oError) {
-            //     var sErrorMessage = JSON.parse(oError.responseText).error.message.value;
-            //     sap.m.MessageBox.show(sErrorMessage, {
-            //         icon: sap.m.MessageBox.Icon.ERROR,
-            //         title: "Validation Error",
-            //         actions: [sap.m.MessageBox.Action.OK],
-            //         onClose: function () {
-            //             this.onBack();
-            //         }
-            //     });
-            // }
-
             BusyIndicator.show(10);
-            // try {
             const oDataItems = await new Promise(function (resolve, reject) {
                 oModel.read("/ViewItemSet", {
                     filters: [
@@ -162,64 +149,25 @@ sap.ui.define([
             oDataItems.sort(function (a, b) {
                 return a.vornr - b.vornr;
             });
-            // } catch (error) {
-            //     console.error(error);
-            // }
 
             this._buildCreateModel(oDataItems);
             this._setupPage(oDataItems);
+
+            const oTable = this.getView().byId("table01");
+            oTable.bindAggregation("rows", "oNewRowModel>/", this._buildRow.bind(this)); // function (sId, oContext) {
         },
 
         _setupPage: function (oData) {
-            const oPage = this.getView().byId("createPage");
-            const oChecklistContainer = new sap.m.VBox("checklistContainer", {
-                // justifyContent: sap.m.FlexJustifyContent.Center,
-                width: "100%"
-            });
-
-            const oHeaderContainer = new sap.m.HBox("headerContainer", {
-                justifyContent: sap.m.FlexJustifyContent.Center,
-                width: "100%"
-            });
-
-            const oTableContainer = new sap.m.HBox("tableContainer", {
-                justifyContent: sap.m.FlexJustifyContent.Center,
-                width: "100%"
-            });
-
-            const oFooterContainer = new sap.m.HBox("footerContainer", {
-                justifyContent: sap.m.FlexJustifyContent.Center,
-                width: "100%"
-            });
-
-            const oImageContainer = new sap.m.HBox("imageContainer", {
-                justifyContent: sap.m.FlexJustifyContent.Center,
-                width: "100%"
-            });
-
-            oChecklistContainer.addItem(oHeaderContainer);
-            oChecklistContainer.addItem(oTableContainer);
-            oChecklistContainer.addItem(oFooterContainer);
-            oChecklistContainer.addItem(oImageContainer);
-
-            this._buildHeader(oData, oHeaderContainer);
+            const oTableContainer = this.getView().byId("tableContainer");
             this._buildTable(oData, oTableContainer);
-            this._buildFooter(oData, oFooterContainer);
-            this._buildImageBox(oData, oImageContainer);
-
-            oPage.addContent(oChecklistContainer);
-
         },
 
         onCreate: function () {
-            // this.byId("createButton").setVisible(false);
-            // this.byId("cancelButton").setVisible(false);
             this._createChecklist();
         },
 
         onCancel: function () {
             this.byId("cancelButton").setVisible(false);
-            // this.byId("createButton").setVisible(false);
             this.byId("editButton").setVisible(true);
         },
 
@@ -230,43 +178,15 @@ sap.ui.define([
             const oViewModel = oView.getModel("oViewModel");
             const oChecklistModel = oView.getModel("oChecklistModel");
 
-            let sGstri = oChecklistModel.getProperty("/gstri");
-            let sGltri = oChecklistModel.getProperty("/gltri");
-            if (validator.dateIsFuture(sGstri)) {
-                sap.m.MessageBox.error("Actual Start tidak boleh di masa datang");
-                return;
-            }
-            if (validator.dateIsFuture(sGltri)) {
-                sap.m.MessageBox.error("Actual Finish tidak boleh di masa datang");
-                return;
-            }
-            if (validator.startDateIsLater(sGstri, sGltri)) {
-                sap.m.MessageBox.error("Actual Start tidak boleh setelah Actual Finish");
-                return;
-            }
-
-            let firstApprover = oChecklistModel.getProperty("/to_Approver/results/0/bp_name");
-            if (!firstApprover.length > 0) {
-                sap.m.MessageBox.error("Harus ada Checked By");
-                return;
-            }
-
-            let defPartner = oChecklistModel.getProperty("/to_Partner/results").filter(function(el) {
-                return el.loekz == "";
-            });
-
-            if (defPartner.length == 0) {
-                sap.m.MessageBox.error("Setidaknya harus ada 1 Leader");
-                return;
-            }
+            if (this._validateOnSave(oChecklistModel) != "S") return;
 
             const oNewChecklist = {
                 aufnr: oViewModel.getProperty("/aufnr"),
                 chkty: "A",
                 cstat: "N",
                 cvhid: this._oChecklistHeader.cvhid,
-                gstri: sGstri,
-                gltri: sGltri,
+                gstri: oChecklistModel.getProperty("/gstri"),
+                gltri: oChecklistModel.getProperty("/gltri"),
                 // loekz: oChecklistModel.loekz,
                 IsActiveEntity: true
             };
@@ -276,31 +196,37 @@ sap.ui.define([
             oNewChecklist.to_Attachment = [];
 
             let itemPos = 0;
-            for (let rowModel of this._aRowModels) {
-                const sRowModelName = rowModel.aufpl + "_" + rowModel.aplzl;
-                const oRowModel = this.getView().getModel(sRowModelName);
-                const oRowData = oRowModel.getData();
-
+            const oNewRowModel = this.getView().getModel("oNewRowModel");
+            for (let oRowData of oNewRowModel.getData()) {
                 itemPos += 1;
                 let itemNumber = 0;
-                for (let val in oRowData.values) {
-                    if (val != "remark" && val.sval == "") {
-                        sap.m.MessageBox.error("Ada field yang belum terisi");
-                        return;
+                for (let row in oRowData.values) {
+                    if (row != "remark" && row != "lower_limit" && row != "upper_limit" && row != "recdv") {
+                        if (oRowData.values[row].sval == "") {
+                            sap.m.MessageBox.error("kolom " + row + " pada '" + oRowData.cl_action + "' belum diisi");
+                            return;
+                        }
+                        if (row == "mpoint" && oRowData.indct && oRowData.recdv != "") {
+                            let nLast = parseFloat(oRowData.recdv.trim());
+                            if (nLast != NaN && nLast >= oRowData.values[row].sval) {
+                                sap.m.MessageBox.error("Measurement lebih kecil atau sama dengan sebelumnya");
+                                return;
+                            }
+                        }
                     }
                     itemNumber += 1;
                     const oNewItem = {
                         aufpl: oRowData.aufpl,
                         aplzl: oRowData.aplzl,
                         itemno: itemNumber.toString().padStart(6, '0'),
-                        // itempos: itemPos.toString().padStart(6, '0'),
+                        itempos: itemPos.toString().padStart(6, '0'),
                         ref_mpoint: oRowData.ref_mpoint,
                         key_type: oRowData.key_type,
                         val_type: oRowData.val_type,
                         IsActiveEntity: true
                     };
-                    oNewItem.keyname = val;
-                    oNewItem.atwrt = oRowData.values[val].sval;
+                    oNewItem.keyname = row;
+                    oNewItem.atwrt = oRowData.values[row].sval;
                     oNewChecklist.to_Item.push(oNewItem);
                 }
             }
@@ -308,30 +234,26 @@ sap.ui.define([
             let itemNumber = 0;
             for (let oPartner of oChecklistModel.getProperty("/to_Partner/results")) {
                 itemNumber += 1;
-                // if (oPartner.bp_name) {
+                // if (oPartner.bp_name == "") {
+                //     sap.m.MessageBox.show("Nama tidak boleh kosong", {
+                //         icon: sap.m.MessageBox.Icon.ERROR,
+                //         title: "Validation Error",
+                //         actions: [sap.m.MessageBox.Action.OK]
+                //     });
+                //     return;
+                // }
                 const oNewPartner = {
                     aufnr: oPartner.aufnr,
                     itemno: itemNumber.toString().padStart(6, '0'),
                     bp_id: oPartner.bp_id,
                     bp_name: oPartner.bp_name,
                     bp_func: oPartner.bp_func,
-                    loekz: oPartner.loekz, 
+                    loekz: oPartner.loekz,
                     IsActiveEntity: true
                 };
                 oNewChecklist.to_Partner.push(oNewPartner);
                 // }
             }
-            // if (itemNumber <= 0) {
-            //     sap.m.MessageBox.show("Setidaknya harus ada 1 Leader", {
-            //         icon: sap.m.MessageBox.Icon.ERROR,
-            //         title: "Validation Error",
-            //         actions: [sap.m.MessageBox.Action.OK],
-            //         // onClose: function () {
-            //         //     // that.onBack();
-            //         // }
-            //     });
-            //     return;
-            // }
 
             itemNumber = 0;
             for (let oApprover of oChecklistModel.getProperty("/to_Approver/results")) {
@@ -378,8 +300,10 @@ sap.ui.define([
             }
 
             const that = this;
+            BusyIndicator.show(10);
             oModel.create("/ZC_PMChecklistHeader", oNewChecklist, {
                 success: function (oData) {
+                    BusyIndicator.hide();
                     that.getView().getModel("oViewModel").setProperty("/isNew", false);
                     sap.m.MessageBox.show("Checklist created successfully!", {
                         icon: sap.m.MessageBox.Icon.SUCCESS,
@@ -391,6 +315,7 @@ sap.ui.define([
                     });
                 },
                 error: function (oError) {
+                    BusyIndicator.hide();
                     sap.m.MessageBox.error("Error creating checklist.");
                 }
             });
@@ -399,28 +324,46 @@ sap.ui.define([
         onBack: function (oEvent) {
             const oRouter = this.getOwnerComponent().getRouter();
             this.onExit();
-            const oCreatePage = this.getView().byId("createPage");
-            if (oCreatePage) {
-                oCreatePage.destroyContent();
+            // const oCreatePage = this.getView().byId("tableWrapper");  //("createPage");
+            // if (oCreatePage) {
+            //     oCreatePage.destroyItems();
+            // }
+            const oTable = this.getView().byId("table01");
+            if (oTable) {
+                oTable.destroyColumn();
+                oTable.unbindAggregation("rows");
             }
             oRouter.navTo("main", {}, true);
         },
 
         _buildCreateModel: function (oDataItems) {
             let iItemPos = 0;
-            let aRowModel = {};
+            let aRowModel = [];
             for (let taskData of oDataItems) {
                 // start build json model for rows
-                if (taskData.steus == 'INT1') continue;
+                if (taskData.steus == 'INT1') {
+                    // continue;
+                }
                 iItemPos += 1;
                 let oRowObject = {
                     category: taskData.category,
                     aufpl: taskData.aufpl,
                     aplzl: taskData.aplzl,
-                    itempos: iItemPos,
+                    vornr: taskData.vornr,
                     sumnr: taskData.sumnr,
+                    steus: taskData.steus,
+                    sub_category: taskData.sub_category,
+                    cl_action: taskData.cl_action,
+                    cl_method: taskData.cl_method,
                     ref_mpoint: taskData.ref_mpoint,
                     ref_image: taskData.ref_image,
+                    column_list: taskData.column_list,
+                    upper_limit: taskData.upper_limit,
+                    lower_limit: taskData.lower_limit,
+                    atawe: taskData.atawe,
+                    indct: taskData.indct,
+                    recdv: taskData.recdv,
+                    isChanged: false,
                     values: {}
                 };
 
@@ -466,18 +409,11 @@ sap.ui.define([
                         }
                     }
                 }
-                const oRowJsonModel = models.createJSONModel(oRowObject);
-                let sModelName = taskData.aufpl + "_" + taskData.aplzl;
-                this.getView().setModel(oRowJsonModel, sModelName);
-                this._aRowModels.push({
-                    aufpl: taskData.aufpl,
-                    aplzl: taskData.aplzl,
-                    name: sModelName,
-                    category: taskData.category
-                });
-                aRowModel[sModelName] = oRowObject;
+
+                aRowModel.push(oRowObject);
             };
             const oNewRowModel = models.createJSONModel(aRowModel);
+            oNewRowModel.setSizeLimit(this._jsonSizeLimit);
             this.getView().setModel(oNewRowModel, "oNewRowModel");
         }
     });

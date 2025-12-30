@@ -17,13 +17,12 @@ server:
           url: https://ui5.sap.com
         backend:
           - path: /sap
-            url: https://mrtwd1wd01.hec.jakartamrt.co.id
+            url: https://mrtwd1wd01.hec.jakartamrt.co.id   # https://mrtme2ap01.hec.jakartamrt.co.id:8112 
             client: '110'
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
         port: 35729
-        path: webapp
         delay: 300
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload

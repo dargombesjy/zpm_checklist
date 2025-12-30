@@ -1,0 +1,212 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:custom="zpmchecklist.control">
+    <!-- xmlns:template="http://schemas.sap.com/sapui5/extension/sap.ui.core.template/1"> -->
+
+    <HBox id="headerContainer" width="100%" justifyContent="Center">
+        <items>
+            <VBox id="header-data-container" width="90%">
+                <items>
+                    <HBox id="row-hdr-order" width="50%">
+                        <items>
+                            <Text text="Order">
+                                <layoutData>
+                                    <FlexItemData baseSize="20%" growFactor="1" />
+                                </layoutData>
+                            </Text>
+                            <Text text="{oChecklistHeaderModel>/aufnr} {oChecklistHeaderModel>/ktext}">
+                                <layoutData>
+                                    <FlexItemData baseSize="30%" growFactor="1" />
+                                </layoutData>
+                            </Text>
+                        </items>
+                    </HBox>
+
+                    <HBox id="row-hdr-tplnr" width="50%">
+                        <items>
+                            <Text text="Functional Location">
+                                <layoutData>
+                                    <FlexItemData baseSize="20%" growFactor="1" />
+                                </layoutData>
+                            </Text>
+                            <Text text="{oChecklistHeaderModel>/tplma} {oChecklistHeaderModel>/pltxt}">
+                                <layoutData>
+                                    <FlexItemData baseSize="30%" growFactor="1" />
+                                </layoutData>
+                            </Text>
+                        </items>
+                    </HBox>
+
+                    <HBox id="row-hdr-equnr" width="50%">
+                        <items>
+                            <Text text="Equipment">
+                                <layoutData>
+                                    <FlexItemData baseSize="20%" growFactor="1" />
+                                </layoutData>
+                            </Text>
+                            <Text text="{oChecklistHeaderModel>/equnr} {oChecklistHeaderModel>/eqktx}">
+                                <layoutData>
+                                    <FlexItemData baseSize="30%" growFactor="1" />
+                                </layoutData>
+                            </Text>
+                        </items>
+                    </HBox>
+
+                    <HBox>
+                        <items>
+                            <HBox id="row-hdr-ingpr" width="50%">
+                                <items>
+                                    <Text text="Planner Group">
+                                        <layoutData>
+                                            <FlexItemData baseSize="20%" growFactor="1" />
+                                        </layoutData>
+                                    </Text>
+                                    <Text text="{oChecklistHeaderModel>/ingpr} {oChecklistHeaderModel>/innam}">
+                                        <layoutData>
+                                            <FlexItemData baseSize="30%" growFactor="1" />
+                                        </layoutData>
+                                    </Text>
+                                </items>
+                            </HBox>
+
+                            <HBox id="row-hdr-gstri" width="50%">
+                                <items>
+                                    <Text text="Actual Start">
+                                        <layoutData>
+                                            <FlexItemData baseSize="30%" growFactor="1" />
+                                        </layoutData>
+                                    </Text>
+                                    <Text id="pick-gstri" width="100%" text="{
+                                            path: 'oChecklistModel>/gstri',
+                                            type: 'sap.ui.model.type.DateTime'
+                                        }">
+                                        <layoutData>
+                                            <FlexItemData baseSize="60%" growFactor="0" />
+                                        </layoutData>
+                                    </Text>
+                                    <!-- <DateTimePicker id="pick-gstri" width="100%" change="onActualDateChange" enabled="{ 'path': 'oViewModel>/allowEdit' }" value="{
+                                            path: 'oChecklistModel>/gstri',
+                                            type: 'sap.ui.model.type.DateTime'
+                                        }">
+                                        <layoutData>
+                                            <FlexItemData baseSize="60%" growFactor="0" />
+                                        </layoutData>
+                                    </DateTimePicker> -->
+                                </items>
+                            </HBox>
+                        </items>
+                    </HBox>
+
+                    <HBox>
+                        <items>
+                            <HBox id="row-hdr-arbpl" width="50%">
+                                <items>
+                                    <Text text="Work Center">
+                                        <layoutData>
+                                            <FlexItemData baseSize="20%" growFactor="1" />
+                                        </layoutData>
+                                    </Text>
+                                    <Text text="{oChecklistHeaderModel>/arbpl} {oChecklistHeaderModel>/cktext}">
+                                        <layoutData>
+                                            <FlexItemData baseSize="30%" growFactor="1" />
+                                        </layoutData>
+                                    </Text>
+                                </items>
+                            </HBox>
+
+                            <HBox id="row-hdr-gltri" width="50%">
+                                <items>
+                                    <Text text="Actual Finish">
+                                        <layoutData>
+                                            <FlexItemData baseSize="30%" growFactor="1" />
+                                        </layoutData>
+                                    </Text>
+                                    <Text id="pick-gltri" width="100%" text="{
+                                            path: 'oChecklistModel>/gltri',
+                                            type: 'sap.ui.model.type.DateTime'
+                                        }">
+                                        <layoutData>
+                                            <FlexItemData baseSize="60%" growFactor="0" />
+                                        </layoutData>
+                                    </Text>
+                                    <!-- <DateTimePicker id="pick-gltri" width="100%" change="onActualDateChange" enabled="{ 'path': 'oViewModel>/allowEdit' }" value="{
+                                        path: 'oChecklistModel>/gltri',
+                                        type: 'sap.ui.model.type.DateTime'
+                                        }">
+                                        <layoutData>
+                                            <FlexItemData baseSize="60%" growFactor="0" />
+                                        </layoutData>
+                                    </DateTimePicker> -->
+                                </items>
+                            </HBox>
+
+                        </items>
+                    </HBox>
+
+                    <custom:Table02 id="table-leaders" title="Inspector (Leader)" showTitle="true" rows="{
+                        path: 'oChecklistModel>/to_Partner/results',
+                        filters: [{path: 'loekz', operator: 'NE', value1: 'X'}],
+                        templateShareable: false
+                        }">
+                        <custom:headerToolbar>
+                            <Toolbar>
+                                <content>
+                                    <Title text="Inspector (Leader)"/>
+                                    <ToolbarSpacer/>
+                                    <Button id="add-leader-btn" icon="sap-icon://add" visible="{oViewModel>/allowEdit}" press="onAddLeaderPress" />
+                                </content>
+                            </Toolbar>
+                        </custom:headerToolbar>
+                        <custom:column>
+                            <HBox alignContent="Center" justifyContent="SpaceAround">
+                                <items>
+                                    <Text text="Name">
+                                        <layoutData>
+                                            <FlexItemData baseSize="50%" growFactor="0" />
+                                        </layoutData>
+                                    </Text>
+                                    <Text text="Title">
+                                        <layoutData>
+                                            <FlexItemData baseSize="40%" growFactor="0" />
+                                        </layoutData>
+                                    </Text>
+                                    <Text text="">
+                                        <layoutData>
+                                            <FlexItemData baseSize="10%" growFactor="0" />
+                                        </layoutData>
+                                    </Text>
+                                </items>
+                            </HBox>
+                        </custom:column>
+
+                        <custom:rows>
+                            <HBox alignContent="Start" justifyContent="SpaceAround">
+                                <items>
+                                    <ComboBox width="90%" enabled="{oViewModel>/allowEdit}" selectedKey="{oChecklistModel>bp_id}" selectionChange="onLeaderSelectionChange" change="onLeaderChange" items="{path: 'partnerVH>/ZC_PM0001_Partners_VH', templateShareable: false}">
+                                        <items>
+                                            <core:Item key="{partnerVH>bp_id}" text="{partnerVH>bp_name}"/>
+                                        </items>
+                                        <layoutData>
+                                            <FlexItemData baseSize="50%" growFactor="0" />
+                                        </layoutData>
+                                    </ComboBox>
+
+                                    <Text text="{oChecklistModel>bp_func}" textAlign="Center">
+                                        <layoutData>
+                                            <FlexItemData baseSize="40%" growFactor="0" />
+                                        </layoutData>
+                                    </Text>
+
+                                    <Button icon="sap-icon://delete" visible="{oViewModel>/allowEdit}" press="onDelLeaderPress"/>
+                                </items>
+                            </HBox>
+                        </custom:rows>
+
+                    </custom:Table02>
+
+                </items>
+            </VBox>
+        </items>
+    </HBox>
+
+</core:FragmentDefinition>

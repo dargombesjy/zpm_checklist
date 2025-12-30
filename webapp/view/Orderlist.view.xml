@@ -9,7 +9,7 @@
             <f:DynamicPageHeader id="dynheader01">
                 <f:content>
                     <fb:FilterBar id="filterbar01" useToolbar="false" search="onSearch"
-                        filterChange="onFilterBarChange" showClearOnFB="false">
+                        filterChange="onFilterBarChange" showClearOnFB="true" clear="onFilterBarClear">
                         <fb:filterGroupItems>
                             <fb:FilterGroupItem id="fb-group-1" name="aufnr" 
                                 label="Order" groupName="Group1"
@@ -96,7 +96,8 @@
             <Table id="ordertable01" inset="false"
                 items="{
                     path: 'pmOrderService>/ZC_PM0001_Orderlist',
-                    sorter: { path: 'gstrp', descending: true }
+                    sorter: { path: 'gstrp', descending: true },
+                    templateShareable: false
                 }"
                 alternateRowColors="true"
                 growing="true"

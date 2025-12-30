@@ -1,7 +1,0 @@
-<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
-    <VBox width="90%">
-        <items>
-
-        </items>
-    </VBox>
-</core:FragmentDefinition>

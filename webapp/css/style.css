@@ -25,9 +25,10 @@
   font-weight: bold;
 }
 
-.group-header {
+.group-header > * {
   font-weight: bold;
-  background-color: (--sapBrandColor);
+  background-color: #b5cbe1;
+  /* background-color: (--sapBrandColor); */
 }
 
 .row-sub-container {
@@ -44,11 +45,42 @@
 .bordered {
   border: 1px solid #dadada;
 }
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+
+.zsapMInputBaseContentWrapper {
+  min-width: 4.13rem;
+  text-align: center;
+}
+
 #image-box-1, #image-box-2 {
   border: 1px solid #ccc;
   margin: 0 0.5em;
 }
-#footer > div {
+.image {
+  max-height: 20em;
+  break-inside: avoid;
+}
+.no-break {
+  break-inside: avoid;
+}
+.footer > div {
   border: 1px solid #dadada;
+}
+
+.value-col {
+  break-inside: avoid;
+}
+
+.label-col {
+  break-inside: avoid;
+}
+
+.attr-col {
+  break-inside: avoid;
 }
 /* Add more styling as needed */

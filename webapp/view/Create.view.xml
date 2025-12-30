@@ -1,12 +1,10 @@
 <mvc:XMLView id="createView"
     xmlns="sap.m"
     xmlns:l="sap.ui.layout"
+    xmlns:core="sap.ui.core"
     xmlns:custom="zpmchecklist.control"
     xmlns:mvc="sap.ui.core.mvc" controllerName="zpmchecklist.controller.Create">
-    <Page id="createPage"
-        title="{i18n>createViewTitle}"
-        titleLevel="H2"
-        class="sapUiContentPadding sapUiNoContentPaddingOnMobile sapUiSmallMargin">
+    <Page id="createPage" title="{i18n>createViewTitle}" titleLevel="H2">
         <customHeader>
             <OverflowToolbar id="otbSubheader-c">
                 <Button id="backButton-c" icon="sap-icon://nav-back" press="onBack" />
@@ -16,8 +14,15 @@
                 <Button id="cancelButton-c" text="Cancel" type="Transparent" press="onCancel" visible="false" />
             </OverflowToolbar>
         </customHeader>
-        
+
         <content>
+            <VBox id="checklistContainer" width="100%">
+                <items>
+                    <core:Fragment fragmentName="zpmchecklist.fragment.HeaderContainerC" type="XML"/>
+                    <core:Fragment fragmentName="zpmchecklist.fragment.TableContainer" type="XML"/>
+                    <core:Fragment fragmentName="zpmchecklist.fragment.FooterContainerC" type="XML"/>
+                </items>
+            </VBox>
         </content>
     </Page>
 

@@ -1,0 +1,102 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:u="sap.ui.unified">
+
+    <HBox class="sapUiLargeMarginTopBottom footer" id="footerContainer" width="100%" justifyContent="Center">
+        <items>
+            <VBox id="footer" width="70%">
+                <items>
+                    <HBox justifyContent="SpaceAround">
+                        <items>
+                            <Text text="Checked By,"/>
+                            <Text text="Validated By,"/>
+                            <Text text="Confirmed By,"/>
+                        </items>
+                    </HBox>
+                    <HBox alignItems="Center" height="5em" justifyContent="SpaceAround">
+                        <items>
+                            <Text text=""/>
+                            <Text text=""/>
+                            <Text text=""/>
+                        </items>
+                    </HBox>
+                    <HBox id="appr-container" justifyContent="SpaceAround">
+                        <items>
+                            <!-- <Text id="approver1-cmb" text="{oChecklistModel>/to_Approver/results/0/bp_name}" /> -->
+                            <!-- <ComboBox id="approver1-cmb" width="100%" enabled="{oViewModel>/allowEdit}" items="{
+                                    path: 'partnerVH>/ZC_PM0001_Partners_VH',
+                                    templateShareable: false
+                                }" selectionChange="onApproverChange" change="onComboBoxChange"
+                                selectedKey="{oChecklistModel>/to_Approver/results/0/bp_id}">
+                                <items>
+                                    <core:Item key="{partnerVH>bp_id}" text="{partnerVH>bp_name}" />
+                                </items>
+                            </ComboBox> -->
+
+                            <!-- <Text id="approver2-cmb" text="{oChecklistModel>/to_Approver/results/1/bp_name}" /> -->
+                            <!-- <ComboBox id="approver2-cmb" width="100%" enabled="{oViewModel>/allowEdit}" items="{
+                                    path: 'partnerVH>/ZC_PM0001_Partners_VH',
+                                    templateShareable: false
+                                }" selectionChange="onApproverChange" change="onComboBoxChange"
+                                selectedKey="{oChecklistModel>/to_Approver/results/1/bp_id}">
+                                <items>
+                                    <core:Item key="{partnerVH>bp_id}" text="{partnerVH>bp_name}" />
+                                </items>
+                            </ComboBox> -->
+
+                            <!-- <Text id="approver3-cmb" text="{oChecklistModel>/to_Approver/results/2/bp_name}" /> -->
+                            <!-- <ComboBox id="approver3-cmb" width="100%" enabled="{oViewModel>/allowEdit}" items="{
+                                    path: 'partnerVH>/ZC_PM0001_Partners_VH',
+                                    templateShareable: false
+                                }" selectionChange="onApproverChange" change="onComboBoxChange"
+                                selectedKey="{oChecklistModel>/to_Approver/results/2/bp_id}">
+                                <items>
+                                    <core:Item key="{partnerVH>bp_id}" text="{partnerVH>bp_name}" />
+                                </items>
+                            </ComboBox> -->
+                        </items>
+                    </HBox>
+
+                    <HBox justifyContent="SpaceAround">
+                        <items>
+                            <Text text=""/>
+                            <Text text=""/>
+                            <Text text=""/>
+                        </items>
+                    </HBox>
+                </items>
+            </VBox>
+        </items>
+    </HBox>
+
+    <HBox id="imageContainer" justifyContent="Center" width="100%">
+        <items>
+            <VBox id="image-box-wrapper" class="sapUiContentPadding" width="80%">
+                <items>
+                    <HBox id="image-box" alignItems="Center" justifyContent="SpaceAround" wrap="Wrap" class="no-break">
+                        <items>
+                            <VBox id="image-box-1" class="no-break">
+                                <Image src="{oChecklistModel>/to_Attachment/results/0/att_url}" class="image" />
+                                <u:FileUploader id="fileUploader1" buttonOnly="true" buttonText="Browse" 
+                                    fileType="jpg,jpeg,png" maximumFileSize="1" change="onFileChange"
+                                    uploadUrl="{oChecklistModel>/to_Attachment/results/0/att_url}"
+                                    uploadComplete="handleUpload" visible="{oViewModel>/allowEdit}"
+                                    fileSizeExceed="onFileSizeExceed"/>
+                            </VBox>
+
+                            <VBox id="image-box-2" class="no-break">
+                                <Image src="{oChecklistModel>/to_Attachment/results/1/att_url}" class="image"/>
+                                <u:FileUploader id="fileUploader2" buttonOnly="true" buttonText="Browse" 
+                                    fileType="jpg,jpeg,png" maximumFileSize="1" change="onFileChange"
+                                    uploadUrl="{oChecklistModel>/to_Attachment/results/1/att_url}"
+                                    uploadComplete="handleUpload" visible="{oViewModel>/allowEdit}"
+                                    fileSizeExceed="onFileSizeExceed"/>
+                            </VBox>
+                        </items>
+                    </HBox>
+                </items>
+            </VBox>
+        </items>
+    </HBox>
+
+</core:FragmentDefinition>

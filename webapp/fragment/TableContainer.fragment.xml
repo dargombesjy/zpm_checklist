@@ -1,0 +1,28 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:custom="zpmchecklist.control">
+
+    <HBox id="tableContainer" width="100%" justifyContent="Center">
+        <items>
+            <VBox id="tableWrapper" width="90%">
+                <items>
+                    <custom:Table02 id="table01" title="{oChecklistHeaderModel>/cvname}" showTitle="true">
+                        <!-- rows="{
+                            path: 'oNewRowModel>/',
+                            sorter: { path: 'vornr', descending: false },
+                            factory: '._buildRow'
+                        }">
+                        <custom:column>
+
+                        </custom:column> -->
+                    </custom:Table02>
+                </items>
+                <layoutData>
+                    <FlexItemData alignSelf="Center" />
+                </layoutData>
+            </VBox>
+        </items>
+    </HBox>
+
+
+</core:FragmentDefinition>

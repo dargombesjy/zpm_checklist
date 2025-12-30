@@ -100,7 +100,13 @@
       ],
       "js": [
         {
-          "uri": "util/html2pdf.bundle.min.js"
+          "uri": "util/jspdf.umd.min.js"
+        },
+        {
+          "uri": "util/html2canvas.min.js"
+        },
+        {
+          "uri": "util/browser-image-compression.min.js"
         }
       ]
     },

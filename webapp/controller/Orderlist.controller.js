@@ -10,6 +10,7 @@ sap.ui.define([
 			this.fetchData = this.fetchData.bind(this);
 			this.applyData = this.applyData.bind(this);
 			this.getFiltersWithValue = this.getFiltersWithValue.bind(this);
+			this.onFilterBarClear = this.onFilterBarClear.bind(this);
 
 			this.oFilterBar = this.getView().byId("filterbar01");
 			this.oTable = this.getView().byId("ordertable01");
@@ -27,9 +28,12 @@ sap.ui.define([
 			}
 			const oDisplayModel = models.createJSONModel(oViewParam);
 			this.getView().setModel(oDisplayModel, "displayModel");
+			const oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 
 			const oStatus = {
-				cstat: [{ key: "N", text: "New" }, { key: "A", text: "Approved" }],
+				cstat: [{ key: "R", text: oResourceBundle.getText("statusR") },
+				{ key: "N", text: oResourceBundle.getText("statusN") },
+				{ key: "A", text: oResourceBundle.getText("statusA") }],
 			}
 			const oStatusModel = models.createJSONModel(oStatus);
 			this.getView().setModel(oStatusModel, "statusModel");
@@ -39,8 +43,17 @@ sap.ui.define([
 		},
 
 		onExit: function () {
-			this.oFilterBar = null;
-			this.oTable = null;
+			const oPage = this.getView().byId("orderpage");
+			const oHeader = this.getView().byId("dynheader01");
+			if (oPage) {
+				oPage.destroyContent();
+			}
+
+			if (oHeader) {
+				oHeader.destroyContent();
+			}
+			this.oFilterBar.destroy();
+			// this.oTable = null;
 		},
 
 		onCreate: function () {
@@ -285,6 +298,30 @@ sap.ui.define([
 			this.oTable.setShowOverlay(false);
 		},
 
+		onFilterBarClear: function (oEvent) {
+			const oFilterBar = oEvent.getSource();
+			const aFilterItems = oFilterBar.getFilterGroupItems();
+
+			aFilterItems.forEach(function (oItem) {
+				var oControl = oItem.getControl();
+				var sControlName = oControl.getMetadata().getName();
+
+				if (oItem.getVisibleInFilterBar()) { // Only reset visible ones
+					if (sControlName === "sap.m.MultiComboBox") {
+						oControl.setSelectedKeys([]);
+					} else if(sControlName === "sap.m.ComboBox") {
+						oControl.setSelectedItem(null);
+					} else if (sControlName === "sap.m.DateRangeSelection") {
+						oControl.setDateValue(null);
+						oControl.setSecondDateValue(null);
+					}
+				}
+			});
+
+			this.oTable.getBinding("items").filter([]);
+			// this.getView().getModel().refresh(true);
+		},
+
 		_updateLabelsAndTable: function () {
 			this.oTable.setShowOverlay(true);
 		},
@@ -306,8 +343,15 @@ sap.ui.define([
 			displayModel.setProperty("/aufnr", "");
 			displayModel.setProperty("/chkno", "");
 
-			const oTable = this.byId("ordertable01");
-			oTable.removeSelections();
+			// const oTable = this.byId("ordertable01");
+			this.oTable.removeSelections();
+
+			if (sap.ushell && sap.ushell.Container) {
+				let oRenderer = sap.ushell.Container.getRenderer("fiori2");
+				if (oRenderer) {
+					oRenderer.hideHeaderItem("backBtn", false);
+				}
+			}
 		},
 
 		formatter: formatter
