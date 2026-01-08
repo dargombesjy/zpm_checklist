@@ -5,11 +5,13 @@ sap.ui.define([
     "sap/m/Dialog",
     "sap/m/DialogType",
     "zpmchecklist/model/formatter",
+    "sap/ui/core/message/Message",
+    "sap/ui/core/MessageType",
     "zpmchecklist/util/pdfmake.min",
     "zpmchecklist/util/vfs_fonts.min",
     "zpmchecklist/util/html2pdfmake",
     "zpmchecklist/util/himalaya"
-], function (BusyIndicator, BaseController, models, Dialog, DialogType, formatter) {
+], function (BusyIndicator, BaseController, models, Dialog, DialogType, formatter, Message, MessageType) {
     "use strict";
 
     return BaseController.extend("zpmchecklist.controller.Detail", {
@@ -29,12 +31,21 @@ sap.ui.define([
                 allowPost: false,
                 allowReject: false,
                 allowChange: false,
+                allowPrint: false,
                 viewMode: "display"
             };
             const oJsonModel = models.createJSONModel(oViewData);
             this.getView().setModel(oJsonModel, "oViewModel");
-            // this._setHtmlToJson = true;
             this._buildContent();
+
+            this._initMessageManager();
+            this._createPopover();
+            if (sap.ushell && sap.ushell.Container) {
+                let oRenderer = sap.ushell.Container.getRenderer("fiori2");
+                if (oRenderer) {
+                    oRenderer.hideHeaderItem("backBtn", false);
+                }
+            }
         },
 
         _buildContent: async function () {
@@ -102,6 +113,9 @@ sap.ui.define([
                 });
             });
             let oChecklistData = oDataChecklist[0];
+            oChecklistData.to_Partner.results.sort(function (a, b) {
+                return a.itemno - b.itemno;
+            });
             oChecklistData.to_Item.results.sort(function (a, b) {
                 return a.aplzl - b.aplzl;
             });
@@ -111,6 +125,10 @@ sap.ui.define([
             oChecklistData.to_Attachment.results.sort(function (a, b) {
                 return a.itemno - b.itemno;
             });
+
+            if (oChecklistData.confirmed == "D") {
+                oViewModel.setProperty("/allowPrint", true);
+            }
 
             const oChecklistModel = models.createJSONModel(oChecklistData);
             this.getView().setModel(oChecklistModel, "oChecklistModel");
@@ -138,9 +156,10 @@ sap.ui.define([
             this._buildTable(oDataItems, oTableContainer);
 
             this._setupPage("RO");
+            this._buildMessage();
         },
 
-        _setupPage: function (sMode) {
+        _setupPage(sMode) {
             const oTableLeader = this.getView().byId("table-leaders");
             const oGstriRow = this.getView().byId("row-hdr-gstri");
             const oGltriRow = this.getView().byId("row-hdr-gltri");
@@ -211,7 +230,7 @@ sap.ui.define([
                     let sPath = "{oChecklistModel>/to_Approver/results/" + i + "/bp_name}"
                     i++;
                     let sId = "approver" + i + "-cmb";
-                    let oAppr = new sap.m.Text(sId, { text: sPath });
+                    let oAppr = new sap.m.Text(sId, { text: sPath });   //, layoutData: [new sap.m.FlexItemData({ width: "100%" })] });
                     oApprContainer.addItem(oAppr);
                 } while (i < 3);
 
@@ -266,8 +285,10 @@ sap.ui.define([
                                 }),
                                 templateShareable: false
                             },
-                            selectedKey: "{oChecklistModel>bp_id}",
-                            selectionChange: this.onLeaderChange.bind(this),
+                            // selectedKey: "{oChecklistModel>bp_id}",
+                            value: "{oChecklistModel>bp_name}",
+                            selectionChange: this.onLeaderSelectionChange.bind(this),
+                            change: this.onComboBoxChange.bind(this),
                             layoutData: [new sap.m.FlexItemData({ baseSize: "50%", growFactor: 0 })]
                         }),
                         new sap.m.Text({
@@ -294,7 +315,8 @@ sap.ui.define([
                 oApprContainer.destroyItems();
                 let i = 0;
                 do {
-                    let sPath = "{oChecklistModel>/to_Approver/results/" + i + "/bp_id}"
+                    // let sPath = "{oChecklistModel>/to_Approver/results/" + i + "/bp_id}"
+                    let sPath = "{oChecklistModel>/to_Approver/results/" + i + "/bp_name}"
                     i++;
                     let sId = "approver" + i + "-cmb";
                     let oAppr = new sap.m.ComboBox(sId, {
@@ -308,14 +330,15 @@ sap.ui.define([
                             }),
                             templateShareable: false,
                         },
-                        selectedKey: sPath
+                        // selectedKey: sPath
+                        value: sPath
                     });
                     oApprContainer.addItem(oAppr);
                 } while (i < 3);
             }
         },
 
-        onEdit: function () {
+        onEdit() {
             const oViewModel = this.getView().getModel("oViewModel");
             oViewModel.setProperty("/allowChange", false);
             oViewModel.setProperty("/allowEdit", true);
@@ -329,14 +352,14 @@ sap.ui.define([
             this._setupPage("RW");
 
             const oNewRowModel = this.getView().getModel("oNewRowModel");
-            oNewRowModel.attachPropertyChange(function (oEvent) {
+            oNewRowModel.attachPropertyChange(function(oEvent) {
                 let sPath = oEvent.getParameter("context").sPath;
                 sPath = sPath + "/isChanged";
                 oNewRowModel.setProperty(sPath, true);
             });
         },
 
-        onSave: function () {
+        onSave() {
             const oViewModel = this.getView().getModel("oViewModel");
             oViewModel.setProperty("/allowEdit", false);
             oViewModel.setProperty("/allowChange", true);
@@ -349,7 +372,7 @@ sap.ui.define([
             this._changeChecklist();
         },
 
-        onCancel: function () {
+        onCancel() {
             const oViewModel = this.getView().getModel("oViewModel");
             oViewModel.setProperty("/allowEdit", false);
             oViewModel.setProperty("/allowChange", true);
@@ -361,7 +384,7 @@ sap.ui.define([
             }
         },
 
-        onBack: function (oEvent) {
+        onBack(oEvent) {
             const oRouter = this.getOwnerComponent().getRouter();
             this.onExit();
             // const oDetailPage = this.getView().byId("tableWrapper");  //("tableWrapper");
@@ -376,7 +399,11 @@ sap.ui.define([
             oRouter.navTo("main", {}, true);
         },
 
-        _buildChangeModel: async function (oDataItems) {
+        onNavBack: function () {
+            let test = "";
+        },
+
+        async _buildChangeModel(oDataItems) {
 
             const oChecklistModel = this.getView().getModel("oChecklistModel");
             let aRowModel = [];
@@ -427,7 +454,8 @@ sap.ui.define([
                         oRowObject.values[cellKey] = {
                             sval: oVal == undefined ? "" : oVal.atwrt,
                             chitid: oVal == undefined ? "" : oVal.chitid,
-                            itemno: oVal == undefined ? "" : oVal.itemno
+                            itemno: oVal == undefined ? "" : oVal.itemno,
+                            posted: oVal == undefined ? "" : oVal.posted
                         };
                     } else if (colData.col_type == "V") {
                         let aVals = taskData.column_list ? taskData.column_list.split(",").map(function (item) { return item.trim() }) : [];
@@ -444,7 +472,8 @@ sap.ui.define([
                                     oRowObject.values[elPoint] = {
                                         sval: oVal == undefined ? "" : oVal.atwrt,
                                         chitid: oVal == undefined ? "" : oVal.chitid,
-                                        itemno: oVal == undefined ? "" : oVal.itemno
+                                        itemno: oVal == undefined ? "" : oVal.itemno,
+                                        posted: oVal == undefined ? "" : oVal.posted
                                     };
                                     skipForMpoint = true;
                                 }
@@ -457,7 +486,8 @@ sap.ui.define([
                             oRowObject.values[cellKey] = {
                                 sval: oVal == undefined ? "" : oVal.atwrt,
                                 chitid: oVal == undefined ? "" : oVal.chitid,
-                                itemno: oVal == undefined ? "" : oVal.itemno
+                                itemno: oVal == undefined ? "" : oVal.itemno,
+                                posted: oVal == undefined ? "" : oVal.posted
                             };
                         }
                     }
@@ -471,7 +501,7 @@ sap.ui.define([
             this.getView().setModel(oNewRowModel, "oNewRowModel");
         },
 
-        _changeChecklist: function () {
+        _changeChecklist() {
             var oTmpModel = this.getView().getModel();  //ZPM_CHECKLIST001_SRV
             oTmpModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
             oTmpModel.setUseBatch(true);
@@ -624,6 +654,9 @@ sap.ui.define([
                             bp_id: oApprover.bp_id,
                             bp_name: oApprover.bp_name,
                             bp_func: oApprover.bp_func,
+                            nik: oApprover.nik,
+                            pms: oApprover.pms,
+                            prs: oApprover.prs,
                             IsActiveEntity: true
                         };
 
@@ -701,14 +734,18 @@ sap.ui.define([
                     });
                 },
                 error: function (oError) {
-                    console.error(oError);
+                    // console.error(oError);
                     BusyIndicator.hide()
-                    sap.m.MessageBox.error("Error updating checklist.");
+                    let sErrorMessage = JSON.parse(oError.responseText).error.message.value;
+                    if (!sErrorMessage) {
+                        sErrorMessage = "Error updating checklist";
+                    }
+                    sap.m.MessageBox.error(sErrorMessage);
                 }
             });
         },
 
-        onApprovePress: function () {
+        onApprovePress() {
 
             if (!this.oApproveDialog) {
                 this.oApproveDialog = new Dialog({
@@ -734,10 +771,10 @@ sap.ui.define([
             this.oApproveDialog.open();
         },
 
-        callPostChecklist: async function () {
+        async callPostChecklist() {
             BusyIndicator.show();
             // const sPdf = await this.__createPdf();
-            const sPdf = await this._createPdfMake();
+            const sPdf = await this._createPdfMake("save");
             if (sPdf == undefined) {
                 BusyIndicator.hide()
                 sap.m.MessageBox.error("Generate PDF failed.");
@@ -796,11 +833,13 @@ sap.ui.define([
                     chkid: oChecklistModel.getProperty("/chkid"),
                     IsActiveEntity: true
                 },
-                success: function (oData) {
+                success: function (oData, oResp) {
                     BusyIndicator.hide();
-                    sap.m.MessageBox.show("Checklist posted successfully!", {
-                        icon: sap.m.MessageBox.Icon.SUCCESS,
-                        title: "Success",
+                    let sMessage = JSON.parse(oResp.headers["sap-message"]);
+                    let oSeverity = formatter.formatSeverity(sMessage.severity);
+                    sap.m.MessageBox.show(sMessage.message, {
+                        icon: oSeverity.icon,
+                        title: oSeverity.title,      // sMessage.severity == "warning" ? "Warning" : "Success",
                         actions: [sap.m.MessageBox.Action.OK],
                         onClose: function () {
                             that.onBack();
@@ -809,13 +848,22 @@ sap.ui.define([
                 },
                 error: function (oError) {
                     BusyIndicator.hide();
-                    console.error(oError);
-                    sap.m.MessageBox.error("Error submitting checklist.");
+                    // console.error(oError);
+                    // sap.m.MessageBox.error("Error submitting checklist.");
+                    let sErrorMessage = JSON.parse(oError.responseText).error.message.value;
+                    if (!sErrorMessage) {
+                        sErrorMessage = "Error submitting checklist";
+                    }
+                    sap.m.MessageBox.show(sErrorMessage, {
+                        icon: sap.m.MessageBox.Icon.ERROR,
+                        title: "Approve checklist failed",
+                        actions: [sap.m.MessageBox.Action.OK]
+                    });
                 }
             });
         },
 
-        onRejectPress: function () {
+        onRejectPress() {
             if (!this.oRejectDialog) {
                 this.oRejectDialog = new Dialog({
                     type: DialogType.Message,
@@ -840,7 +888,7 @@ sap.ui.define([
             this.oRejectDialog.open();
         },
 
-        callRejectChecklist: function () {
+        callRejectChecklist() {
             const oChecklistModel = this.getView().getModel("oChecklistModel");
             const oModel = this.getView().getModel();
             oModel.setUseBatch(false);
@@ -870,7 +918,11 @@ sap.ui.define([
             });
         },
 
-        _createPdf: async function () {
+        onDownloadPress() {
+            this._createPdfMake("download");
+        },
+
+        async _createPdf() {
             // let oViewModel = this.getView().getModel("oViewModel");
             // let sAufnr = oViewModel.getProperty("/aufnr");
             // let oNow = new Date();
@@ -944,82 +996,15 @@ sap.ui.define([
             // //     width: 297,
             // //     windowWidth: nWindowWidth  // 980
             // // });
-
-            // // await oPdf.html(tableElement, {
-            // //     margin: [10, 0, 10, 0],
-            // //     autoPaging: "text",
-            // //     // image: {
-            // //     //     type: "jpeg",
-            // //     //     quality: 0.8
-            // //     // },
-            // //     jsPDF: oPdf,
-            // //     x: 0,
-            // //     y: headerHeight + 2,
-            // //     width: 297,
-            // //     windowWidth: nWindowWidth
-            // // });
-
-            // // let pageHeight = oPdf.internal.pageSize.getHeight();
-            // // let pageWidth = oPdf.internal.pageSize.getWidth();
-            // // let pageCount = oPdf.internal.getNumberOfPages();
-            // // let contentHeight = headerHeight + tableHeight;
-            // // let nPage = Math.trunc(contentHeight / pageHeight);
-            // // let effHeight = nPage * (pageHeight + 20);
-            // // let nRem = effHeight - contentHeight;
-
-            // // // if (nRem > footerHeight) {
-            // // //     oPdf.setPage(12);
-            // // //     await oPdf.html(footerElement, {
-            // // //         margin: [10, 0, 10, 0],
-            // // //         // autoPaging: "text",
-            // // //         // image: {
-            // // //         //     type: "jpeg",
-            // // //         //     quality: 0.8
-            // // //         // },
-            // // //         // jsPDF: oPdf,
-            // // //         x: 0,
-            // // //         y: 100,  //pageHeight - 10 - nRem,
-            // // //         width: 210,
-            // // //         windowWidth: nWindowWidth
-            // // //     });
-            // // //     nRem = nRem - footerHeight;
-            // // // } else {
-            // // //     oPdf.addPage();
-            // // //     nPage += 1;
-            // // //     oPdf.setPage(2);
-            // // //     await oPdf.html(footerElement, {
-            // // //         margin: [10, 0, 10, 0],
-            // // //         // autoPaging: "text",
-            // // //         // image: {
-            // // //         //     type: "jpeg",
-            // // //         //     quality: 0.8
-            // // //         // },
-            // // //         jsPDF: oPdf,
-            // // //         x: 0,
-            // // //         y: 10,
-            // // //         width: 210,
-            // // //         windowWidth: nWindowWidth
-            // // //     });
-            // // // }
-
-            // // // if (nRem > imageHeight) {
-
-            // // // }
-
-            // const sTest = oPdf.output("blob");
-            // oPdf.output("save");
-            // // const sBase64 = oPdf.output("datauristring");
-            // // var rawBase64 = sBase64.split(',')[1];
-            // // return rawBase64;
         },
 
-        _pxToMm: function (nPx) {
+        _pxToMm(nPx) {
             const dpi = 96;
             const res = (nPx * 25.4) / dpi;
             return res;
         },
 
-        _createPdfMake: async function () {
+        async _createPdfMake(sMode) {
             let docDef = {
                 content: [
                     { style: "tableCommon", table: {} },                    // header
@@ -1048,7 +1033,7 @@ sap.ui.define([
                     }
                 },
                 defaultStyle: {
-                    fontSize: 10
+                    fontSize: 9
                 }
             }
 
@@ -1146,11 +1131,14 @@ sap.ui.define([
                                 }
                             } else if (cell.stack.length == 4) {
                                 let i = 1;
+                                let sResult = "";
                                 for (let sub of cell.stack) {
                                     if (i == 1) {
-                                        aRows.push({ text: formatter.formatNumber(sub.text[0].text), alignment: "right" });
-                                    } else if (i < 3) {
-                                        aRows.push({ text: sub.text[0].text });
+                                        aRows.push({ text: sResult.text, colSpan: 2, alignment: "right" }, "");
+                                        sResult = sub.text[0].text;
+                                    } else if (i == 2) {
+                                        sResult = sResult + sub.text[0].text;
+                                        aRows[1].text = sResult;
                                     } else {
                                         aRows.push({ text: sub.text[0].text, colSpan: 2 });
                                         aRows.push("");
@@ -1159,24 +1147,33 @@ sap.ui.define([
                                 }
                             } else {
                                 let i = 1;
+                                let sResult = "";
                                 for (let sub of cell.stack) {
                                     if (i == 1) {
-                                        aRows.push({text: formatter.formatNumber(sub.text[0].text), colSpan: 2, alignment: "right"});
-                                        aRows.push({text: ""});
+                                        aRows.push({ text: sResult, colSpan: 3, alignment: "right" }, "", "");
+                                        sResult = sub.text[0].text;
+                                    } else if (i == 2) {
+                                        sResult = sResult + sub.text[0].text;
+                                        aRows[1].text = sResult;
                                     } else {
-                                        aRows.push({text: sub.text[0].text, colSpan: 2});
-                                        aRows.push({text: ""});
+                                        aRows.push({ text: sub.text[0].text, colSpan: 3 }, "", "");
                                     }
+                                    i += 1;
                                 }
                             }
                         } else {
                             if (cell.stack.length == 1) {
                                 aRows.push({ text: cell.stack[0].text[0].text, colSpan: 4 }, {}, {}, {});
                             } else if (cell.stack.length == 4) {
+                                let i = 1;
+                                let sResult = "";
                                 for (let sub of cell.stack) {
-                                    let i = 1;
                                     if (i == 1) {
-                                        aRows.push({ text: formatter.formatNumber(sub.text[0].text), alignment: "right" });
+                                        aRows.push({ text: sResult, colSpan: 2, alignment: "right" }, "");
+                                        sResult = sub.text[0].text;
+                                    } else if (i == 2) {
+                                        sResult = sResult + sub.text[0].text;
+                                        aRows[1].text = sResult;
                                     } else {
                                         aRows.push({ text: sub.text[0].text });
                                     }
@@ -1184,14 +1181,18 @@ sap.ui.define([
                                 }
                             } else {
                                 let i = 1;
+                                let sResult = "";
                                 for (let sub of cell.stack) {
                                     if (i == 1) {
-                                        aRows.push({ text: formatter.formatNumber(sub.text[0].text), alignment: "right" });
-                                    } else if (i < 3) {
-                                        aRows.push({ text: sub.text[0].text });
+                                        aRows.push({ text: sResult, colSpan: 2, alignment: "right" }, "");
+                                        sResult = sub.text[0].text;
+                                    } else if (i == 2) {
+                                        sResult = sResult + sub.text[0].text;
+                                        aRows[1].text = sResult;
+                                        // aRows.push({ text: sub.text[0].text });
                                     } else {
-                                        aRows.push({ text: sub.text[0].text, colSpan: 2 });
-                                        aRows.push("");
+                                        aRows.push({ text: sub.text[0].text, colSpan: 2 }, "");
+                                        // aRows.push("");
                                     }
                                     i += 1;
                                 }
@@ -1199,7 +1200,15 @@ sap.ui.define([
                         }
 
                     } else {
-                        if (["label-col", "attr-col"].some(function (val) {
+                        if (["group-header"].some(function(val) {
+                            return cell.style.includes(val);
+                        })) {
+                            if (oChecklistHeaderModel.ingpr == "LMP") {
+                                aRows.push({ text: cell.text[0].text, colSpan: 8, bold: true, fillColor: "#b5cbe1" })
+                            } else {
+                                aRows.push({ text: cell.text[0].text, colSpan: 6 })
+                            }
+                        } else if(["label-col", "attr-col"].some(function(val) {
                             return cell.style.includes(val);
                         })) {
                             aRows.push({ text: cell.text[0].text });
@@ -1210,9 +1219,9 @@ sap.ui.define([
             }
 
             if (oChecklistHeaderModel.ingpr == "LMP") {
-                docDef.content[4].table.widths = [200, 25, 25, 25, 25, 25, 25, "*"];
+                docDef.content[4].table.widths = [182, 28, 28, 28, 28, 28, 28, "*"];
             } else {
-                docDef.content[4].table.widths = [200, 50, "auto", "auto", "auto", "*"];
+                docDef.content[4].table.widths = [180, 50, "auto", "auto", "auto", "*"];
             }
 
             docDef.content.push({
@@ -1227,12 +1236,42 @@ sap.ui.define([
                                 [
                                     {
                                         table: {
-                                            widths: [100, 100, 100],
-                                            heights: [20, 50, 20],
+                                            widths: [155, 155, 155],
+                                            heights: [20, 50, "auto"],
                                             body: [
                                                 ["Checked By,", "Validated By,", "Confirmed By,"],
                                                 ["", "", ""],
-                                                [{ text: oChecklistModel.to_Approver.results[0].bp_name }, { text: oChecklistModel.to_Approver.results[1].bp_name }, { text: oChecklistModel.to_Approver.results[2].bp_name }]
+                                                [
+                                                    { text: oChecklistModel.to_Approver.results[0].bp_name, bold: true },
+                                                    { text: oChecklistModel.to_Approver.results[1].bp_name, bold: true },
+                                                    { text: oChecklistModel.to_Approver.results[2].bp_name, bold: true }
+                                                ],
+                                                [
+                                                    { 
+                                                        stack: [
+                                                            { text: oChecklistModel.to_Approver.results[0].bp_func, fontSize: 8, bold: true },
+                                                            { text: "NIK: " + oChecklistModel.to_Approver.results[0].nik, fontSize: 8 },
+                                                            { text: "PMS: " + oChecklistModel.to_Approver.results[0].pms, fontSize: 8 },
+                                                            { text: "PRS: " + oChecklistModel.to_Approver.results[0].prs, fontSize: 8 }
+                                                        ]
+                                                    },
+                                                    { 
+                                                        stack: [
+                                                            { text: oChecklistModel.to_Approver.results[1].bp_func, fontSize: 8, bold: true },
+                                                            { text: "NIK: " + oChecklistModel.to_Approver.results[1].nik, fontSize: 8 },
+                                                            { text: "PMS: " + oChecklistModel.to_Approver.results[1].pms, fontSize: 8 },
+                                                            { text: "PRS: " + oChecklistModel.to_Approver.results[1].prs, fontSize: 8 }
+                                                        ]
+                                                    },
+                                                    { 
+                                                        stack: [
+                                                            { text: oChecklistModel.to_Approver.results[2].bp_func, fontSize: 8, bold: true },
+                                                            { text: "NIK: " + oChecklistModel.to_Approver.results[2].nik, fontSize: 8 },
+                                                            { text: "PMS: " + oChecklistModel.to_Approver.results[2].pms, fontSize: 8 },
+                                                            { text: "PRS: " + oChecklistModel.to_Approver.results[2].prs, fontSize: 8 }
+                                                        ]
+                                                    },
+                                                ]
                                             ]
                                         }
                                     }
@@ -1245,17 +1284,20 @@ sap.ui.define([
             });
 
             let showImage = true;
-            if (oChecklistModel.to_Attachment.results[0].att_url == "" && oChecklistModel.to_Attachment.results[1].att_url == "") {
+            if (oChecklistModel.to_Attachment.results[0].att_url == "" || oChecklistModel.to_Attachment.results[1].att_url == "") {
                 showImage = false;
-            } else {
-                if (oChecklistModel.to_Attachment.results[0].att_url == "") {
-                    oChecklistModel.to_Attachment.results[0].att_url = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUAAAAEAAAABAAAAAECAYAAAAg+lkpAAAADUlEQVR4AWJiYGBgAAAAAP//XRcpzQAAAAZJREFUAwAADwADJDd96QAAAABJRU5ErkJggg=="
-                }
-                if (oChecklistModel.to_Attachment.results[1].att_url == "") {
-                    oChecklistModel.to_Attachment.results[1].att_url = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUAAAAEAAAABAAAAAECAYAAAAg+lkpAAAADUlEQVR4AWJiYGBgAAAAAP//XRcpzQAAAAZJREFUAwAADwADJDd96QAAAABJRU5ErkJggg=="
-                }
-                // showImage = true;
             }
+            // else {
+            // if (oChecklistModel.to_Attachment.results[0].att_url == "") {
+            //     // oChecklistModel.to_Attachment.results[0].att_url = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUAAAAEAAAABAAAAAECAYAAAAg+lkpAAAADUlEQVR4AWJiYGBgAAAAAP//XRcpzQAAAAZJREFUAwAADwADJDd96QAAAABJRU5ErkJggg=="
+            //     oChecklistModel.to_Attachment.results[0].att_url = "iVBORw0KGgoAAAANSUhEUAAAAEAAAABAAAAAECAYAAAAg+lkpAAAADUlEQVR4AWJiYGBgAAAAAP//XRcpzQAAAAZJREFUAwAADwADJDd96QAAAABJRU5ErkJggg=="
+            // }
+            // if (oChecklistModel.to_Attachment.results[1].att_url == "") {
+            //     // oChecklistModel.to_Attachment.results[1].att_url = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUAAAAEAAAABAAAAAECAYAAAAg+lkpAAAADUlEQVR4AWJiYGBgAAAAAP//XRcpzQAAAAZJREFUAwAADwADJDd96QAAAABJRU5ErkJggg=="
+            //     oChecklistModel.to_Attachment.results[1].att_url = "iVBORw0KGgoAAAANSUhEUAAAAEAAAABAAAAAECAYAAAAg+lkpAAAADUlEQVR4AWJiYGBgAAAAAP//XRcpzQAAAAZJREFUAwAADwADJDd96QAAAABJRU5ErkJggg=="
+            // }
+            // // showImage = true;
+            // }
 
             if (showImage) {
                 docDef.content.push({
@@ -1272,9 +1314,9 @@ sap.ui.define([
                             table: {
                                 body: [
                                     [
-                                        { image: oChecklistModel.to_Attachment.results[0].att_url, width: 150 },
+                                        { image: oChecklistModel.to_Attachment.results[0].att_url, width: 200 },
                                         "",
-                                        { image: oChecklistModel.to_Attachment.results[1].att_url, width: 150 }
+                                        { image: oChecklistModel.to_Attachment.results[1].att_url, width: 200 }
                                     ]
                                 ]
                             }
@@ -1287,21 +1329,42 @@ sap.ui.define([
                 });
             }
 
-            // createPdf(docDef).print();
-            // const oPdf = createPdf(docDef);
-            // oPdf.getBase64(function(pdf) {
-            //     return pdf;
-            //     // console.log(pdf);
-            // });
-
-            const sBase64 = await new Promise(function(resolve, reject) {
-                createPdf(docDef).getBase64(function(sPdf) {
-                    resolve(sPdf);
+            if (sMode == "save") {
+                const sBase64 = await new Promise(function (resolve, reject) {
+                    createPdf(docDef).getBase64(function (sPdf) {
+                        resolve(sPdf);
+                    });
                 });
-            });
 
-            return sBase64;
+                return sBase64;
+            } else if (sMode == "download") {
+                createPdf(docDef).print();
+            }
+        },
 
+        handlePopover(oEvent) {
+            if (!this.oMP) {
+                this._createPopover();
+            }
+            this.oMP.toggle(oEvent.getSource());
+        },
+
+        _buildMessage() {
+            const oChecklistModel = this.getView().getModel("oChecklistModel").getData();
+            if (oChecklistModel.messages) {
+                let aMessages = oChecklistModel.messages.split(";");
+                for (let msg of aMessages) {
+                    let aMsgs = msg.split("|");
+                    this._MessageManager.addMessages(
+                        new Message({
+                            message: aMsgs[2],
+                            type: MessageType.Error,
+                            additionalText: aMsgs[0]
+                        })
+                    );
+                }
+            }
         }
+
     });
 });

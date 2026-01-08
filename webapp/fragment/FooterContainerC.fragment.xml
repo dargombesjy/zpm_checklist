@@ -20,36 +20,60 @@
                             <Text text=""/>
                         </items>
                     </HBox>
-                    <HBox id="appr-container" justifyContent="SpaceAround">
+                    <HBox id="appr-container" alignContent="Start" justifyContent="SpaceAround">
                         <items>
                             <!-- <Text id="approver1-cmb" text="{oChecklistModel>/to_Approver/results/0/bp_name}" /> -->
+                            <!-- <ComboBox id="approver1-cmb" width="100%" enabled="{oViewModel>/allowEdit}" items="{
+                                    path: 'partnerVH>/ZC_PM0001_Partners_VH',
+                                    templateShareable: false
+                                }" selectionChange="onApproverChange" change="onComboBoxChange" selectedKey="{oChecklistModel>/to_Approver/results/0/bp_id}">
+                                <items>
+                                    <core:Item key="{partnerVH>bp_id}" text="{partnerVH>bp_name}" />
+                                </items>
+                            </ComboBox> -->
                             <ComboBox id="approver1-cmb" width="100%" enabled="{oViewModel>/allowEdit}" items="{
                                     path: 'partnerVH>/ZC_PM0001_Partners_VH',
                                     templateShareable: false
                                 }" selectionChange="onApproverChange" change="onComboBoxChange"
-                                selectedKey="{oChecklistModel>/to_Approver/results/0/bp_id}">
+                                value="{oChecklistModel>/to_Approver/results/0/bp_name}">
                                 <items>
                                     <core:Item key="{partnerVH>bp_id}" text="{partnerVH>bp_name}" />
                                 </items>
                             </ComboBox>
 
                             <!-- <Text id="approver2-cmb" text="{oChecklistModel>/to_Approver/results/1/bp_name}" /> -->
+                            <!-- <ComboBox id="approver2-cmb" width="100%" enabled="{oViewModel>/allowEdit}" items="{
+                                    path: 'partnerVH>/ZC_PM0001_Partners_VH',
+                                    templateShareable: false
+                                }" selectionChange="onApproverChange" change="onComboBoxChange" selectedKey="{oChecklistModel>/to_Approver/results/1/bp_id}">
+                                <items>
+                                    <core:Item key="{partnerVH>bp_id}" text="{partnerVH>bp_name}" />
+                                </items>
+                            </ComboBox> -->
                             <ComboBox id="approver2-cmb" width="100%" enabled="{oViewModel>/allowEdit}" items="{
                                     path: 'partnerVH>/ZC_PM0001_Partners_VH',
                                     templateShareable: false
                                 }" selectionChange="onApproverChange" change="onComboBoxChange"
-                                selectedKey="{oChecklistModel>/to_Approver/results/1/bp_id}">
+                                value="{oChecklistModel>/to_Approver/results/1/bp_name}">
                                 <items>
                                     <core:Item key="{partnerVH>bp_id}" text="{partnerVH>bp_name}" />
                                 </items>
                             </ComboBox>
 
                             <!-- <Text id="approver3-cmb" text="{oChecklistModel>/to_Approver/results/2/bp_name}" /> -->
+                            <!-- <ComboBox id="approver3-cmb" width="100%" enabled="{oViewModel>/allowEdit}" items="{
+                                    path: 'partnerVH>/ZC_PM0001_Partners_VH',
+                                    templateShareable: false
+                                }" selectionChange="onApproverChange" change="onComboBoxChange" selectedKey="{oChecklistModel>/to_Approver/results/2/bp_id}">
+                                <items>
+                                    <core:Item key="{partnerVH>bp_id}" text="{partnerVH>bp_name}" />
+                                </items>
+                            </ComboBox> -->
                             <ComboBox id="approver3-cmb" width="100%" enabled="{oViewModel>/allowEdit}" items="{
                                     path: 'partnerVH>/ZC_PM0001_Partners_VH',
                                     templateShareable: false
                                 }" selectionChange="onApproverChange" change="onComboBoxChange"
-                                selectedKey="{oChecklistModel>/to_Approver/results/2/bp_id}">
+                                value="{oChecklistModel>/to_Approver/results/2/bp_name}">
                                 <items>
                                     <core:Item key="{partnerVH>bp_id}" text="{partnerVH>bp_name}" />
                                 </items>
@@ -57,11 +81,32 @@
                         </items>
                     </HBox>
 
-                    <HBox justifyContent="SpaceAround">
+                    <HBox id="apprNotes" alignContent="Start" justifyContent="SpaceAround">
                         <items>
-                            <Text text=""/>
-                            <Text text=""/>
-                            <Text text=""/>
+                            <VBox alignContent="Center" width="100%">
+                                <items>
+                                    <Text text="{oChecklistModel>/to_Approver/results/0/bp_func}" visible="{=${oChecklistModel>/to_Approver/results/0/bp_func}.length > 0}"/>
+                                    <Text text="NIK: {oChecklistModel>/to_Approver/results/0/nik}" visible="{=${oChecklistModel>/to_Approver/results/0/nik}.length > 0}"/>
+                                    <Text text="PMS: {oChecklistModel>/to_Approver/results/0/pms}" visible="{=${oChecklistModel>/to_Approver/results/0/pms}.length > 0}"/>
+                                    <Text text="PRS: {oChecklistModel>/to_Approver/results/0/prs}" visible="{=${oChecklistModel>/to_Approver/results/0/prs}.length > 0}"/>
+                                </items>
+                            </VBox>
+                            <VBox justifyContent="Center" width="100%">
+                                <items>
+                                    <Text text="{oChecklistModel>/to_Approver/results/1/bp_func}" visible="{=${oChecklistModel>/to_Approver/results/1/bp_func}.length > 0}"/>
+                                    <Text text="NIK: {oChecklistModel>/to_Approver/results/1/nik}" visible="{=${oChecklistModel>/to_Approver/results/1/nik}.length > 0}"/>
+                                    <Text text="PMS: {oChecklistModel>/to_Approver/results/1/pms}" visible="{=${oChecklistModel>/to_Approver/results/1/pms}.length > 0}"/>
+                                    <Text text="PRS: {oChecklistModel>/to_Approver/results/1/prs}" visible="{=${oChecklistModel>/to_Approver/results/1/prs}.length > 0}"/>
+                                </items>
+                            </VBox>
+                            <VBox justifyContent="Center" width="100%">
+                                <items>
+                                    <Text text="{oChecklistModel>/to_Approver/results/2/bp_func}" visible="{=${oChecklistModel>/to_Approver/results/2/bp_func}.length > 0}"/>
+                                    <Text text="NIK: {oChecklistModel>/to_Approver/results/2/nik}" visible="{=${oChecklistModel>/to_Approver/results/2/nik}.length > 0}"/>
+                                    <Text text="PMS: {oChecklistModel>/to_Approver/results/2/pms}" visible="{=${oChecklistModel>/to_Approver/results/2/pms}.length > 0}"/>
+                                    <Text text="PRS: {oChecklistModel>/to_Approver/results/2/prs}" visible="{=${oChecklistModel>/to_Approver/results/2/prs}.length > 0}"/>
+                                </items>
+                            </VBox>
                         </items>
                     </HBox>
                 </items>
@@ -77,20 +122,12 @@
                         <items>
                             <VBox id="image-box-1" class="no-break">
                                 <Image src="{oChecklistModel>/to_Attachment/results/0/att_url}" class="image" />
-                                <u:FileUploader id="fileUploader1" buttonOnly="true" buttonText="Browse" 
-                                    fileType="jpg,jpeg,png" maximumFileSize="1" change="onFileChange"
-                                    uploadUrl="{oChecklistModel>/to_Attachment/results/0/att_url}"
-                                    uploadComplete="handleUpload" visible="{oViewModel>/allowEdit}"
-                                    fileSizeExceed="onFileSizeExceed"/>
+                                <u:FileUploader id="fileUploader1" buttonOnly="true" buttonText="Browse" fileType="jpg,jpeg,png" maximumFileSize="1" change="onFileChange" uploadUrl="{oChecklistModel>/to_Attachment/results/0/att_url}" uploadComplete="handleUpload" visible="{oViewModel>/allowEdit}" fileSizeExceed="onFileSizeExceed"/>
                             </VBox>
 
                             <VBox id="image-box-2" class="no-break">
                                 <Image src="{oChecklistModel>/to_Attachment/results/1/att_url}" class="image"/>
-                                <u:FileUploader id="fileUploader2" buttonOnly="true" buttonText="Browse" 
-                                    fileType="jpg,jpeg,png" maximumFileSize="1" change="onFileChange"
-                                    uploadUrl="{oChecklistModel>/to_Attachment/results/1/att_url}"
-                                    uploadComplete="handleUpload" visible="{oViewModel>/allowEdit}"
-                                    fileSizeExceed="onFileSizeExceed"/>
+                                <u:FileUploader id="fileUploader2" buttonOnly="true" buttonText="Browse" fileType="jpg,jpeg,png" maximumFileSize="1" change="onFileChange" uploadUrl="{oChecklistModel>/to_Attachment/results/1/att_url}" uploadComplete="handleUpload" visible="{oViewModel>/allowEdit}" fileSizeExceed="onFileSizeExceed"/>
                             </VBox>
                         </items>
                     </HBox>

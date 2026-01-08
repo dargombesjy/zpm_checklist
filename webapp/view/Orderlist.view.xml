@@ -8,17 +8,11 @@
         <f:header>
             <f:DynamicPageHeader id="dynheader01">
                 <f:content>
-                    <fb:FilterBar id="filterbar01" useToolbar="false" search="onSearch"
-                        filterChange="onFilterBarChange" showClearOnFB="true" clear="onFilterBarClear">
+                    <fb:FilterBar id="filterbar01" useToolbar="false" search="onSearch" filterChange="onFilterBarChange" showClearOnFB="true" clear="onFilterBarClear">
                         <fb:filterGroupItems>
-                            <fb:FilterGroupItem id="fb-group-1" name="aufnr" 
-                                label="Order" groupName="Group1"
-                                visibleInFilterBar="true">
+                            <fb:FilterGroupItem id="fb-group-1" name="aufnr" label="Order" groupName="Group1" visibleInFilterBar="true">
                                 <fb:control>
-                                    <MultiComboBox id="cmb-order"
-                                        name="aufnr"
-                                        selectionChange="onFilterSelectionChange"
-                                        items="{
+                                    <MultiComboBox id="cmb-order" name="aufnr" selectionChange="onFilterSelectionChange" items="{
                                             path: 'pmOrderService>/ZC_PM0001_Orderlist',
                                             templateShareable: true
                                         }">
@@ -27,26 +21,15 @@
                                 </fb:control>
                             </fb:FilterGroupItem>
 
-                            <fb:FilterGroupItem id="fb-group-2" name="gstrp" 
-                                label="Bsc.Start" groupName="Group1"
-                                visibleInFilterBar="true">
+                            <fb:FilterGroupItem id="fb-group-2" name="gstrp" label="Bsc.Start" groupName="Group1" visibleInFilterBar="true">
                                 <fb:control>
-                                    <DateRangeSelection
-                                        id="date-range0"
-                                        displayFormat="dd/MM/yyyy"
-                                        showFooter="true"
-                                        change="handleDateChange"/>
+                                    <DateRangeSelection id="date-range0" displayFormat="dd/MM/yyyy" showFooter="true" change="handleDateChange"/>
                                 </fb:control>
                             </fb:FilterGroupItem>
 
-                            <fb:FilterGroupItem id="fb-group-3" name="gewrk" 
-                                label="Work Center" groupName="Group1"
-                                visibleInFilterBar="true">
+                            <fb:FilterGroupItem id="fb-group-3" name="arbpl" label="Work Center" groupName="Group1" visibleInFilterBar="true">
                                 <fb:control>
-                                    <MultiComboBox id="cmb-gewrk"
-                                        name="aufnr"
-                                        selectionChange="onFilterSelectionChange"
-                                        items="{
+                                    <MultiComboBox id="cmb-gewrk" name="aufnr" selectionChange="onFilterSelectionChange" items="{
                                             path: '/WorkCenterVHSet',
                                             templateShareable: false
                                         }">
@@ -55,14 +38,9 @@
                                 </fb:control>
                             </fb:FilterGroupItem>
 
-                            <fb:FilterGroupItem id="fb-group-4" name="ingpr" 
-                                label="Planner Group" groupName="Group1"
-                                visibleInFilterBar="true">
+                            <fb:FilterGroupItem id="fb-group-4" name="ingpr" label="Planner Group" groupName="Group1" visibleInFilterBar="true">
                                 <fb:control>
-                                    <MultiComboBox id="cmb-ingpr"
-                                        name="aufnr"
-                                        selectionChange="onFilterSelectionChange"
-                                        items="{
+                                    <MultiComboBox id="cmb-ingpr" name="aufnr" selectionChange="onFilterSelectionChange" items="{
                                             path: '/PlannerGroupVHSet',
                                             templateShareable: true
                                         }">
@@ -71,14 +49,9 @@
                                 </fb:control>
                             </fb:FilterGroupItem>
 
-                            <fb:FilterGroupItem id="fb-group-5" name="cstat" 
-                                label="Status" groupName="Group1"
-                                visibleInFilterBar="true">
+                            <fb:FilterGroupItem id="fb-group-5" name="cstat" label="Status" groupName="Group1" visibleInFilterBar="true">
                                 <fb:control>
-                                    <MultiComboBox id="cmb-cstat"
-                                        name="cstat"
-                                        selectionChange="onFilterSelectionChange"
-                                        items="{
+                                    <MultiComboBox id="cmb-cstat" name="cstat" selectionChange="onFilterSelectionChange" items="{
                                             path: 'statusModel>/cstat',
                                             templateShareable: true
                                         }">
@@ -86,34 +59,26 @@
                                     </MultiComboBox>
                                 </fb:control>
                             </fb:FilterGroupItem>
-                    
+
                         </fb:filterGroupItems>
                     </fb:FilterBar>
                 </f:content>
             </f:DynamicPageHeader>
         </f:header>
         <f:content>
-            <Table id="ordertable01" inset="false"
-                items="{
+            <Table id="ordertable01" inset="false" items="{
                     path: 'pmOrderService>/ZC_PM0001_Orderlist',
                     sorter: { path: 'gstrp', descending: true },
                     templateShareable: false
-                }"
-                alternateRowColors="true"
-                growing="true"
-                growingScrollToLoad="true"
-                growingThreshold="10"
-                width="auto"
-                mode="SingleSelectLeft"
-                selectionChange="onTableSelectionChange"
-                sticky="HeaderToolbar,ColumnHeaders">
+                }" alternateRowColors="true" growing="true" growingScrollToLoad="true" growingThreshold="10" width="auto" mode="SingleSelectLeft" selectionChange="onTableSelectionChange" sticky="HeaderToolbar,ColumnHeaders">
                 <headerToolbar>
                     <OverflowToolbar id="ordoverflow01">
                         <Title id="orderTitle" text="{i18n>checklistTableHeader}"/>
                         <ToolbarSpacer id="orspacer01"/>
-                        <Button id="ordCreateBtn" text="Create" press="onCreate" tooltip="Create" visible="{displayModel>/createMode}"/>
+                        <Button id="sortButton" tooltip="Sort" icon="sap-icon://sort" press="handleSortPress"/>
+                        <Button id="ordCreateBtn" text="Create" press="onCreate" tooltip="Create Checksheet" visible="{displayModel>/createMode}"/>
                         <!-- <Button id="ordChangeBtn" text="Change" press="onChange" tooltip="Change" visible="{displayModel>/changeMode}"/> -->
-                        <Button id="ordDisplayBtn" text="Display" press="onDisplay" tooltip="Display" visible="{displayModel>/displayMode}"/>
+                        <Button id="ordDisplayBtn" text="Display" press="onDisplay" tooltip="Display Checksheet" visible="{displayModel>/displayMode}"/>
                     </OverflowToolbar>
                 </headerToolbar>
                 <columns>

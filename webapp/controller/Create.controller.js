@@ -1,9 +1,8 @@
 sap.ui.define([
     "sap/ui/core/BusyIndicator",
     "zpmchecklist/controller/BaseController",
-    "zpmchecklist/model/models",
-    "zpmchecklist/model/validator"
-], function (BusyIndicator, BaseController, models, validator) {
+    "zpmchecklist/model/models"
+], function (BusyIndicator, BaseController, models) {
     "use strict";
 
     return BaseController.extend("zpmchecklist.controller.Create", {
@@ -83,8 +82,24 @@ sap.ui.define([
                     bp_id: "",
                     bp_name: "",
                     bp_func: "",
-                    bp_position: ""
+                    bp_position: "",
+                    nik: "",
+                    pms: "",
+                    prs: ""
                 });
+            }
+
+            const oCmb1 = this.byId("approver1-cmb");
+            if (oCmb1) {
+                oCmb1.getBinding("items").refresh();
+            }
+            const oCmb2 = this.byId("approver2-cmb");
+            if (oCmb2) {
+                oCmb2.getBinding("items").refresh();
+            }
+            const oCmb3 = this.byId("approver3-cmb");
+            if (oCmb3) {
+                oCmb3.getBinding("items").refresh();
             }
 
             const oChecklistModel = models.createJSONModel(oChecklistData);
@@ -201,7 +216,9 @@ sap.ui.define([
                 itemPos += 1;
                 let itemNumber = 0;
                 for (let row in oRowData.values) {
+                // for (let row in oRowData.values.filter(el => ["lower_limmit", "upper_limit", "recdv"].contains(el))) {
                     if (row != "remark" && row != "lower_limit" && row != "upper_limit" && row != "recdv") {
+                    // if (row != "remark") {
                         if (oRowData.values[row].sval == "") {
                             sap.m.MessageBox.error("kolom " + row + " pada '" + oRowData.cl_action + "' belum diisi");
                             return;
@@ -234,14 +251,6 @@ sap.ui.define([
             let itemNumber = 0;
             for (let oPartner of oChecklistModel.getProperty("/to_Partner/results")) {
                 itemNumber += 1;
-                // if (oPartner.bp_name == "") {
-                //     sap.m.MessageBox.show("Nama tidak boleh kosong", {
-                //         icon: sap.m.MessageBox.Icon.ERROR,
-                //         title: "Validation Error",
-                //         actions: [sap.m.MessageBox.Action.OK]
-                //     });
-                //     return;
-                // }
                 const oNewPartner = {
                     aufnr: oPartner.aufnr,
                     itemno: itemNumber.toString().padStart(6, '0'),
@@ -252,7 +261,6 @@ sap.ui.define([
                     IsActiveEntity: true
                 };
                 oNewChecklist.to_Partner.push(oNewPartner);
-                // }
             }
 
             itemNumber = 0;
@@ -265,6 +273,9 @@ sap.ui.define([
                     bp_id: oApprover.bp_id,
                     bp_name: oApprover.bp_name,
                     bp_func: oApprover.bp_func,
+                    nik: oApprover.nik,
+                    pms: oApprover.pms,
+                    prs: oApprover.prs,
                     IsActiveEntity: true
                 };
                 oNewChecklist.to_Approver.push(oNewApprover);
@@ -274,10 +285,7 @@ sap.ui.define([
                 sap.m.MessageBox.show("Approver tidak boleh kosong", {
                     icon: sap.m.MessageBox.Icon.ERROR,
                     title: "Validation Error",
-                    actions: [sap.m.MessageBox.Action.OK],
-                    // onClose: function () {
-                    //     // that.onBack();
-                    // }
+                    actions: [sap.m.MessageBox.Action.OK]
                 });
                 return;
             }
@@ -316,7 +324,11 @@ sap.ui.define([
                 },
                 error: function (oError) {
                     BusyIndicator.hide();
-                    sap.m.MessageBox.error("Error creating checklist.");
+                    let sErrorMessage = JSON.parse(oError.responseText).error.message.value;
+                    if (!sErrorMessage) {
+                        sErrorMessage = "Error creating checklist";
+                    }
+                    sap.m.MessageBox.error(sErrorMessage);
                 }
             });
         },
@@ -324,10 +336,7 @@ sap.ui.define([
         onBack: function (oEvent) {
             const oRouter = this.getOwnerComponent().getRouter();
             this.onExit();
-            // const oCreatePage = this.getView().byId("tableWrapper");  //("createPage");
-            // if (oCreatePage) {
-            //     oCreatePage.destroyItems();
-            // }
+            
             const oTable = this.getView().byId("table01");
             if (oTable) {
                 oTable.destroyColumn();
@@ -378,7 +387,8 @@ sap.ui.define([
                         oRowObject.values[cellKey] = {
                             sval: "",
                             chitid: "",
-                            itemno: ""
+                            itemno: "",
+                            posted: ""
                         };
                     } else if (colData.col_type == "V") {
                         let aVals = taskData.column_list ? taskData.column_list.split(",").map(function (item) { return item.trim() }) : [];
@@ -393,7 +403,8 @@ sap.ui.define([
                                     oRowObject.values[el] = {
                                         sval: taskData[el] || "",
                                         chitid: "",
-                                        itemno: ""
+                                        itemno: "",
+                                        posted: ""
                                     };
                                     skipForMpoint = true;
                                 }
@@ -404,7 +415,8 @@ sap.ui.define([
                             oRowObject.values[cellKey] = {
                                 sval: "",
                                 chitid: "",
-                                itemno: ""
+                                itemno: "",
+                                posted: ""
                             };
                         }
                     }

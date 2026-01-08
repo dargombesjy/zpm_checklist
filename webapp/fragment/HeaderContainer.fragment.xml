@@ -182,7 +182,20 @@
                         <custom:rows>
                             <HBox alignContent="Start" justifyContent="SpaceAround">
                                 <items>
-                                    <ComboBox width="90%" enabled="{oViewModel>/allowEdit}" selectedKey="{oChecklistModel>bp_id}" selectionChange="onLeaderSelectionChange" change="onLeaderChange" items="{path: 'partnerVH>/ZC_PM0001_Partners_VH', templateShareable: false}">
+                                    <!-- <ComboBox width="90%" enabled="{oViewModel>/allowEdit}" selectedKey="{oChecklistModel>bp_id}"
+                                        selectionChange="onLeaderSelectionChange" change="onLeaderChange"
+                                        items="{path: 'partnerVH>/ZC_PM0001_Partners_VH', templateShareable: false}">
+                                        <items>
+                                            <core:Item key="{partnerVH>bp_id}" text="{partnerVH>bp_name}"/>
+                                        </items>
+                                        <layoutData>
+                                            <FlexItemData baseSize="50%" growFactor="0" />
+                                        </layoutData>
+                                    </ComboBox> -->
+
+                                    <ComboBox width="90%" enabled="{oViewModel>/allowEdit}" value="{oChecklistModel>bp_name}"
+                                        selectionChange="onLeaderSelectionChange" change="onComboBoxChange"
+                                        items="{path: 'partnerVH>/ZC_PM0001_Partners_VH', templateShareable: false}">
                                         <items>
                                             <core:Item key="{partnerVH>bp_id}" text="{partnerVH>bp_name}"/>
                                         </items>

@@ -1,10 +1,12 @@
 sap.ui.define([
-    "sap/ui/core/BusyIndicator",
     "sap/ui/core/mvc/Controller",
-    "zpmchecklist/control/Table02",
+    "sap/ui/core/Core",
+    "sap/m/MessagePopover",
+    "sap/m/MessageItem",
     "zpmchecklist/model/validator",
-    "zpmchecklist/model/formatter"
-], function (BusyIndicator, Controller, Table02, validator, formatter) {  //, Column02, Row02, models) {
+    "zpmchecklist/model/formatter",
+    "zpmchecklist/util/browser-image-compression.min"
+], function (Controller, Core, MessagePopover, MessageItem, validator, formatter) {
     "use strict";
 
     return Controller.extend("zpmchecklist.controller.BaseController", {
@@ -200,7 +202,7 @@ sap.ui.define([
                                 if (el == "mpoint") {
                                     oCell = new sap.m.Input({
                                         value: "{oNewRowModel>values/" + el + "/sval}", type: "Number", required: true,
-                                        placeholder: "Measure", enabled: { path: "oViewModel>/allowEdit" }
+                                        placeholder: "Measure", enabled: "{oViewModel>/allowEdit}"
                                     });
                                     // .addEventDelegate({
                                     //     oninput: function (oEvent) {
@@ -341,7 +343,7 @@ sap.ui.define([
                         oRow.addStyleClass("label-col");
                     }
                     oRow.addItem(oCell);
-                    
+
                 } else if (col.col_type == 'A') {
                     oCell = new sap.m.Text({
                         text: "{oNewRowModel>values/" + cellKey + "/sval}",
@@ -360,7 +362,11 @@ sap.ui.define([
                                 const el = aVals[index];
                                 if (el == "mpoint") {
                                     oCell = new sap.m.Text({
-                                        text: "{oNewRowModel>values/" + el + "/sval}", textAlign: "Center",
+                                        text: {
+                                            path: "oNewRowModel>values/" + el + "/sval",
+                                            formatter: formatter.formatNumber
+                                        },
+                                        textAlign: "Center",
                                         layoutData: [new sap.m.FlexItemData({ baseSize: "25%", growFactor: 1, minWidth: this._sMinWidth, styleClass: "text-right" })]
                                     });
                                 } else if (el == "lower_limit" && oContext.getProperty("lower_limit").length > 0) {
@@ -430,11 +436,6 @@ sap.ui.define([
             return oRow;
         },
 
-        onExit: function () {
-            // this._aRowModels = [];
-            this._oChecklistHeader = {};
-        },
-
         handleUpload: function () {
             sap.m.MessageToast("File uploaded successfully.");
         },
@@ -487,6 +488,9 @@ sap.ui.define([
                 aApprovers[iIndex].bp_id = "";
                 aApprovers[iIndex].bp_name = "";
                 aApprovers[iIndex].bp_func = "";
+                aApprovers[iIndex].nik = "";
+                aApprovers[iIndex].pms = "";
+                aApprovers[iIndex].prs = "";
                 // aApprovers[iIndex].bp_position = "";
                 oChecklistModel.setProperty("/to_Approver/results", aApprovers);
                 return;
@@ -501,6 +505,9 @@ sap.ui.define([
                     aApprovers[iIndex].bp_id = oSelectedPartner.bp_id;
                     aApprovers[iIndex].bp_name = oSelectedPartner.bp_name;
                     aApprovers[iIndex].bp_func = oSelectedPartner.bp_func;
+                    aApprovers[iIndex].nik = oSelectedPartner.nik;
+                    aApprovers[iIndex].pms = oSelectedPartner.pms;
+                    aApprovers[iIndex].prs = oSelectedPartner.prs;
                     // aApprovers[iIndex].bp_position = oSelectedPartner.bp_position;
                     oChecklistModel.setProperty("/to_Approver/results", aApprovers);
                 },
@@ -511,33 +518,52 @@ sap.ui.define([
         },
 
         onLeaderChange: function (oEvent) {
-            const sValue = oEvent.getParameter("newValue");
+            const sId = oEvent.getParameter("selectedItem").getKey();
             const oChecklistModel = this.getView().getModel("oChecklistModel");
             const aLeaders = oChecklistModel.getProperty("/to_Partner/results");
             let aExist = aLeaders.filter(function (el) {
-                return el.bp_name.length > 0 && el.bp_name == sValue;
+                return el.bp_id == sId && el.loekz != "X";
             });
             if (aExist.length > 0) {
                 const oControl = oEvent.getSource();
                 sap.m.MessageBox.error("Nama Leader sudah dipakai");
-                oControl.setSelectedItem(null);
+                // oControl.setSelectedItem(null);
                 this._oLeaderDuplicate = true;
             }
-            this.onComboBoxChange(oEvent);
+            // this.onComboBoxChange(oEvent);
         },
 
         onLeaderSelectionChange: function (oEvent) {
             this._bLeaderChanged = true;
+            this._oLeaderDuplicate = false;
             const oSelectedItem = oEvent.getParameter("selectedItem");
             const oChecklistModel = this.getView().getModel("oChecklistModel");
             const aLeaders = oChecklistModel.getProperty("/to_Partner/results");
-
+            const oSource = oEvent.getSource();
+            let sParentId = oSource.getParent().sId
+            let sLastDash = sParentId.lastIndexOf("-");
+            let nIndexLen = sParentId.length - sLastDash - 1;
+            const sIndex = sParentId.slice(nIndexLen * -1);
             if (oSelectedItem == null) {
-                // const oSource = oEvent.getSource();
+                return;
+            }
+            // this.onLeaderChange(oEvent);
+            const sSelectedKey = oSelectedItem.getKey();
+            let aExist = aLeaders.filter(function (el) {
+                return el.bp_id == sSelectedKey && el.loekz != "X";
+            });
+            if (aExist.length > 0) {
+                aLeaders[sIndex].bp_id = "";
+                aLeaders[sIndex].bp_name = "";
+                aLeaders[sIndex].bp_func = "";
+                oChecklistModel.setProperty("/to_Partner/results", aLeaders);
+                oSource.setSelectedItem(null);
+                oSource.setSelectedKey("");
+                this._oLeaderDuplicate = true;
+                sap.m.MessageBox.error("Nama Leader sudah dipakai");
                 return;
             }
 
-            const sSelectedKey = oSelectedItem.getKey();
             const oPartnerVHModel = this.getView().getModel("partnerVH");
             // const aPartners = oPartnerVHModel.getProperty("/ZC_PM0001_Partners_VH");
             oPartnerVHModel.read("/ZC_PM0001_Partners_VH", {
@@ -545,15 +571,18 @@ sap.ui.define([
                 success: function (oData) {
                     const oSelectedPartner = oData.results.find(partner => partner.bp_id === sSelectedKey);
                     // Update the selected leader's details
-                    for (let i = 0; i < aLeaders.length; i++) {
-                        if (aLeaders[i].bp_id === sSelectedKey) {
-                            aLeaders[i].bp_id = oSelectedPartner.bp_id;
-                            aLeaders[i].bp_name = oSelectedPartner.bp_name;
-                            aLeaders[i].bp_func = oSelectedPartner.bp_func;
-                            // aLeaders[i].bp_position = oSelectedPartner.bp_position;
-                            break;
-                        }
-                    }
+                    // for (let i = 0; i < aLeaders.length; i++) {
+                    // if (aLeaders[i].bp_id === sSelectedKey) {
+                    //     aLeaders[i].bp_id = oSelectedPartner.bp_id;
+                    //     aLeaders[i].bp_name = oSelectedPartner.bp_name;
+                    //     aLeaders[i].bp_func = oSelectedPartner.bp_func;
+                    //     // aLeaders[i].bp_position = oSelectedPartner.bp_position;
+                    //     break;
+                    // }
+                    // }
+                    aLeaders[sIndex].bp_id = oSelectedPartner.bp_id;
+                    aLeaders[sIndex].bp_name = oSelectedPartner.bp_name;
+                    aLeaders[sIndex].bp_func = oSelectedPartner.bp_func;
                     oChecklistModel.setProperty("/to_Partner/results", aLeaders);
                 },
                 error: function (oError) {
@@ -572,6 +601,7 @@ sap.ui.define([
                     aLeaders[i].loekz = "";
                     aLeaders[i].bp_id = "";
                     aLeaders[i].bp_name = "";
+                    aLeaders[i].bp_func = "";
                     oChecklistModel.setProperty("/to_Partner/results", aLeaders);
                     sFound = "X";
                     break;
@@ -605,6 +635,7 @@ sap.ui.define([
                 if (oBind) {
                     oBind.refresh(true);
                 }
+                this._bLeaderChanged = true;
             }
         },
 
@@ -668,8 +699,8 @@ sap.ui.define([
                 return "E";
             } else {
                 for (let el of defPartner) {
-                    if (el.bp_id == "0000000000" || el.bp_name == "") {
-                        sap.m.MessageBox.error("Nama Leader tidak boleh kosong");
+                    if (el.bp_id == "0000000000" || el.bp_id == "" || el.bp_name == "") {
+                        sap.m.MessageBox.error("Nama Leader tidak boleh sama atau kosong");
                         return "E";
                     }
                 }
@@ -678,16 +709,17 @@ sap.ui.define([
             return "S";
         },
 
-        onActualDateChange: function (oEvent) {
+        onActualDateChange(oEvent) {
             let oSource = oEvent.getSource();
-            let sDateString = oSource.getValue();
+            // let sDateString = oSource.getValue();
+            let oDateValue = oSource.mProperties.dateValue;
 
-            if (validator.dateIsFuture(sDateString)) {
+            if (validator.dateIsFuture(oDateValue)) {
                 sap.m.MessageBox.error("Tanggal Actual tidak boleh di masa datang");
             }
         },
 
-        onComboBoxChange: function (oEvent) {
+        onComboBoxChange(oEvent) {
             var oComboBox = oEvent.getSource();
             var sSelectedKey = oComboBox.getSelectedKey();
             // var sValue = oEvent.getParameter("value"); // Get the value typed by the user
@@ -700,6 +732,42 @@ sap.ui.define([
             } else {
                 oComboBox.setValueState(sap.ui.core.ValueState.None);
                 // oComboBox.setValueStateText("");
+            }
+        },
+
+        _initMessageManager() {
+            this._MessageManager = Core.getMessageManager();
+            this.getView().setModel(this._MessageManager.getMessageModel(), "message");
+        },
+
+        _createPopover() {
+            // const that = this;
+            this.oMP = new MessagePopover({
+                items: {
+                    path: "message>/",
+                    template: new MessageItem({
+                        title: "{message>message}",
+                        subtitle: "{message>additionalText}",
+                        type: "{message>type}",
+                        description: "{message>message}"
+                    })
+                }
+            });
+            this.getView().byId("msgPopoverBtn").addDependent(this.oMP);
+        },
+
+        onExit() {
+            // this._aRowModels = [];
+            this._oChecklistHeader = {};
+            this._MessageManager = {};
+            sap.ui.getCore().getMessageManager().removeAllMessages();
+            const oMessageModel = this.getView().getModel("message");
+            if (oMessageModel) {
+                oMessageModel.destroy();
+            }
+
+            if ("a" == "b") {
+
             }
         }
     });

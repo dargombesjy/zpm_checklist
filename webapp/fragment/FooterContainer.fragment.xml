@@ -20,7 +20,7 @@
                             <Text text=""/>
                         </items>
                     </HBox>
-                    <HBox id="appr-container" justifyContent="SpaceAround">
+                    <HBox id="appr-container" alignContent="Start" justifyContent="SpaceAround">
                         <items>
                             <!-- <Text id="approver1-cmb" text="{oChecklistModel>/to_Approver/results/0/bp_name}" /> -->
                             <!-- <ComboBox id="approver1-cmb" width="100%" enabled="{oViewModel>/allowEdit}" items="{
@@ -57,11 +57,32 @@
                         </items>
                     </HBox>
 
-                    <HBox justifyContent="SpaceAround">
+                    <HBox id="apprNotes" justifyContent="SpaceAround">
                         <items>
-                            <Text text=""/>
-                            <Text text=""/>
-                            <Text text=""/>
+                            <VBox alignContent="Center" width="100%">
+                                <items>
+                                    <Text text="{oChecklistModel>/to_Approver/results/0/bp_func}" visible="{=${oChecklistModel>/to_Approver/results/0/bp_func}.length > 0}"/>
+                                    <Text text="NIK: {oChecklistModel>/to_Approver/results/0/nik}" visible="{=${oChecklistModel>/to_Approver/results/0/nik}.length > 0}"/>
+                                    <Text text="PMS: {oChecklistModel>/to_Approver/results/0/pms}" visible="{=${oChecklistModel>/to_Approver/results/0/pms}.length > 0}"/>
+                                    <Text text="PRS: {oChecklistModel>/to_Approver/results/0/prs}" visible="{=${oChecklistModel>/to_Approver/results/0/prs}.length > 0}"/>
+                                </items>
+                            </VBox>
+                            <VBox justifyContent="Center" width="100%">
+                                <items>
+                                    <Text text="{oChecklistModel>/to_Approver/results/1/bp_func}" visible="{=${oChecklistModel>/to_Approver/results/1/bp_func}.length > 0}"/>
+                                    <Text text="NIK: {oChecklistModel>/to_Approver/results/1/nik}" visible="{=${oChecklistModel>/to_Approver/results/1/nik}.length > 0}"/>
+                                    <Text text="PMS: {oChecklistModel>/to_Approver/results/1/pms}" visible="{=${oChecklistModel>/to_Approver/results/1/pms}.length > 0}"/>
+                                    <Text text="PRS: {oChecklistModel>/to_Approver/results/1/prs}" visible="{=${oChecklistModel>/to_Approver/results/1/prs}.length > 0}"/>
+                                </items>
+                            </VBox>
+                            <VBox justifyContent="Center" width="100%">
+                                <items>
+                                    <Text text="{oChecklistModel>/to_Approver/results/2/bp_func}" visible="{=${oChecklistModel>/to_Approver/results/2/bp_func}.length > 0}"/>
+                                    <Text text="NIK: {oChecklistModel>/to_Approver/results/2/nik}" visible="{=${oChecklistModel>/to_Approver/results/2/nik}.length > 0}"/>
+                                    <Text text="PMS: {oChecklistModel>/to_Approver/results/2/pms}" visible="{=${oChecklistModel>/to_Approver/results/2/pms}.length > 0}"/>
+                                    <Text text="PRS: {oChecklistModel>/to_Approver/results/2/prs}" visible="{=${oChecklistModel>/to_Approver/results/2/prs}.length > 0}"/>
+                                </items>
+                            </VBox>
                         </items>
                     </HBox>
                 </items>

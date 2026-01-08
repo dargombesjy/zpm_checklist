@@ -1,12 +1,16 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"zpmchecklist/model/models",
-	"zpmchecklist/model/formatter"
-], function (Controller, models, formatter) {
+	"zpmchecklist/model/formatter",
+	"sap/ui/core/Fragment",
+	"sap/ui/model/Sorter",
+], function (Controller, models, formatter, Fragment, Sorter) {
 	"use strict";
 
 	return Controller.extend("sap.ui.comp.sample.smarttable.SmartTable", {
 		onInit: function () {
+			this._settingsDialogs = {};
+
 			this.fetchData = this.fetchData.bind(this);
 			this.applyData = this.applyData.bind(this);
 			this.getFiltersWithValue = this.getFiltersWithValue.bind(this);
@@ -79,6 +83,42 @@ sap.ui.define([
 			oRouter.navTo("detail", {
 				aufnr: sParam
 			});
+		},
+
+		getSettingsDialog: function (sName) {
+			let pDialog = this._settingsDialogs[sName];
+
+			if (!pDialog) {
+				pDialog = Fragment.load({
+					id: this.getView().getId(),
+					name: sName,
+					controller: this
+				}).then(function(oDialog) {
+					return oDialog;
+				})
+				this._settingsDialogs[sName] = pDialog;
+			}
+			return pDialog;
+		},
+
+		handleSortPress: function (oEvent) {
+			this.getSettingsDialog("zpmchecklist.fragment.SortDialog")
+			.then(function(oDialog) {
+				oDialog.open();
+			});
+		},
+
+		handleSortConfirm: function (oEvent) {
+			const oTable = this.byId("ordertable01");
+			let mParams = oEvent.getParameters();
+			const oBinding = oTable.getBinding("items");
+			let sPath, bDescending, aSorters = []; 
+
+			sPath = mParams.sortItem.getKey();
+			bDescending = mParams.sortDescending;
+			aSorters.push(new Sorter(sPath, bDescending));
+
+			oBinding.sort(aSorters);
 		},
 
 		onClearDateRange: function () {

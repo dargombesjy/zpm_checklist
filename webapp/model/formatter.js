@@ -16,7 +16,7 @@ sap.ui.define([], function () {
                 return "";
             }
             var oDateFormat = sap.ui.core.format.DateFormat.getDateInstance({
-                pattern: "dd.MM.yyyy hh:mm" // Or any other desired pattern like "MMM d, yyyy", "long", "medium", etc.
+                pattern: "dd.MM.yyyy hh:mm"
             });
             return oDateFormat.format(new Date(sDateValue));
         },
@@ -32,7 +32,22 @@ sap.ui.define([], function () {
             }
         },
 
-        formatNumber: function (value) {
+        formatSeverity(sSeverity) {
+            let oSeverity = {
+                severity: "success",
+                title: "Success",
+                icon: sap.m.MessageBox.Icon.SUCCESS
+            }
+            switch (sSeverity) {
+                case "error": return { severity: "error", title: "Error", icon: sap.m.MessageBox.Icon.ERROR };
+                case "warning": return { severity: "warning", title: "Warning", icon: sap.m.MessageBox.Icon.WARNING };
+                case "success": return { severity: "success", title: "Success", icon: sap.m.MessageBox.Icon.SUCCESS };
+                case "information": return { severity: "information", title: "Information", icon: sap.m.MessageBox.Icon.INFORMATION };
+                default: return oSeverity;
+            }
+        },
+
+        formatNumber(value) {
             if (value === null || value === undefined) {
                 return "";
             }

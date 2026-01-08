@@ -97,17 +97,6 @@
         {
           "uri": "css/style.css"
         }
-      ],
-      "js": [
-        {
-          "uri": "util/jspdf.umd.min.js"
-        },
-        {
-          "uri": "util/html2canvas.min.js"
-        },
-        {
-          "uri": "util/browser-image-compression.min.js"
-        }
       ]
     },
     "routing": {

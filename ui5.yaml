@@ -17,7 +17,7 @@ server:
           url: https://ui5.sap.com
         backend:
           - path: /sap
-            url: https://mrtwd1wd01.hec.jakartamrt.co.id   # https://mrtme2ap01.hec.jakartamrt.co.id:8112 
+            url: https://mrtwd1wd01.hec.jakartamrt.co.id  # https://mrtme2ap01.hec.jakartamrt.co.id:8112 
             client: '110'
     - name: fiori-tools-appreload
       afterMiddleware: compression
