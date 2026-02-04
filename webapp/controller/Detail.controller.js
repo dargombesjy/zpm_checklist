@@ -55,29 +55,47 @@ sap.ui.define([
             const oViewModel = oView.getModel("oViewModel");
             const sAufnr = oViewModel.getProperty("/aufnr");
 
+            const that = this;
             const oDataHeader = await new Promise(function (resolve, reject) {
                 oModel.read("/ViewHeaderSet(ingpr='',aufnr='" + sAufnr + "')", {
                     urlParameters: {
+                        "action": "detail",
                         "$expand": "toColumn"
                     },
                     success: function (oData) {
                         resolve(oData);
                     },
                     error: function (oError) {
-                        reject(oError);
+                        var sErrorMessage = JSON.parse(oError.responseText).error.message.value;
+                        sap.m.MessageBox.show(sErrorMessage, {
+                            icon: sap.m.MessageBox.Icon.ERROR,
+                            title: "Validation Error",
+                            actions: [sap.m.MessageBox.Action.OK],
+                            onClose: function () {
+                                that.onBack();
+                            }
+                        });
+                        // reject(oError);
                     }
                 });
             });
             this._oChecklistHeader = oDataHeader;
+
+            // is_approver: A = Approver, P = Planner
+            // is_viewer: C = Create, M = Maintain, V = View, A = All, W = RW
             if (oDataHeader.cstat == "N") {
                 oViewModel.setProperty("/allowChange", true);
                 oViewModel.setProperty("/allowEdit", false);
                 oViewModel.setProperty("/isApproved", false);
-                // A = Approver
+                
+                if (oDataHeader.is_viewer == "" || oDataHeader.is_viewer == "V") {
+                    oViewModel.setProperty("/allowChange", false);
+                }
+
                 if (oDataHeader.is_approver == "A") {
                     oViewModel.setProperty("/allowPost", true);
                     oViewModel.setProperty("/allowReject", true);
-                    // P = Planner
+                    
                 } else if (oDataHeader.is_approver == "P") {
                     oViewModel.setProperty("/allowReject", true);
                 }
@@ -1040,6 +1058,8 @@ sap.ui.define([
             const oView = this.getView();
             const oChecklistHeaderModel = oView.getModel("oChecklistHeaderModel").getData();
             const oChecklistModel = oView.getModel("oChecklistModel").getData();
+            const sGstri0 = oChecklistModel.gstri.toISOString();   //.split("T");
+            const sGltri0 = oChecklistModel.gltri.toISOString();   //.split("T");
 
             // header
             docDef.content[0].table.body = [
@@ -1048,11 +1068,11 @@ sap.ui.define([
                 ["Equipment", { text: oChecklistHeaderModel.equnr + " " + oChecklistHeaderModel.eqktx, colSpan: 3 }, "", ""],
                 [
                     "Planner Group", oChecklistHeaderModel.ingpr + " " + oChecklistHeaderModel.innam,
-                    "Actual Start", formatter.formatDateTime(oChecklistModel.gstri.toISOString().split("T"))
+                    "Actual Start", formatter.formatDateTime(sGstri0)
                 ],
                 [
                     "Work Center", oChecklistHeaderModel.arbpl + " " + oChecklistHeaderModel.cktext,
-                    "Actual Finish", formatter.formatDateTime(oChecklistModel.gltri.toISOString().split("T"))
+                    "Actual Finish", formatter.formatDateTime(sGltri0)
                 ]
             ];
             docDef.content[0].table.widths = [100, 200, 80, "*"];

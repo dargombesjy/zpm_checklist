@@ -22,6 +22,6 @@ builder:
           name: ZPM_CHECKLIST
           description: ZPM_Checklist Application
           package: ZABAP
-          transport: ME1K903526  # ME1K903503 # ME1K903426
+          transport: ME1K903621 #  ME1K903611 ME1K903591 ME1K903526 ME1K903503 ME1K903426 ME1K903536 ME1K903562
         exclude:
           - /test/

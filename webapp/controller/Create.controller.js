@@ -120,6 +120,7 @@ sap.ui.define([
             const oDataHeader = await new Promise(function (resolve, reject) {
                 oModel.read("/ViewHeaderSet(ingpr='',aufnr='" + sAufnr + "')", {
                     urlParameters: {
+                        "action": "create",
                         "$expand": "toColumn"
                     },
                     success: function (oData) {

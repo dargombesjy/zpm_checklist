@@ -52,12 +52,9 @@ sap.ui.define([
 			if (oPage) {
 				oPage.destroyContent();
 			}
-
 			if (oHeader) {
 				oHeader.destroyContent();
 			}
-			this.oFilterBar.destroy();
-			// this.oTable = null;
 		},
 
 		onCreate: function () {
@@ -93,7 +90,7 @@ sap.ui.define([
 					id: this.getView().getId(),
 					name: sName,
 					controller: this
-				}).then(function(oDialog) {
+				}).then(function (oDialog) {
 					return oDialog;
 				})
 				this._settingsDialogs[sName] = pDialog;
@@ -103,16 +100,16 @@ sap.ui.define([
 
 		handleSortPress: function (oEvent) {
 			this.getSettingsDialog("zpmchecklist.fragment.SortDialog")
-			.then(function(oDialog) {
-				oDialog.open();
-			});
+				.then(function (oDialog) {
+					oDialog.open();
+				});
 		},
 
 		handleSortConfirm: function (oEvent) {
 			const oTable = this.byId("ordertable01");
 			let mParams = oEvent.getParameters();
 			const oBinding = oTable.getBinding("items");
-			let sPath, bDescending, aSorters = []; 
+			let sPath, bDescending, aSorters = [];
 
 			sPath = mParams.sortItem.getKey();
 			bDescending = mParams.sortDescending;
@@ -252,6 +249,7 @@ sap.ui.define([
 		},
 
 		onSearch: function () {
+			const that = this;
 			var aTableFilters = this.oFilterBar.getFilterGroupItems().reduce(function (aResult, oFilterGroupItem) {
 				var oControl = oFilterGroupItem.getControl();
 				var sControlName = oControl.getMetadata().getName();
@@ -267,14 +265,16 @@ sap.ui.define([
 				// });
 
 				if (sControlName == "sap.m.DateRangeSelection") {
-					var oDateFrom = oControl.getDateValue();
+					const oDateFrom = oControl.getDateValue();
 					if (oDateFrom) {
-						var oDateTo = oControl.getSecondDateValue();
+						let sDateFrom = that.formatDateRange(oDateFrom);
+						const oDateTo = oControl.getSecondDateValue();
+						let sDateTo = that.formatDateRange(oDateTo);
 						aFilters.push(new sap.ui.model.Filter({
 							path: oFilterGroupItem.getName(),
 							operator: sap.ui.model.FilterOperator.BT,
-							value1: oDateFrom.toISOString().split("T")[0],  //.split("-").join(""),
-							value2: oDateTo.toISOString().split("T")[0]   //.split("-").join("")
+							value1: sDateFrom,   //oDateFrom.toISOString().split("T")[0],  //.split("-").join(""),
+							value2: sDateTo     // oDateTo.toISOString().split("T")[0]   //.split("-").join("")
 						}))
 					};
 				} else if (sControlName == "sap.m.DatePicker") {
@@ -349,7 +349,7 @@ sap.ui.define([
 				if (oItem.getVisibleInFilterBar()) { // Only reset visible ones
 					if (sControlName === "sap.m.MultiComboBox") {
 						oControl.setSelectedKeys([]);
-					} else if(sControlName === "sap.m.ComboBox") {
+					} else if (sControlName === "sap.m.ComboBox") {
 						oControl.setSelectedItem(null);
 					} else if (sControlName === "sap.m.DateRangeSelection") {
 						oControl.setDateValue(null);
@@ -392,6 +392,20 @@ sap.ui.define([
 					oRenderer.hideHeaderItem("backBtn", false);
 				}
 			}
+		},
+
+		formatDateRange(oDate) {
+			var sYear = oDate.getFullYear();
+			var sMonth = String(oDate.getMonth() + 1).padStart(2, '0')
+			var sDay = String(oDate.getDate()).padStart(2, '0');
+
+			return sYear + "-" + sMonth + "-" + sDay;
+		},
+
+		onDownload(oEvent) {
+			const oButton = oEvent.getSource();
+			const sUrl = oButton.data("url");
+			window.open(sUrl, "_blank");
 		},
 
 		formatter: formatter

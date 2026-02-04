@@ -14,7 +14,7 @@
                                 <fb:control>
                                     <MultiComboBox id="cmb-order" name="aufnr" selectionChange="onFilterSelectionChange" items="{
                                             path: 'pmOrderService>/ZC_PM0001_Orderlist',
-                                            templateShareable: true
+                                            templateShareable: false
                                         }">
                                         <core:Item id="cmb-order-itm" key="{pmOrderService>aufnr}" text="{pmOrderService>aufnr}"/>
                                     </MultiComboBox>
@@ -23,7 +23,7 @@
 
                             <fb:FilterGroupItem id="fb-group-2" name="gstrp" label="Bsc.Start" groupName="Group1" visibleInFilterBar="true">
                                 <fb:control>
-                                    <DateRangeSelection id="date-range0" displayFormat="dd/MM/yyyy" showFooter="true" change="handleDateChange"/>
+                                    <DateRangeSelection id="date-range0" displayFormat="dd/MM/yyyy" valueFormat="yyyy-MM-DD" showFooter="true" change="handleDateChange"/>
                                 </fb:control>
                             </fb:FilterGroupItem>
 
@@ -42,7 +42,7 @@
                                 <fb:control>
                                     <MultiComboBox id="cmb-ingpr" name="aufnr" selectionChange="onFilterSelectionChange" items="{
                                             path: '/PlannerGroupVHSet',
-                                            templateShareable: true
+                                            templateShareable: false
                                         }">
                                         <core:Item id="cmb-ingpr-itm" key="{ingrp}" text="{innam}"/>
                                     </MultiComboBox>
@@ -53,7 +53,7 @@
                                 <fb:control>
                                     <MultiComboBox id="cmb-cstat" name="cstat" selectionChange="onFilterSelectionChange" items="{
                                             path: 'statusModel>/cstat',
-                                            templateShareable: true
+                                            templateShareable: false
                                         }">
                                         <core:Item id="cmb-cstat-itm" key="{statusModel>key}" text="{statusModel>text}"/>
                                     </MultiComboBox>
@@ -117,6 +117,16 @@
                             <Text id="orctxt06" text="Checklist Status"/>
                         </header>
                     </Column>
+                    <Column id="ortbl01-col08">
+                        <header>
+                            <Text id="orctxt08" text="Attachment"/>
+                        </header>
+                    </Column>
+                    <Column id="ortbl01-col09" width="2.5rem">
+                        <header>
+                            <Text id="orctxt09" text=""/>
+                        </header>
+                    </Column>
                 </columns>
                 <items>
                     <ColumnListItem id="orcli001">
@@ -137,6 +147,13 @@
                                 path: 'pmOrderService>cstat',
                                 formatter: '.formatter.formatStatus'
                             }"/>
+                            <Button type="Transparent" text="Download" press="onDownload" visible="{=${pmOrderService>att_url}.length > 0 &amp;&amp; ${pmOrderService>cstat} === 'A'}">
+                                <customData>
+                                    <core:CustomData key="url" value="{pmOrderService>att_url}" writeToDom="true" />
+                                    <core:CustomData key="filename" value="{pmOrderService>objdes}" writeToDom="true" />
+                                </customData>
+                            </Button>
+                            <Button width="2rem" icon="sap-icon://warning" visible="{=${pmOrderService>csinfo} === 'W'}"/>
                         </cells>
                     </ColumnListItem>
                 </items>

@@ -757,18 +757,16 @@ sap.ui.define([
         },
 
         onExit() {
-            // this._aRowModels = [];
             this._oChecklistHeader = {};
             this._MessageManager = {};
             sap.ui.getCore().getMessageManager().removeAllMessages();
-            const oMessageModel = this.getView().getModel("message");
-            if (oMessageModel) {
-                oMessageModel.destroy();
-            }
+            // const oMessageModel = this.getView().getModel("message");
+            // if (oMessageModel) {
+            //     oMessageModel.destroy();
+            // }
+            // if ("a" == "b") {
 
-            if ("a" == "b") {
-
-            }
+            // }
         }
     });
 });

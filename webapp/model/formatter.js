@@ -16,7 +16,7 @@ sap.ui.define([], function () {
                 return "";
             }
             var oDateFormat = sap.ui.core.format.DateFormat.getDateInstance({
-                pattern: "dd.MM.yyyy hh:mm"
+                pattern: "dd.MM.yyyy HH:mm"
             });
             return oDateFormat.format(new Date(sDateValue));
         },
